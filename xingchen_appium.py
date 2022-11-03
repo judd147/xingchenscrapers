@@ -483,28 +483,19 @@ def get_matches(driver, algo_name, start_time, end_time):
                     #按联赛、时间筛选后收集数据
                     league_name, collect = clean_leagues(league)
                     if game not in games_list and collect and (start_time <= date <= end_time):
-                        bad_game = False
-                        if len(game.split(' ')) == 4:
-                            bad_game == True
-                        if game.__contains__('[') and not bad_game:
+                        if game.__contains__('['):
                             home = game.split(' ')[0].split(']')[1]
                             away = game.split(' ')[2].split('[')[0]
-                            score = game.split(' ')[1]
-                        elif game.__contains__('[') and bad_game:
-                            home = game.split(' ')[0].split(']')[1]
-                            away = game.split(' ')[3].split('[')[0]
-                            score = game.split(' ')[2]
-                        elif game.__contains__('[') == False and not bad_game:
+                        else:
                             home = game.split(' ')[0]
                             away = game.split(' ')[2]
-                            score = game.split(' ')[1]
-                        elif game.__contains__('[') == False and bad_game:
-                            home = game.split(' ')[0]
-                            away = game.split(' ')[2]
-                            score = game.split(' ')[2]
-                        
-                        H = score.split(':')[0]
-                        A = score.split(':')[1]
+                        score = game.split(' ')[1]
+                        try:
+                            H = score.split(':')[0]
+                            A = score.split(':')[1]
+                        except:
+                            st.error('获取比分失败:'+game)
+                            H = A = '0'
                         #清洗球队名称
                         home, away = clean_teams(home, away, league_name)
                         games_list.append(game)
