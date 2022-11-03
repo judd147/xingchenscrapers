@@ -435,7 +435,7 @@ def decode_scoreline(score_list):
 def get_matches(driver, algo_name, start_time, end_time):
     '''
     获取比赛信息
-    TO-DO: 1.研究WebDriverWait.until的用法 2.对于所有完赛比赛收录比分
+    TO-DO: 1.对于所有完赛比赛收录比分
     FIXME: 1.深盘让球数存储失败 2.已完赛未解锁赛事过多容易导致跳过未开赛比赛 ImageView和View冲突的问题 因为最多点击4场就要划动
     '''
     reach_lb = False #遇到指定开始时间的比赛
@@ -483,13 +483,26 @@ def get_matches(driver, algo_name, start_time, end_time):
                     #按联赛、时间筛选后收集数据
                     league_name, collect = clean_leagues(league)
                     if game not in games_list and collect and (start_time <= date <= end_time):
-                        if game.__contains__('['):
+                        bad_game = False
+                        if len(game.split(' ')) == 4:
+                            bad_game == True
+                        if game.__contains__('[') and not bad_game:
                             home = game.split(' ')[0].split(']')[1]
                             away = game.split(' ')[2].split('[')[0]
-                        else:
+                            score = game.split(' ')[1]
+                        elif game.__contains__('[') and bad_game:
+                            home = game.split(' ')[0].split(']')[1]
+                            away = game.split(' ')[3].split('[')[0]
+                            score = game.split(' ')[2]
+                        elif game.__contains__('[') == False and not bad_game:
                             home = game.split(' ')[0]
                             away = game.split(' ')[2]
-                        score = game.split(' ')[1]
+                            score = game.split(' ')[1]
+                        elif game.__contains__('[') == False and bad_game:
+                            home = game.split(' ')[0]
+                            away = game.split(' ')[2]
+                            score = game.split(' ')[2]
+                        
                         H = score.split(':')[0]
                         A = score.split(':')[1]
                         #清洗球队名称
