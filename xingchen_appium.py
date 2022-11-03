@@ -190,16 +190,16 @@ def main():
                     st.success('指数形态数据获取成功！')
                 else:
                     i += 1            
-        time.sleep(1)
+        time.sleep(5)
         #公平量价
         if get_gplj:
             algo_list3 = driver.find_elements(AppiumBy.CLASS_NAME, value="android.widget.ImageView")
             i = 0
             while not gplj_visited:
-                #algo = algo_list3[i]
-                if algo_list3[i].get_attribute('text').split('\n')[0] == '公平量价':
+                algo = algo_list3[i]
+                if algo.get_attribute('text').split('\n')[0] == '公平量价':
                     algo_name = '公平量价'
-                    algo_list3[i].click()
+                    algo.click()
                     unlock_matches(driver, 3)
                     time.sleep(2)
                     with st.spinner("正在获取公平量价数据..."):
@@ -208,7 +208,6 @@ def main():
                     st.success('公平量价数据获取成功！')
                 else:
                     i += 1
-                    algo_list3 = driver.find_elements(AppiumBy.CLASS_NAME, value="android.widget.ImageView")
         time.sleep(1)
         #赛前能量
         if get_sqnl:
