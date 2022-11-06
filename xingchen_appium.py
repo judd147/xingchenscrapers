@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Oct  5 19:17:17 2022
-Last Edit 10/13/2022
+Created on Wed Oct 5 19:17:17 2022
+Last Edit 11/4/2022
 @author: Liyao Zhang
 
 星辰智盈数据自动获取系统 with Streamlit
 """
-import streamlit as st
-import base64
+
 import io
 import time
-from datetime import datetime, timedelta
+import base64
 import pandas as pd
+import streamlit as st
+from datetime import datetime, timedelta
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 from appium import webdriver
