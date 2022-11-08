@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Oct 5 19:17:17 2022
-Last Edit 11/4/2022
+Last Edit 11/8/2022
 @author: Liyao Zhang
 
 星辰智盈数据自动获取系统 with Streamlit
@@ -13,8 +13,6 @@ import base64
 import pandas as pd
 import streamlit as st
 from datetime import datetime, timedelta
-pd.set_option('display.max_columns', None)
-pd.set_option('display.max_rows', None)
 from appium import webdriver
 from appium.webdriver.common.appiumby import AppiumBy
 # For W3C actions
@@ -543,9 +541,9 @@ def get_matches(driver, algo_name, start_time, end_time):
                             elif info.__contains__('主负'):
                                 p_loss = info
                             #获取竞彩让球方及让球胜平负
-                            elif jingcai == '是' and info.startswith('主让客'):
+                            elif jingcai == '是' and info.startswith('主让客') and comment == '':
                                 comment = '-'
-                            elif jingcai == '是' and info.startswith('主受让'):
+                            elif jingcai == '是' and info.startswith('主受让') and comment == '':
                                 comment = '+'                            
                             elif info.startswith('（') and info.endswith('）'):
                                 num_hand = info.split(' ')[1]
@@ -721,9 +719,9 @@ def get_matches(driver, algo_name, start_time, end_time):
                             elif info.__contains__('主负'):
                                 p_loss = info                                
                             #获取竞彩让球方及让球胜平负
-                            elif jingcai == '是' and info.startswith('主让客'):
+                            elif jingcai == '是' and info.startswith('主让客') and comment == '':
                                 comment = '-'
-                            elif jingcai == '是' and info.startswith('主受让'):
+                            elif jingcai == '是' and info.startswith('主受让') and comment == '':
                                 comment = '+'                            
                             elif info.startswith('（') and info.endswith('）'):
                                 num_hand = info.split(' ')[1]
