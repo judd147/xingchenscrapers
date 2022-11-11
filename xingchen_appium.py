@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Oct 5 19:17:17 2022
-Last Edit 11/8/2022
+Last Edit 11/11/2022
 @author: Liyao Zhang
 
 星辰智盈数据自动获取系统 with Streamlit
@@ -12,6 +12,7 @@ import time
 import base64
 import pandas as pd
 import streamlit as st
+from PIL import Image
 from datetime import datetime, timedelta
 from appium import webdriver
 from appium.webdriver.common.appiumby import AppiumBy
@@ -22,7 +23,12 @@ from selenium.webdriver.common.actions.action_builder import ActionBuilder
 from selenium.webdriver.common.actions.pointer_input import PointerInput
 
 def main():
-    st.title("欢迎使用星辰智盈数据自动获取系统")
+    st.set_page_config(
+    page_title="星辰数据获取",
+    page_icon=Image.open('logo.jpg')
+    #initial_sidebar_state="expanded"
+    )
+    st.title("星辰智盈数据自动获取系统")
     get_qbl = get_zsxt = get_gplj = get_sqnl = get_lsqt = False
     mode = st.radio('选择算法', options=('全选', '早盘', '临场'), help='全选包括早盘临场5大算法，早盘算法指球伯乐及指数形态，临场算法指公平量价、赛前能量和联赛球探')
     if mode == '全选':
