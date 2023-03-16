@@ -3,7 +3,7 @@
 Liyao Zhang
 
 Start Date 4/4/2022
-Last Edit 2/4/2023
+Last Edit 3/16/2023
 
 星辰智盈自动回测系统 with Streamlit
 """
@@ -236,7 +236,7 @@ def remove_exclamation(text):
 #onedrive
 @st.experimental_memo
 def load_history():
-    onedrive_link = 'https://1drv.ms/x/s!Ag9ZvloaJitBkDuTElufwa1jI6J4?e=pUIfze'
+    onedrive_link = 'https://1drv.ms/x/s!Ag9ZvloaJitBkDvM3TVDY7HffBxS'
     url = create_onedrive_directdownload(onedrive_link)
     df = pd.read_excel(url, sheet_name=0, converters = {'盘口': str, 'week': str})
     df = df[df['模型'].notnull()]
