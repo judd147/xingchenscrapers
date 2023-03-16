@@ -55,7 +55,7 @@ def main():
     
     #运行回测
     if source == 'OneDrive' and run:
-        onedrive_link = 'https://1drv.ms/x/s!Ag9ZvloaJitBjy_eATdsL7-B6G0m?e=hk8yWv'
+        onedrive_link = 'https://1drv.ms/x/s!Ag9ZvloaJitBjy8YIdiLf5Wkr4O6?e=cwBjTO'
         with st.spinner("加载数据中..."):
             url = create_onedrive_directdownload(onedrive_link)
             df = read_file(url)
