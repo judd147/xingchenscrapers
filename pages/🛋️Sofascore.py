@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Nov 16 11:07:58 2022
-Last Edit 3/10/2023
+Last Edit 3/16/2023
 @author: zhangliyao
 Sofascore scraper with Streamlit
 """
@@ -91,7 +91,7 @@ def main():
             st.success('数据获取完成！')
             
             with st.spinner('数据合并中...'):
-                onedrive_link = 'https://1drv.ms/x/s!Ag9ZvloaJitBjy_eATdsL7-B6G0m?e=hk8yWv'
+                onedrive_link = 'https://1drv.ms/x/s!Ag9ZvloaJitBjy8YIdiLf5Wkr4O6?e=cwBjTO'
                 url = create_onedrive_directdownload(onedrive_link)
                 df = read_file(url)
 
