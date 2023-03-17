@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Oct 5 19:17:17 2022
-Last Edit 3/9/2023
+Last Edit 3/16/2023
 @author: Liyao Zhang
 
 星辰智盈数据自动获取系统 with Streamlit
@@ -274,7 +274,7 @@ def main():
         elif mode == '临场':
             if combine:
                 with st.spinner("合并数据中..."):
-                    onedrive_link = 'https://1drv.ms/x/s!Ag9ZvloaJitBjy_eATdsL7-B6G0m?e=hk8yWv'
+                    onedrive_link = 'https://1drv.ms/x/s!Ag9ZvloaJitBjy8YIdiLf5Wkr4O6?e=cwBjTO'
                     url = create_onedrive_directdownload(onedrive_link)
                     df = read_file(url)
                     min_time = min(start_time_gplj, start_time_sqnl, start_time_lsqt) #判断最早时间
