@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Nov 16 11:07:58 2022
-Last Edit 3/16/2023
+Last Edit 3/19/2023
 @author: zhangliyao
 Sofascore scraper with Streamlit
 """
@@ -39,8 +39,8 @@ def main():
         elif source == 'Company':
             driver_path = r'D:\EdgeDriver\msedgedriver.exe'
         date = st.date_input("选择日期")
-        scroll_startpoint = st.number_input('初始位置', min_value=0, max_value=20300, value=0, help='日职7700，日乙18900')
-        scroll_endpoint = st.number_input('结束位置', min_value=0, max_value=20300, value=700, step=350)
+        scroll_startpoint = st.number_input('初始位置', min_value=0, max_value=22100, value=0, help='日职7700，日乙18900')
+        scroll_endpoint = st.number_input('结束位置', min_value=0, max_value=22100, value=2500, step=1400)
     
         submitted = st.form_submit_button("运行")
         
@@ -79,6 +79,16 @@ def main():
             driver.refresh() #刷新页面
             time.sleep(5)
             ActionChains(driver).scroll_by_amount(0, scroll_endpoint).perform()
+            time.sleep(3)
+
+            #点击第一场比赛
+            match_class_name = 'sc-hLBbgP.dRtNhU.sc-9199a964-1.kusmLq'
+            matches = driver.find_elements(By.CLASS_NAME, match_class_name)
+            try:
+                matches[0].click()
+            except:
+                matches[2].click()            
+
             st.info('请查看是否合适，15秒后自动重置')
             time.sleep(15)
             
@@ -411,9 +421,7 @@ def scrape_matches(driver, scroll_startpoint, scroll_endpoint):
     while continue_flag:
         driver.refresh() #刷新页面
         time.sleep(5) #等待页面元素刷新
-        i = 0 #比赛index
-        num_clicks = 0 #点击比赛次数
-        ActionChains(driver).scroll_by_amount(0, amount_scrolled).perform()        
+        ActionChains(driver).scroll_by_amount(0, amount_scrolled).perform()       
         
         try:
             driver.find_element(By.CLASS_NAME,'sc-hKwDye.LFQYO.sc-9199a964-1.bnnDyH') #比赛列表1
@@ -423,13 +431,19 @@ def scrape_matches(driver, scroll_startpoint, scroll_endpoint):
             match_class_name = 'sc-hLBbgP.dRtNhU.sc-9199a964-1.kusmLq'
         matches = driver.find_elements(By.CLASS_NAME, match_class_name) #比赛列表
         
-        while num_clicks < 6:
-            match = matches[i]
-            match.click()        
-            if i == 0:
-                fake_get_match(driver)
-            else:
-                num_clicks += 1
+        for i in range(0, 23):
+            ok_flag = False
+            try:
+                matches[i].click()
+                ok_flag = True
+            except:
+                ok_flag = False
+                print('点击比赛失败')
+
+            if ok_flag:        
+                #if i == 0:
+                #    fake_get_match(driver)
+                #else:
                 info_list = get_match(driver)
                 home_score = info_list[0]
                 away_score = info_list[1]
@@ -449,21 +463,19 @@ def scrape_matches(driver, scroll_startpoint, scroll_endpoint):
                     print('盘口：', handicap_value)
                     df_result = df_result.append({'主队':home_name, '客队':away_name, 'H':home_score, 'A':away_score, '盘口':handicap_value}, ignore_index=True)
                 except:
-                    print('error parsing handicap info') 
-            i += 1
+                    print('error parsing handicap info')
             
         #结束条件
         if amount_scrolled == scroll_endpoint:
             continue_flag = False
         #划动比赛
         if first_scroll_flag:
-            #考虑减少为700
-            ActionChains(driver).scroll_by_amount(0, 700).perform()
-            amount_scrolled += 700
+            ActionChains(driver).scroll_by_amount(0, 2500).perform()
+            amount_scrolled += 2500
             first_scroll_flag = False
         else:
-            ActionChains(driver).scroll_by_amount(0, 350).perform()
-            amount_scrolled += 350
+            ActionChains(driver).scroll_by_amount(0, 1400).perform()
+            amount_scrolled += 1400
         print('已划动')
         del matches
     return df_result
