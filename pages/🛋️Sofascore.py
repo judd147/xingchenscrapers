@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Nov 16 11:07:58 2022
-Last Edit 3/19/2023
+Last Edit 3/25/2023
 @author: zhangliyao
 Sofascore scraper with Streamlit
 """
@@ -295,9 +295,17 @@ def map_teams(home, away):
                            'Cangzhou Mighty Lions':'沧州雄狮','Shenzhen':'深圳','Henan Songshan Longmen':'河南嵩山龙门','Beijing Guoan':'北京国安',
                            'Guangzhou FC':'广州队','Wuhan Three Towns':'武汉三镇','Chengdu Rongcheng':'成都蓉城','Tianjin Jinmen Tiger':'天津津门虎',
                            'Zhejiang':'浙江','Dalian Pro':'大连人','Wuhan':'武汉长江','Shandong Taishan':'山东泰山','Shanghai Port':'上海海港'},
-                  'Europe':{'England':'英格兰','France':'法国'}
+                  #✔         
+                  'Europe':{'England':'英格兰','France':'法国','Kazakhstan':'哈萨克斯坦','Slovenia':'斯洛文尼亚','Italy':'意大利','North Macedonia':'马其顿',
+                            'Malta':'马耳他','Denmark':'丹麦','Finland':'芬兰','Northern Ireland':'北爱尔兰','Bosnia & Herzegovina':'波黑','Iceland':'冰岛',
+                            'Portugal':'葡萄牙','Slovakia':'斯洛伐克','Luxembourg':'卢森堡','Scotland':'苏格兰','Cyprus':'塞浦路斯','Netherlands':'荷兰','Greece':'希腊',
+                            'Czech Republic':'捷克','Poland':'波兰','Moldova':'摩尔多瓦','Faroe Islands':'法罗群岛','Austria':'奥地利','Azerbaijan':'阿塞拜疆',
+                            'Sweden':'瑞典','Belgium':'比利时','Bulgaria':'保加利亚','Montenegro':'黑山','Serbia':'塞尔维亚','Lithuania':'立陶宛','Spain':'西班牙',
+                            'Norway':'挪威','Armenia':'亚美尼亚','Turkey':'土耳其','Croatia':'克罗地亚','Wales':'威尔士','Belarus':'白俄罗斯','Switzerland':'瑞士',
+                            'Israel':'以色列','Kosovo':'科索沃','Andorra':'安道尔','Romania':'罗马尼亚','Ukraine':'乌克兰','Ireland':'爱尔兰','Albania':'阿尔巴尼亚',
+                            'Estonia':'爱沙尼亚','Hungary':'匈牙利','Georgia':'格鲁吉亚','Latvia':'拉脱维亚'}
                   }
-                  #Last Edit: 3/10/2023
+                  #Last Edit: 3/25/2023
 
     for league_key, league_values in teams_dict.items():
         for key, value in league_values.items():
