@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Nov 16 11:07:58 2022
-Last Edit 3/25/2023
+Last Edit 3/26/2023
 @author: zhangliyao
 Sofascore scraper with Streamlit
 """
@@ -353,12 +353,18 @@ def get_match(driver):
     #获取比分及盘口
     try:
         try:       
-            homescore_xpath = '/html/body/div[1]/div/main/div[2]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div/div[1]/div[1]/span'                              
-            home_score = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, homescore_xpath))).text
-            awayscore_xpath = '/html/body/div[1]/div/main/div[2]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div/div[1]/div[3]/span'
-            away_score = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, awayscore_xpath))).text
+            try: #联赛
+                homescore_xpath = '/html/body/div[1]/div/main/div[2]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div/div[1]/div[1]/span'                  
+                home_score = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, homescore_xpath))).text
+                awayscore_xpath = '/html/body/div[1]/div/main/div[2]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div/div[1]/div[3]/span'
+                away_score = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, awayscore_xpath))).text
+            except TimeoutException: #国家队比赛
+                homescore_xpath = '/html/body/div[1]/div/main/div[2]/div[2]/div[1]/div[1]/div[1]/div[1]/div[3]/div[2]/div/div[1]/div[1]/span'                  
+                home_score = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, homescore_xpath))).text
+                awayscore_xpath = '/html/body/div[1]/div/main/div[2]/div[2]/div[1]/div[1]/div[1]/div[1]/div[3]/div[2]/div/div[1]/div[3]/span'
+                away_score = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, awayscore_xpath))).text
             
-        except TimeoutException:
+        except TimeoutException: #杯赛淘汰赛
             homescore_xpath = '/html/body/div[1]/div/main/div[2]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/span'
             home_score = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, homescore_xpath))).text
             awayscore_xpath = '/html/body/div[1]/div/main/div[2]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[3]/span'
@@ -368,7 +374,7 @@ def get_match(driver):
         handicap_A = driver.find_element(By.XPATH,'/html/body/div[1]/div/main/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[2]/div[2]/div/div[2]/span').text #客盘口
         value_home = driver.find_element(By.XPATH,'/html/body/div[1]/div/main/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[2]/div[2]/div/div[1]/div/span').text #主赔
         value_away = driver.find_element(By.XPATH,'/html/body/div[1]/div/main/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[2]/div[2]/div/div[2]/div/span').text #客赔
-        #Last Edit: 3/3/2023
+        #Last Edit: 3/26/2023
     except:
         print('暂无盘口信息')
     
