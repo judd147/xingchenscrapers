@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Nov 16 11:07:58 2022
-Last Edit 4/4/2023
+Last Edit 4/5/2023
 @author: zhangliyao
 Sofascore scraper with Streamlit
 """
@@ -282,7 +282,8 @@ def map_teams(home, away):
                   '解放者杯':{'Sport Huancayo':'万卡约体育','Nacional Asunción':'亚松森国民','Nacional Potosí':'波托西国民','El Nacional':'基多国民',
                               'Boston River':'波士顿河竞技','Zamora FC':'萨莫拉FC','Cerro Porteño':'波特诺山丘','Sporting Cristal':'水晶竞技',
                               'Independiente Medellín':'麦德林独立','Carabobo FC':'卡拉沃沃','Always Ready':'时刻准备着','Deportivo Maldonado':'马尔多纳多',
-                              'Universidad Católica del Ecuador':'基多天主大学','Millonarios':'百万富翁'},
+                              'Universidad Católica del Ecuador':'基多天主大学','Millonarios':'百万富翁','Alianza Lima':'利马联盟','The Strongest':'最强者',
+                              'Independiente del Valle':'山谷独立','Metropolitanos':'大都会','Nacional':'乌拉圭民族'},
                   #FIXME
                   '南球杯':{'Tacuary de Asunción':'塔库里','General Caballero':'卡巴雷罗将军','River Plate UY':'FC河床','Peñarol':'佩纳罗尔','Caracas':'卡拉卡斯',
                             'Academia Puerto Cabello':'卡贝略港大学','LDU':'基多大学','Delfín':'海豚','Guabirá':'瓜比拉','Oriente Petrolero':'东方石油',
