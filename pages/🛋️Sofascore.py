@@ -439,12 +439,13 @@ def scrape_matches(driver, scroll_startpoint, scroll_endpoint):
         ActionChains(driver).scroll_by_amount(0, amount_scrolled).perform()       
         
         try:
-            driver.find_element(By.CLASS_NAME,'sc-hKwDye.LFQYO.sc-9199a964-1.bnnDyH') #比赛列表1
-            match_class_name = 'sc-hKwDye.LFQYO.sc-9199a964-1.bnnDyH'
+            driver.find_element(By.CLASS_NAME,'sc-hLBbgP.dRtNhU.sc-44b07523-1.fwzGLZ') #比赛列表1 
+            match_class_name = 'sc-hLBbgP.dRtNhU.sc-44b07523-1.fwzGLZ'
         except NoSuchElementException:
             driver.find_element(By.CLASS_NAME,'sc-hLBbgP.dRtNhU.sc-9199a964-1.kusmLq') #比赛列表2
             match_class_name = 'sc-hLBbgP.dRtNhU.sc-9199a964-1.kusmLq'
         matches = driver.find_elements(By.CLASS_NAME, match_class_name) #比赛列表
+        # Last Edit 4/5/2023
         
         for i in range(0, 23):
             ok_flag = False
