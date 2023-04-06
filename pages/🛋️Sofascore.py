@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Nov 16 11:07:58 2022
-Last Edit 4/5/2023
+Last Edit 4/6/2023
 @author: zhangliyao
 Sofascore scraper with Streamlit
 """
@@ -179,8 +179,9 @@ def map_teams(home, away):
                             'Independiente':'独立','Sarmiento':'萨米恩托','Huracán':'飓风','Gimnasia y Esgrima La Plata':'拉普拉塔体操','Defensa y Justicia':'国防与司法',
                             'Rosario Central':'罗萨里奥中央','Argentinos Juniors':'阿根廷青年人','San Lorenzo':'圣洛伦索','Arsenal de Sarandí':'萨兰迪兵工厂',
                             'Estudiantes de La Plata':'拉普拉塔大学生','River Plate':'河床',"Newell's Old Boys":'纽维尔老男孩','Lanús':'拉努斯','Belgrano':'贝尔格拉诺',
-                            'Instituto Córdoba':'科尔多瓦学院','Boca Juniors':'博卡青年','Atlético Tucumán':'图库曼竞技','Godoy Cruz':'戈多伊克鲁斯'},
-                  #✔
+                            'Instituto Córdoba':'科尔多瓦学院','Boca Juniors':'博卡青年','Atlético Tucumán':'图库曼竞技','Godoy Cruz':'戈多伊克鲁斯',
+                            'Patronato':'天主教青年'},
+                  #✔FIXME
                   '德甲':{'SV Werder Bremen':'云达不莱梅','Hertha Berlin':'柏林赫塔','FC Bayern München':'拜仁慕尼黑','1. FSV Mainz 05':'美因茨','VfL Bochum 1848':'波鸿',
                            'RB Leipzig':'RB莱比锡','Bayer 04 Leverkusen':'勒沃库森','VfB Stuttgart':'斯图加特','FC Augsburg':'奥格斯堡',
                            'VfL Wolfsburg':'沃尔夫斯堡','Eintracht Frankfurt':'法兰克福','Borussia Dortmund':'多特蒙德','FC Schalke 04':'沙尔克04',
@@ -283,7 +284,8 @@ def map_teams(home, away):
                               'Boston River':'波士顿河竞技','Zamora FC':'萨莫拉FC','Cerro Porteño':'波特诺山丘','Sporting Cristal':'水晶竞技',
                               'Independiente Medellín':'麦德林独立','Carabobo FC':'卡拉沃沃','Always Ready':'时刻准备着','Deportivo Maldonado':'马尔多纳多',
                               'Universidad Católica del Ecuador':'基多天主大学','Millonarios':'百万富翁','Alianza Lima':'利马联盟','The Strongest':'最强者',
-                              'Independiente del Valle':'山谷独立','Metropolitanos':'大都会','Nacional':'乌拉圭民族'},
+                              'Independiente del Valle':'山谷独立','Metropolitanos':'大都会','Nacional':'乌拉圭民族','Atlético Nacional':'国民竞技','Aucas':'奥卡斯',
+                              'Barcelona SC':'巴塞罗那SC','Bolívar':'玻利瓦尔','Deportivo Pereira':'佩雷拉体育'},
                   #FIXME
                   '南球杯':{'Tacuary de Asunción':'塔库里','General Caballero':'卡巴雷罗将军','River Plate UY':'FC河床','Peñarol':'佩纳罗尔','Caracas':'卡拉卡斯',
                             'Academia Puerto Cabello':'卡贝略港大学','LDU':'基多大学','Delfín':'海豚','Guabirá':'瓜比拉','Oriente Petrolero':'东方石油',
@@ -306,7 +308,7 @@ def map_teams(home, away):
                             'Israel':'以色列','Kosovo':'科索沃','Andorra':'安道尔','Romania':'罗马尼亚','Ukraine':'乌克兰','Ireland':'爱尔兰','Albania':'阿尔巴尼亚',
                             'Estonia':'爱沙尼亚','Hungary':'匈牙利','Georgia':'格鲁吉亚','Latvia':'拉脱维亚'}
                   }
-                  #Last Edit: 4/4/2023
+                  #Last Edit: 4/6/2023
 
     for league_key, league_values in teams_dict.items():
         for key, value in league_values.items():
