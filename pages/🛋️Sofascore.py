@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Nov 16 11:07:58 2022
-Last Edit 4/6/2023
+Last Edit 4/7/2023
 @author: zhangliyao
 Sofascore scraper with Streamlit
 """
@@ -285,7 +285,8 @@ def map_teams(home, away):
                               'Independiente Medellín':'麦德林独立','Carabobo FC':'卡拉沃沃','Always Ready':'时刻准备着','Deportivo Maldonado':'马尔多纳多',
                               'Universidad Católica del Ecuador':'基多天主大学','Millonarios':'百万富翁','Alianza Lima':'利马联盟','The Strongest':'最强者',
                               'Independiente del Valle':'山谷独立','Metropolitanos':'大都会','Nacional':'乌拉圭民族','Atlético Nacional':'国民竞技','Aucas':'奥卡斯',
-                              'Barcelona SC':'巴塞罗那SC','Bolívar':'玻利瓦尔','Deportivo Pereira':'佩雷拉体育'},
+                              'Barcelona SC':'巴塞罗那SC','Bolívar':'玻利瓦尔','Deportivo Pereira':'佩雷拉体育','Liverpool UY':'利物浦','Libertad':'自由',
+                              'Monagas':'莫纳加斯','Melgar':'梅尔加','Olimpia':'奥林匹亚'},
                   #FIXME
                   '南球杯':{'Tacuary de Asunción':'塔库里','General Caballero':'卡巴雷罗将军','River Plate UY':'FC河床','Peñarol':'佩纳罗尔','Caracas':'卡拉卡斯',
                             'Academia Puerto Cabello':'卡贝略港大学','LDU':'基多大学','Delfín':'海豚','Guabirá':'瓜比拉','Oriente Petrolero':'东方石油',
@@ -308,7 +309,7 @@ def map_teams(home, away):
                             'Israel':'以色列','Kosovo':'科索沃','Andorra':'安道尔','Romania':'罗马尼亚','Ukraine':'乌克兰','Ireland':'爱尔兰','Albania':'阿尔巴尼亚',
                             'Estonia':'爱沙尼亚','Hungary':'匈牙利','Georgia':'格鲁吉亚','Latvia':'拉脱维亚'}
                   }
-                  #Last Edit: 4/6/2023
+                  #Last Edit: 4/7/2023
 
     for league_key, league_values in teams_dict.items():
         for key, value in league_values.items():
