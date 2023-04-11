@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Nov 16 11:07:58 2022
-Last Edit 4/8/2023
+Last Edit 4/11/2023
 @author: zhangliyao
 Sofascore scraper with Streamlit
 """
@@ -176,21 +176,25 @@ def map_teams(home, away):
                   #✔
                   '阿甲':{'Platense':'普拉滕斯竞技','Tigre':'老虎竞技','Racing Club':'竞技','Unión':'圣菲联','Barracas Central':'巴拉卡斯中央',
                             'Colón':'哥伦布竞技','Talleres':'塔列雷斯','Vélez Sarsfield':'萨斯菲尔德','Central Córdoba':'科尔多瓦中央','Banfield':'班菲尔德',
-                            'Independiente':'独立','Sarmiento':'萨米恩托','Huracán':'飓风','Gimnasia y Esgrima La Plata':'拉普拉塔体操','Defensa y Justicia':'国防与司法',
+                            'Independiente':'独立','Sarmiento':'萨米恩托','Huracán':'飓风','Gimnasia y Esgrima':'拉普拉塔体操','Defensa y Justicia':'国防与司法',
                             'Rosario Central':'罗萨里奥中央','Argentinos Juniors':'阿根廷青年人','San Lorenzo':'圣洛伦索','Arsenal de Sarandí':'萨兰迪兵工厂',
                             'Estudiantes de La Plata':'拉普拉塔大学生','River Plate':'河床',"Newell's Old Boys":'纽维尔老男孩','Lanús':'拉努斯','Belgrano':'贝尔格拉诺',
                             'Instituto Córdoba':'科尔多瓦学院','Boca Juniors':'博卡青年','Atlético Tucumán':'图库曼竞技','Godoy Cruz':'戈多伊克鲁斯',
                             'Patronato':'天主教青年'},
-                  #✔FIXME
+                  #✔OLD
                   '德甲':{'SV Werder Bremen':'云达不莱梅','Hertha Berlin':'柏林赫塔','FC Bayern München':'拜仁慕尼黑','1. FSV Mainz 05':'美因茨','VfL Bochum 1848':'波鸿',
                            'RB Leipzig':'RB莱比锡','Bayer 04 Leverkusen':'勒沃库森','VfB Stuttgart':'斯图加特','FC Augsburg':'奥格斯堡',
                            'VfL Wolfsburg':'沃尔夫斯堡','Eintracht Frankfurt':'法兰克福','Borussia Dortmund':'多特蒙德','FC Schalke 04':'沙尔克04',
                            'SC Freiburg':'弗赖堡','1. FC Köln':'科隆','TSG Hoffenheim':'霍芬海姆','1. FC Union Berlin':'柏林联合',"Borussia M'gladbach":'门兴格拉德巴赫'},
+                  #✔NEW
+                  '德甲':{'Augsburg':'奥格斯堡','Köln':'科隆','Bayer Leverkusen':'勒沃库森','Eintracht Frankfurt':'法兰克福','Borussia Dortmund':'多特蒙德','Union Berlin':'柏林联合',
+                            'Freiburg':'弗赖堡','Bayern München':'拜仁慕尼黑','Mainz 05':'美因茨','Werder Bremen':'云达不莱梅','Hertha Berlin':'柏林赫塔','RB Leipzig':'RB莱比锡',
+                            "Borussia M'gladbach":'门兴格拉德巴赫','Wolfsburg':'沃尔夫斯堡','Bochum':'波鸿','Stuttgart':'斯图加特','Hoffenheim':'霍芬海姆','Schalke 04':'沙尔克04'},
                   #✔
                   '西甲':{'Celta Vigo':'塞尔塔','Mallorca':'马略卡','Almería':'阿尔梅里亚','Real Valladolid':'巴拉多利德',
                            'Cádiz':'加迪斯','Espanyol':'西班牙人','Atlético Madrid':'马德里竞技','Sevilla':'塞维利亚',
                            'Rayo Vallecano':'巴列卡诺','Valencia':'巴伦西亚','Barcelona':'巴塞罗那','Osasuna':'奥萨苏纳',
-                           'Real Madrid':'皇家马德里','Girona':'赫罗纳','Athletic Bilbao':'毕尔巴鄂竞技','Villarreal':'比利亚雷亚尔',
+                           'Real Madrid':'皇家马德里','Girona':'赫罗纳','Athletic Club':'毕尔巴鄂竞技','Villarreal':'比利亚雷亚尔',
                            'Real Sociedad':'皇家社会','Real Betis':'皇家贝蒂斯','Elche':'埃尔切','Getafe':'赫塔费'},
                   #✔
                   '英超':{'Leicester City':'莱斯特城','Manchester City':'曼城','Bournemouth':'伯恩茅斯','Tottenham Hotspur':'热刺',
@@ -267,8 +271,8 @@ def map_teams(home, away):
                             'Djurgårdens IF':'佐加顿斯','Degerfors IF':'代格福什','GIF Sundsvall':'松兹瓦尔','IK Sirius':'天狼星','Mjällby AIF':'米亚尔比','Halmstads BK':'哈尔姆斯塔德'},
                   #✔
                   '挪超':{'Odds BK':'奥特','Bodø/Glimt':'博多格林特','Jerv':'谢夫','Sandefjord Fotball':'桑德菲杰','Sarpsborg 08':'萨普斯堡','Viking FK':'维京',
-                           'Kristiansund BK':'克里斯蒂安松','Aalesunds FK':'奥勒松','Lillestrøm SK':'利勒斯特罗姆','Rosenborg BK':'罗森博格','Molde FK':'莫尔德',
-                           'HamKam':'汉坎','Tromsø IL':'特罗姆瑟','Strømsgodset':'斯托姆加斯特','Haugesund':'海于格松','Vålerenga IF':'瓦勒伦加'},
+                           'Kristiansund BK':'克里斯蒂安松','Aalesunds FK':'奥勒松','Lillestrøm SK':'利勒斯特罗姆','Rosenborg BK':'罗森博格','Molde FK':'莫尔德','SK Brann':'布兰',
+                           'HamKam':'汉坎','Tromsø IL':'特罗姆瑟','Strømsgodset':'斯托姆加斯特','Haugesund':'海于格松','Vålerenga IF':'瓦勒伦加','Stabæk Fotball':'斯塔贝克'},
                   #✔
                   '比甲':{'Oud-Heverlee Leuven':'奥哈瓦里','SV Zulte Waregem':'威尔郡','RC Sporting Charleroi':'沙勒鲁瓦','KRC Genk':'亨克',
                            'KV Mechelen':'梅赫伦','Standard Liège':'标准列日','KVC Westerlo':'韦斯特洛','Sint-Truidense VV':'圣图尔登',
@@ -309,7 +313,7 @@ def map_teams(home, away):
                             'Israel':'以色列','Kosovo':'科索沃','Andorra':'安道尔','Romania':'罗马尼亚','Ukraine':'乌克兰','Ireland':'爱尔兰','Albania':'阿尔巴尼亚',
                             'Estonia':'爱沙尼亚','Hungary':'匈牙利','Georgia':'格鲁吉亚','Latvia':'拉脱维亚'}
                   }
-                  #Last Edit: 4/8/2023
+                  #Last Edit: 4/11/2023
 
     for league_key, league_values in teams_dict.items():
         for key, value in league_values.items():
