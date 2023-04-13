@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Nov 16 11:07:58 2022
-Last Edit 4/11/2023
+Last Edit 4/13/2023
 @author: zhangliyao
 Sofascore scraper with Streamlit
 """
@@ -330,7 +330,8 @@ def switch_date(driver, go_to_date):
     '''
     go_to_date[int]: 要切换到的日期
     '''
-    date_xpath = '/html/body/div[1]/div/main/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div/div/div/div[2]/button[{num_date}]/div/span'.format(num_date=str(go_to_date))
+    date_xpath = '/html/body/div[1]/main/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div/div/div/div[2]/button[{num_date}]'.format(num_date=str(go_to_date))
+    #Last Edit: 4/13/2023
     date_element = driver.find_element(By.XPATH, date_xpath)
     date = date_element.text
     date_element.click()
@@ -340,7 +341,7 @@ def fake_get_match(driver):
     '''
     解决每次刷新后前两场比赛重复的情况
     '''
-    element = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH,'/html/body/div[1]/div/main/div[1]/div[1]/div[3]/div/div[1]/div/a/button'))) #Show More Button
+    element = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH,'/html/body/div[1]/main/div[1]/div[1]/div[3]/div/div[1]/div/a/button'))) #Show More Button                                                                                       
     element.send_keys(Keys.CONTROL + Keys.RETURN)
     driver.switch_to.window(driver.window_handles[1])
     time.sleep(1)
@@ -353,18 +354,18 @@ def get_match(driver):
     '''
     home_score = away_score = handicap_H = handicap_A = value_home = value_away = ''
     #打开新标签页获取盘口
-    element = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH,'/html/body/div[1]/div/main/div[1]/div[1]/div[3]/div/div[1]/div/a/button'))) #Show More Button
-    element.send_keys(Keys.CONTROL + Keys.RETURN)
-    driver.switch_to.window(driver.window_handles[1])
+    #element = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH,'/html/body/div[1]/main/div[1]/div[1]/div[3]/div/div[1]/div/a/button'))) #Show More Button
+    #element.send_keys(Keys.CONTROL + Keys.RETURN)
+    #driver.switch_to.window(driver.window_handles[1])
     time.sleep(1)
     
     #获取比分及盘口
     try:
         try:       
             try: #联赛
-                homescore_xpath = '/html/body/div[1]/div/main/div[2]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div/div[1]/div[1]/span'                  
+                homescore_xpath = '/html/body/div[1]/main/div[1]/div[1]/div[3]/div/div[1]/div/div[1]/div[2]/div[2]/div[2]/div/div[1]/div[1]/span'  
                 home_score = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, homescore_xpath))).text
-                awayscore_xpath = '/html/body/div[1]/div/main/div[2]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div/div[1]/div[3]/span'
+                awayscore_xpath = '/html/body/div[1]/main/div[1]/div[1]/div[3]/div/div[1]/div/div[1]/div[2]/div[2]/div[2]/div/div[1]/div[3]/div/span'
                 away_score = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, awayscore_xpath))).text
             except TimeoutException: #国家队比赛
                 homescore_xpath = '/html/body/div[1]/div/main/div[2]/div[2]/div[1]/div[1]/div[1]/div[1]/div[3]/div[2]/div/div[1]/div[1]/span'                  
@@ -378,17 +379,17 @@ def get_match(driver):
             awayscore_xpath = '/html/body/div[1]/div/main/div[2]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[3]/span'
             away_score = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, awayscore_xpath))).text
             
-        handicap_H = driver.find_element(By.XPATH,'/html/body/div[1]/div/main/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[2]/div[2]/div/div[1]/span').text #主盘口
-        handicap_A = driver.find_element(By.XPATH,'/html/body/div[1]/div/main/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[2]/div[2]/div/div[2]/span').text #客盘口
-        value_home = driver.find_element(By.XPATH,'/html/body/div[1]/div/main/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[2]/div[2]/div/div[1]/div/span').text #主赔
-        value_away = driver.find_element(By.XPATH,'/html/body/div[1]/div/main/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[2]/div[2]/div/div[2]/div/span').text #客赔
-        #Last Edit: 3/26/2023
+        handicap_H = driver.find_element(By.XPATH,'/html/body/div[1]/main/div[1]/div[1]/div[3]/div/div[1]/div/div[4]/div/div/div[1]/div[2]/div[2]/div/div[1]/span').text #主盘口
+        handicap_A = driver.find_element(By.XPATH,'/html/body/div[1]/main/div[1]/div[1]/div[3]/div/div[1]/div/div[4]/div/div/div[1]/div[2]/div[2]/div/div[2]/span').text #客盘口
+        value_home = driver.find_element(By.XPATH,'/html/body/div[1]/main/div[1]/div[1]/div[3]/div/div[1]/div/div[4]/div/div/div[1]/div[2]/div[2]/div/div[1]/div/span').text #主赔
+        value_away = driver.find_element(By.XPATH,'/html/body/div[1]/main/div[1]/div[1]/div[3]/div/div[1]/div/div[4]/div/div/div[1]/div[2]/div[2]/div/div[2]/div/span').text #客赔
+        #Last Edit: 4/13/2023
     except:
         print('暂无盘口信息')
     
     #回到主页面
-    driver.close()
-    driver.switch_to.window(driver.window_handles[0])
+    #driver.close()
+    #driver.switch_to.window(driver.window_handles[0])
     return [home_score, away_score, handicap_H, handicap_A, value_home, value_away]
 
 def clean_handicap(handicap_value, value_home, value_away):
