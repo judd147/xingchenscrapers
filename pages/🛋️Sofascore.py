@@ -187,9 +187,9 @@ def map_teams(home, away):
                            'VfL Wolfsburg':'沃尔夫斯堡','Eintracht Frankfurt':'法兰克福','Borussia Dortmund':'多特蒙德','FC Schalke 04':'沙尔克04',
                            'SC Freiburg':'弗赖堡','1. FC Köln':'科隆','TSG Hoffenheim':'霍芬海姆','1. FC Union Berlin':'柏林联合',"Borussia M'gladbach":'门兴格拉德巴赫'},
                   #✔NEW
-                  '德甲':{'Augsburg':'奥格斯堡','Köln':'科隆','Bayer Leverkusen':'勒沃库森','Eintracht Frankfurt':'法兰克福','Borussia Dortmund':'多特蒙德','Union Berlin':'柏林联合',
-                            'Freiburg':'弗赖堡','Bayern München':'拜仁慕尼黑','Mainz 05':'美因茨','Werder Bremen':'云达不莱梅','Hertha Berlin':'柏林赫塔','RB Leipzig':'RB莱比锡',
-                            "Borussia M'gladbach":'门兴格拉德巴赫','Wolfsburg':'沃尔夫斯堡','Bochum':'波鸿','Stuttgart':'斯图加特','Hoffenheim':'霍芬海姆','Schalke 04':'沙尔克04'},
+                  #'德甲':{'Augsburg':'奥格斯堡','Köln':'科隆','Bayer Leverkusen':'勒沃库森','Eintracht Frankfurt':'法兰克福','Borussia Dortmund':'多特蒙德','Union Berlin':'柏林联合',
+                  #          'Freiburg':'弗赖堡','Bayern München':'拜仁慕尼黑','Mainz 05':'美因茨','Werder Bremen':'云达不莱梅','Hertha Berlin':'柏林赫塔','RB Leipzig':'RB莱比锡',
+                  #          "Borussia M'gladbach":'门兴格拉德巴赫','Wolfsburg':'沃尔夫斯堡','Bochum':'波鸿','Stuttgart':'斯图加特','Hoffenheim':'霍芬海姆','Schalke 04':'沙尔克04'},
                   #✔
                   '西甲':{'Celta Vigo':'塞尔塔','Mallorca':'马略卡','Almería':'阿尔梅里亚','Real Valladolid':'巴拉多利德',
                            'Cádiz':'加迪斯','Espanyol':'西班牙人','Atlético Madrid':'马德里竞技','Sevilla':'塞维利亚',
