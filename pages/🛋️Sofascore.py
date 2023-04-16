@@ -445,7 +445,8 @@ def scrape_matches(driver, scroll_startpoint, scroll_endpoint):
     while continue_flag:
         driver.refresh() #刷新页面
         time.sleep(5) #等待页面元素刷新
-        ActionChains(driver).scroll_by_amount(0, amount_scrolled).perform()       
+        ActionChains(driver).scroll_by_amount(0, amount_scrolled).perform()
+        time.sleep(5) #等待页面元素刷新
         
         try:
             driver.find_element(By.CLASS_NAME,'sc-hLBbgP.dRtNhU.sc-44b07523-1.fwzGLZ') #比赛列表1 
