@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Nov 16 11:07:58 2022
-Last Edit 4/16/2023
+Last Edit 4/17/2023
 @author: zhangliyao
 Sofascore scraper with Streamlit
 """
@@ -82,7 +82,7 @@ def main():
             time.sleep(3)
 
             #点击第一场比赛
-            match_class_name = 'sc-hLBbgP.dRtNhU.sc-9199a964-1.kusmLq'
+            match_class_name = 'sc-hLBbgP.dRtNhU.sc-44b07523-1.fwzGLZ' # Last Edit 4/5/2023
             matches = driver.find_elements(By.CLASS_NAME, match_class_name)
             try:
                 matches[0].click()
