@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Nov 16 11:07:58 2022
-Last Edit 4/17/2023
+Last Edit 4/24/2023
 @author: zhangliyao
 Sofascore scraper with Streamlit
 """
@@ -154,11 +154,10 @@ def map_teams(home, away):
     返回清洗后的球队名称
     '''
     teams_dict = {#✔
-                  '日职联':{'Sagan Tosu':'鸟栖砂岩','Nagoya Grampus Eight':'名古屋逆戟鲸','Cerezo Osaka':'大阪樱花','Yokohama F. Marinos':'横滨水手',
-                             'FC Tokyo':'东京FC','Kawasaki Frontale':'川崎前锋','Hokkaido Consadole Sapporo':'札幌冈萨多',
-                             'Kyoto Sanga FC':'京都不死鸟','Kashima Antlers':'鹿岛鹿角','Gamba Osaka':'大阪钢巴','Kashiwa Reysol':'柏太阳神','Vissel Kobe':'神户胜利船',
-                             'Shonan Bellmare':'湘南海洋','Sanfrecce Hiroshima':'广岛三箭','Urawa Red Diamonds':'浦和红钻','Avispa Fukuoka':'福冈黄蜂',
-                             'Albirex Niigata':'新泻天鹅','Yokohama FC':'横滨FC'},
+                  '日职联':{'Sagan Tosu':'鸟栖砂岩','Nagoya Grampus':'名古屋逆戟鲸','Cerezo Osaka':'大阪樱花','Yokohama F. Marinos':'横滨水手','FC Tokyo':'东京FC',
+                            'Kawasaki Frontale':'川崎前锋','Hokkaido Consadole Sapporo':'札幌冈萨多','Kyoto Sanga FC':'京都不死鸟','Kashima Antlers':'鹿岛鹿角',
+                            'Gamba Osaka':'大阪钢巴','Kashiwa Reysol':'柏太阳神','Vissel Kobe':'神户胜利船','Shonan Bellmare':'湘南海洋','Sanfrecce Hiroshima':'广岛三箭',
+                            'Urawa Red Diamonds':'浦和红钻','Avispa Fukuoka':'福冈黄蜂','Albirex Niigata':'新泻天鹅','Yokohama FC':'横滨FC'},
                   #✔
                   '日乙':{'Thespakusatsu Gunma':'群马草津温泉','Zweigen Kanazawa':'金泽','Ventforet Kofu':'甲府风林','Montedio Yamagata':'山形山神','Fagiano Okayama':'冈山绿雉',
                             'Shimizu S-Pulse':'清水心跳','Jubilo Iwata':'磐田喜悦','V-Varen Nagasaki':'长崎航海','JEF United Chiba':'千叶市原','Mito Hollyhock':'水户蜀葵',
@@ -314,7 +313,7 @@ def map_teams(home, away):
                             'Israel':'以色列','Kosovo':'科索沃','Andorra':'安道尔','Romania':'罗马尼亚','Ukraine':'乌克兰','Ireland':'爱尔兰','Albania':'阿尔巴尼亚',
                             'Estonia':'爱沙尼亚','Hungary':'匈牙利','Georgia':'格鲁吉亚','Latvia':'拉脱维亚'}
                   }
-                  #Last Edit: 4/16/2023
+                  #Last Edit: 4/24/2023
 
     for league_key, league_values in teams_dict.items():
         for key, value in league_values.items():
