@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Nov 16 11:07:58 2022
-Last Edit 4/24/2023
+Last Edit 4/26/2023
 @author: zhangliyao
 Sofascore scraper with Streamlit
 """
@@ -267,7 +267,7 @@ def map_teams(home, away):
                            'FC Volendam':'福伦丹','Go Ahead Eagles':'前进之鹰','Excelsior':'SBV精英','Ajax':'阿贾克斯','SC Cambuur':'坎布尔'},
                   #✔
                   '瑞典超':{'IFK Värnamo':'瓦纳默','IFK Göteborg':'哥德堡','AIK':'索尔纳','Kalmar FF':'卡尔马','IFK Norrköping':'北雪平','Helsingborgs IF':'赫尔辛堡',
-                            'Hammarby IF':'哈马比','Varbergs BoIS':'瓦尔贝里','Malmö FF':'马尔默','IF Elfsborg':'埃尔夫斯堡','BK Häcken':'赫根','IF Brommapojkarna':'布鲁马波卡',
+                            'Hammarby IF':'哈马比','Varbergs BoIS':'瓦尔贝里','Malmö FF':'马尔默','IF Elfsborg':'埃尔夫斯堡','BK Häcken':'赫根','IF Brommapojkarna':'布洛马波卡纳',
                             'Djurgårdens IF':'佐加顿斯','Degerfors IF':'代格福什','GIF Sundsvall':'松兹瓦尔','IK Sirius':'天狼星','Mjällby AIF':'米亚尔比','Halmstads BK':'哈尔姆斯塔德'},
                   #✔
                   '挪超':{'Odds BK':'奥特','Bodø/Glimt':'博多格林特','Jerv':'谢夫','Sandefjord Fotball':'桑德菲杰','Sarpsborg 08':'萨普斯堡','Viking FK':'维京',
@@ -313,7 +313,7 @@ def map_teams(home, away):
                             'Israel':'以色列','Kosovo':'科索沃','Andorra':'安道尔','Romania':'罗马尼亚','Ukraine':'乌克兰','Ireland':'爱尔兰','Albania':'阿尔巴尼亚',
                             'Estonia':'爱沙尼亚','Hungary':'匈牙利','Georgia':'格鲁吉亚','Latvia':'拉脱维亚'}
                   }
-                  #Last Edit: 4/24/2023
+                  #Last Edit: 4/26/2023
 
     for league_key, league_values in teams_dict.items():
         for key, value in league_values.items():
