@@ -62,7 +62,7 @@ def main():
      
         #回到上个月
         if int(select_month)+1 == int(today_month) or int(select_month)-int(today_month) == 11:
-            driver.find_element(By.XPATH,'/html/body/div[1]/div/main/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/button[1]').click()                                         
+            driver.find_element(By.CLASS_NAME,'react-calendar__navigation__arrow.react-calendar__navigation__prev-button').click()                                    
         #切换日期
         switch_date(driver, select_date)
         time.sleep(5)
