@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Nov 16 11:07:58 2022
-Last Edit 4/26/2023
+Last Edit 5/1/2023
 @author: zhangliyao
 Sofascore scraper with Streamlit
 """
@@ -283,7 +283,7 @@ def map_teams(home, away):
                            'Deportes La Serena':'拉塞雷纳','Ñublense':'纽布伦斯',"O'Higgins":'奥希金斯','Cobresal':'科布雷萨尔','Audax Italiano':'奥达科斯意大利人',
                            'Huachipato':'瓦奇巴托','Antofagasta':'安托法加斯塔','Unión Española':'西班牙联合','Colo Colo':'科洛科洛','Universidad Católica':'天主大学',
                            'Palestino':'巴勒斯坦人','Universidad de Chile':'智利大学','Deportes Magallanes':'麦哲伦'},
-                  #FIXME
+                  #✔
                   '解放者杯':{'Sport Huancayo':'万卡约体育','Nacional Asunción':'亚松森国民','Nacional Potosí':'波托西国民','El Nacional':'基多国民',
                               'Boston River':'波士顿河竞技','Zamora FC':'萨莫拉FC','Cerro Porteño':'波特诺山丘','Sporting Cristal':'水晶竞技',
                               'Independiente Medellín':'麦德林独立','Carabobo FC':'卡拉沃沃','Always Ready':'时刻准备着','Deportivo Maldonado':'马尔多纳多',
@@ -291,7 +291,7 @@ def map_teams(home, away):
                               'Independiente del Valle':'山谷独立','Metropolitanos':'大都会','Nacional':'乌拉圭民族','Atlético Nacional':'国民竞技','Aucas':'奥卡斯',
                               'Barcelona SC':'巴塞罗那SC','Bolívar':'玻利瓦尔','Deportivo Pereira':'佩雷拉体育','Liverpool UY':'利物浦','Libertad':'自由',
                               'Monagas':'莫纳加斯','Melgar':'梅尔加','Olimpia':'奥林匹亚'},
-                  #FIXME
+                  #✔
                   '南球杯':{'Tacuary':'塔库里','General Caballero':'卡巴雷罗将军','River Plate UY':'FC河床','Peñarol':'佩纳罗尔','Caracas':'卡拉卡斯',
                             'Academia Puerto Cabello':'卡贝略港大学','LDU':'基多大学','Delfín':'海豚','Guabirá':'瓜比拉','Oriente Petrolero':'东方石油',
                             'Defensor Sporting':'捍卫者竞技','Danubio':'多瑙河','Sportivo Ameliano':'阿梅利亚诺体育','Guaraní':'巴拉圭瓜拉尼','Estudiantes de Mérida':'梅里达大学生',
