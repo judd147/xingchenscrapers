@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Nov 16 11:07:58 2022
-Last Edit 5/1/2023
+Last Edit 5/5/2023
 @author: zhangliyao
 Sofascore scraper with Streamlit
 """
@@ -297,7 +297,7 @@ def map_teams(home, away):
                             'Defensor Sporting':'捍卫者竞技','Danubio':'多瑙河','Sportivo Ameliano':'阿梅利亚诺体育','Guaraní':'巴拉圭瓜拉尼','Estudiantes de Mérida':'梅里达大学生',
                             'Deportivo Táchira':'塔齐拉体育','Rionegro Águilas Doradas':'里奥内格罗老鹰','Independiente Santa Fe':'圣菲独立','Universidad César Vallejo':'卡萨大学',
                             'Deportivo Binacional':'两国竞技','Blooming':'布鲁明','Palmaflor del Trópico':'棕榈竞技','Emelec':'埃梅莱克','Deportivo Cuenca':'昆卡体育',
-                            'Deportes Tolima':'托里马体育','Junior Barranquilla':'巴兰基亚青年','Universitario de Deportes':'秘鲁体育大学','Cienciano':'西恩夏诺'},
+                            'Deportes Tolima':'托里马体育','Junior Barranquilla':'巴兰基亚青年','Universitario':'秘鲁体育大学','Cienciano':'西恩夏诺'},
                   #✔
                   '中超':{'Guangzhou City':'广州城','Hebei':'河北','Changchun Yatai':'长春亚泰','Meizhou Hakka':'梅州客家','Shanghai Shenhua':'上海申花',
                            'Cangzhou Mighty Lions':'沧州雄狮','Shenzhen':'深圳','Henan Songshan Longmen':'河南嵩山龙门','Beijing Guoan':'北京国安',
@@ -313,7 +313,7 @@ def map_teams(home, away):
                             'Israel':'以色列','Kosovo':'科索沃','Andorra':'安道尔','Romania':'罗马尼亚','Ukraine':'乌克兰','Ireland':'爱尔兰','Albania':'阿尔巴尼亚',
                             'Estonia':'爱沙尼亚','Hungary':'匈牙利','Georgia':'格鲁吉亚','Latvia':'拉脱维亚'}
                   }
-                  #Last Edit: 4/26/2023
+                  #Last Edit: 5/5/2023
 
     for league_key, league_values in teams_dict.items():
         for key, value in league_values.items():
