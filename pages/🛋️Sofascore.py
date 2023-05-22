@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Nov 16 11:07:58 2022
-Last Edit 5/5/2023
+Last Edit 5/22/2023
 @author: zhangliyao
 Sofascore scraper with Streamlit
 """
@@ -200,7 +200,7 @@ def map_teams(home, away):
                            'Brentford':'布伦特福德','Wolverhampton':'狼队','Brighton & Hove Albion':'布莱顿','Chelsea':'切尔西',
                            'Crystal Palace':'水晶宫','Southampton':'南安普顿','Newcastle United':'纽卡斯尔','Aston Villa':'阿斯顿维拉',
                            'Liverpool':'利物浦','Leeds United':'利兹联','Arsenal':'阿森纳','Nottingham Forest':'诺丁汉森林',
-                           'Manchester United':'曼联','West Ham':'西汉姆联','Fulham':'富勒姆','Everton':'埃弗顿'},
+                           'Manchester United':'曼联','West Ham United':'西汉姆联','Fulham':'富勒姆','Everton':'埃弗顿'},
                   #✔
                   '法甲':{'Lens':'朗斯','Toulouse':'图卢兹','Paris Saint-Germain':'巴黎圣日尔曼','Troyes':'特鲁瓦',
                            'Strasbourg':'斯特拉斯堡','Olympique de Marseille':'马赛','Auxerre':'欧塞尔','Ajaccio':'阿雅克肖',
@@ -313,7 +313,7 @@ def map_teams(home, away):
                             'Israel':'以色列','Kosovo':'科索沃','Andorra':'安道尔','Romania':'罗马尼亚','Ukraine':'乌克兰','Ireland':'爱尔兰','Albania':'阿尔巴尼亚',
                             'Estonia':'爱沙尼亚','Hungary':'匈牙利','Georgia':'格鲁吉亚','Latvia':'拉脱维亚'}
                   }
-                  #Last Edit: 5/5/2023
+                  #Last Edit: 5/22/2023
 
     for league_key, league_values in teams_dict.items():
         for key, value in league_values.items():
