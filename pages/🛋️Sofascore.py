@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Nov 16 11:07:58 2022
-Last Edit 5/22/2023
+Last Edit 5/29/2023
 @author: zhangliyao
 Sofascore scraper with Streamlit
 """
@@ -249,7 +249,7 @@ def map_teams(home, away):
                            'Cuiabá':'奎尔巴','Ceará':'塞阿拉','Fluminense':'弗鲁米嫩塞','Botafogo':'博塔弗戈','São Paulo':'圣保罗','Bahia':'巴伊亚',
                            'Atlético Mineiro':'米内罗竞技','América Mineiro':'米内罗美洲','Internacional':'巴西国际','Athletico':'巴拉纳竞技','Santos':'桑托斯',
                            'Atlético Goianiense':'戈亚尼亚竞技','Juventude':'尤文图德','Flamengo':'弗拉门戈','Corinthians':'科林蒂安','Palmeiras':'帕尔梅拉斯',
-                           'Vasco':'瓦斯科达伽马','Cruzeiro':'克鲁塞罗','Grêmio':'格雷米奥'},
+                           'Vasco da Gama':'瓦斯科达伽马','Cruzeiro':'克鲁塞罗','Grêmio':'格雷米奥'},
                   #✔
                   '墨超':{'Tigres UANL':'墨西哥老虎','Mazatlán FC':'马萨特兰','Monterrey':'蒙特雷','Club América':'美洲','Cruz Azul':'蓝十字',
                            'Club Necaxa':'内卡萨','Atlético de San Luis':'圣路易斯','Pachuca':'帕丘卡','Toluca':'托卢卡','Puebla':'普埃布拉',
@@ -313,7 +313,7 @@ def map_teams(home, away):
                             'Israel':'以色列','Kosovo':'科索沃','Andorra':'安道尔','Romania':'罗马尼亚','Ukraine':'乌克兰','Ireland':'爱尔兰','Albania':'阿尔巴尼亚',
                             'Estonia':'爱沙尼亚','Hungary':'匈牙利','Georgia':'格鲁吉亚','Latvia':'拉脱维亚'}
                   }
-                  #Last Edit: 5/22/2023
+                  #Last Edit: 5/29/2023
 
     for league_key, league_values in teams_dict.items():
         for key, value in league_values.items():
