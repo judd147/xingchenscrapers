@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Nov 16 11:07:58 2022
-Last Edit 5/29/2023
+Last Edit 6/19/2023
 @author: zhangliyao
 Sofascore scraper with Streamlit
 """
