@@ -363,15 +363,17 @@ def get_match(driver):
     try:
         try:       
             try: #联赛
-                homescore_xpath = '/html/body/div[1]/main/div[1]/div[1]/div[3]/div/div[1]/div/div[1]/div[2]/div[2]/div[2]/div/div[1]/div[1]/span'  
+                homescore_xpath = '/html/body/div[1]/main/div[1]/div[1]/div[3]/div/div[1]/div/div[1]/div[2]/div[2]/div[2]/div/div[1]/div[1]/span'                       
                 home_score = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, homescore_xpath))).text
                 awayscore_xpath = '/html/body/div[1]/main/div[1]/div[1]/div[3]/div/div[1]/div/div[1]/div[2]/div[2]/div[2]/div/div[1]/div[3]/div/span'
                 away_score = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, awayscore_xpath))).text
+                #Last Edit: 4/13/2023
             except TimeoutException: #国家队比赛
-                homescore_xpath = '/html/body/div[1]/div/main/div[2]/div[2]/div[1]/div[1]/div[1]/div[1]/div[3]/div[2]/div/div[1]/div[1]/span'                  
+                homescore_xpath = '/html/body/div[1]/main/div[1]/div[1]/div[3]/div/div[1]/div/div[1]/div[2]/div[3]/div[2]/div/div[1]/div[1]/span'                       
                 home_score = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, homescore_xpath))).text
-                awayscore_xpath = '/html/body/div[1]/div/main/div[2]/div[2]/div[1]/div[1]/div[1]/div[1]/div[3]/div[2]/div/div[1]/div[3]/span'
+                awayscore_xpath = '/html/body/div[1]/main/div[1]/div[1]/div[3]/div/div[1]/div/div[1]/div[2]/div[3]/div[2]/div/div[1]/div[3]/div/span'
                 away_score = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, awayscore_xpath))).text
+                #Last Edit: 6/19/2023
             
         except TimeoutException: #杯赛淘汰赛
             homescore_xpath = '/html/body/div[1]/div/main/div[2]/div[2]/div[1]/div[1]/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/span'
