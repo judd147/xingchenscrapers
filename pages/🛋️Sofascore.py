@@ -249,7 +249,7 @@ def map_teams(home, away):
                            'Cuiabá':'奎尔巴','Ceará':'塞阿拉','Fluminense':'弗鲁米嫩塞','Botafogo':'博塔弗戈','São Paulo':'圣保罗','Bahia':'巴伊亚',
                            'Atlético Mineiro':'米内罗竞技','América Mineiro':'米内罗美洲','Internacional':'巴西国际','Athletico':'巴拉纳竞技','Santos':'桑托斯',
                            'Atlético Goianiense':'戈亚尼亚竞技','Juventude':'尤文图德','Flamengo':'弗拉门戈','Corinthians':'科林蒂安','Palmeiras':'帕尔梅拉斯',
-                           'Vasco da Gama':'瓦斯科达伽马','Cruzeiro':'克鲁塞罗','Grêmio':'格雷米奥'},
+                           'Vasco':'瓦斯科达伽马','Cruzeiro':'克鲁塞罗','Grêmio':'格雷米奥'},
                   #✔
                   '墨超':{'Tigres UANL':'墨西哥老虎','Mazatlán FC':'马萨特兰','Monterrey':'蒙特雷','Club América':'美洲','Cruz Azul':'蓝十字',
                            'Club Necaxa':'内卡萨','Atlético de San Luis':'圣路易斯','Pachuca':'帕丘卡','Toluca':'托卢卡','Puebla':'普埃布拉',
