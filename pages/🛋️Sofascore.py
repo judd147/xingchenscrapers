@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Nov 16 11:07:58 2022
-Last Edit 6/19/2023
+Last Edit 7/14/2023
 @author: zhangliyao
 Sofascore scraper with Streamlit
 """
@@ -285,7 +285,7 @@ def map_teams(home, away):
                            'Palestino':'巴勒斯坦人','Universidad de Chile':'智利大学','Deportes Magallanes':'麦哲伦'},
                   #✔
                   '解放者杯':{'Sport Huancayo':'万卡约体育','Nacional Asunción':'亚松森国民','Nacional Potosí':'波托西国民','El Nacional':'基多国民',
-                              'Boston River':'波士顿河竞技','Zamora FC':'萨莫拉FC','Cerro Porteño':'波特诺山丘','Sporting Cristal':'水晶竞技',
+                              'Boston River':'波士顿河竞技','Zamora FC':'萨莫拉FC','Cerro Porteño':'波特诺山丘','Club Sporting Cristal':'水晶竞技',
                               'Independiente Medellín':'麦德林独立','Carabobo FC':'卡拉沃沃','Always Ready':'时刻准备着','Deportivo Maldonado':'马尔多纳多',
                               'Universidad Católica del Ecuador':'基多天主大学','Millonarios':'百万富翁','Alianza Lima':'利马联盟','The Strongest':'最强者',
                               'Independiente del Valle':'山谷独立','Metropolitanos':'大都会','Nacional':'乌拉圭民族','Atlético Nacional':'国民竞技','Aucas':'奥卡斯',
@@ -313,7 +313,7 @@ def map_teams(home, away):
                             'Israel':'以色列','Kosovo':'科索沃','Andorra':'安道尔','Romania':'罗马尼亚','Ukraine':'乌克兰','Ireland':'爱尔兰','Albania':'阿尔巴尼亚',
                             'Estonia':'爱沙尼亚','Hungary':'匈牙利','Georgia':'格鲁吉亚','Latvia':'拉脱维亚'}
                   }
-                  #Last Edit: 5/29/2023
+                  #Last Edit: 7/14/2023
 
     for league_key, league_values in teams_dict.items():
         for key, value in league_values.items():
