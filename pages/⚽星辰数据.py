@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Oct 5 19:17:17 2022
-Last Edit 7/1/2023
+Last Edit 9/9/2023
 @author: Liyao Zhang
 
 星辰智盈数据自动获取系统 with Streamlit
@@ -179,7 +179,7 @@ def main():
                     st.success('球伯乐数据获取成功！')
                 else:
                     i += 1                          
-        time.sleep(1)
+        time.sleep(2)
         #指数形态
         if get_zsxt:
             algo_list2 = driver.find_elements(AppiumBy.CLASS_NAME, value="android.widget.ImageView")
@@ -197,7 +197,7 @@ def main():
                     st.success('指数形态数据获取成功！')
                 else:
                     i += 1            
-        time.sleep(5)
+        time.sleep(2)
         #公平量价
         if get_gplj:
             #catch exception
@@ -220,7 +220,7 @@ def main():
             except:
                 df_gplj = None
 
-        time.sleep(1)
+        time.sleep(2)
         #赛前能量
         if get_sqnl:
             #catch exception
@@ -243,7 +243,7 @@ def main():
             except:
                 df_sqnl = None
             
-        time.sleep(1)
+        time.sleep(2)
         #联赛球探
         if get_lsqt:
             #catch exception
@@ -323,7 +323,7 @@ def init_algo(driver, reset_app):
     if reset_app:
         el1_1 = driver.find_element(by=AppiumBy.XPATH, value="/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.view.View/android.view.View[8]")
         el1_1.click()
-    time.sleep(1)
+    time.sleep(3)
     
     #点击【核心算法】
     el2 = driver.find_element(by=AppiumBy.XPATH, value="/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.view.View/android.view.View[3]")
@@ -376,10 +376,9 @@ def clean_leagues(league_name):
     '''
     league_dict = {'美职':'美职联','日职':'日职联','冠军杯':'欧冠','智利甲':'智甲','欧霸杯':'欧联','南俱杯':'南球杯'}
 
-    league_list = ['日乙','美职联','日职联','德乙','德甲','西甲','英超','欧冠','阿甲','欧联','法甲','巴甲','意甲','欧国联','墨超','葡超',
-               '亚洲杯','荷甲','意杯','英冠','解放者杯','欧预赛','德国杯','南球杯','瑞典超','挪超','世界杯','意超杯','国王杯',
-               '美洲杯','女足世界杯','非洲杯','德超杯','社区盾杯','欧超杯','亚洲预选','西乙','比甲','智甲','法超杯','西超杯','南美预选',
-               '世预赛','北美预选','欧洲杯','非洲预选','世俱杯','欧协联']
+    league_list = ['日乙','美职联','日职联','德乙','德甲','西甲','英超','欧冠','阿甲','欧联','法甲','巴甲','意甲','欧国联',
+                   '墨超','葡超','荷甲','英冠','解放者杯','欧预赛','南球杯','瑞典超','挪超','世界杯','美洲杯','欧超杯','亚洲预选',
+                   '西乙','比甲','智甲','西超杯','世美预','世预赛','北美预选','欧洲杯','非洲预选','世俱杯','欧协联']
     
     for key, value in league_dict.items():
         league_name = league_name.replace(key, value)
@@ -528,7 +527,7 @@ def get_matches(driver, algo_name, start_time, end_time):
                         games_list.append(game)
                         unbought_match.click()
                         num_clicks += 1
-                        time.sleep(1.5)
+                        time.sleep(4)
                         
                         Item_list = driver.find_elements(AppiumBy.CLASS_NAME, value="android.view.View")
                         goal_flag = False
@@ -706,7 +705,7 @@ def get_matches(driver, algo_name, start_time, end_time):
                         games_list.append(game)
                         match.click()
                         num_clicks += 1
-                        time.sleep(1.5)
+                        time.sleep(4)
                         
                         Item_list = driver.find_elements(AppiumBy.CLASS_NAME, value="android.view.View")
                         goal_flag = False
