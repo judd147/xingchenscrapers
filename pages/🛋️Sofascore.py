@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Nov 16 11:07:58 2022
-Last Edit 7/14/2023
+Last Edit 9/10/2023
 @author: zhangliyao
 Sofascore scraper with Streamlit
 """
@@ -298,11 +298,6 @@ def map_teams(home, away):
                             'Deportivo Táchira':'塔齐拉体育','Rionegro Águilas Doradas':'里奥内格罗老鹰','Independiente Santa Fe':'圣菲独立','Universidad César Vallejo':'卡萨大学',
                             'Deportivo Binacional':'两国竞技','Blooming':'布鲁明','Palmaflor del Trópico':'棕榈竞技','Emelec':'埃梅莱克','Deportivo Cuenca':'昆卡体育',
                             'Deportes Tolima':'托里马体育','Junior Barranquilla':'巴兰基亚青年','Universitario':'秘鲁体育大学','Cienciano':'西恩夏诺'},
-                  #✔
-                  '中超':{'Guangzhou City':'广州城','Hebei':'河北','Changchun Yatai':'长春亚泰','Meizhou Hakka':'梅州客家','Shanghai Shenhua':'上海申花',
-                           'Cangzhou Mighty Lions':'沧州雄狮','Shenzhen':'深圳','Henan Songshan Longmen':'河南嵩山龙门','Beijing Guoan':'北京国安',
-                           'Guangzhou FC':'广州队','Wuhan Three Towns':'武汉三镇','Chengdu Rongcheng':'成都蓉城','Tianjin Jinmen Tiger':'天津津门虎',
-                           'Zhejiang':'浙江','Dalian Pro':'大连人','Wuhan':'武汉长江','Shandong Taishan':'山东泰山','Shanghai Port':'上海海港'},
                   #✔         
                   'Europe':{'England':'英格兰','France':'法国','Kazakhstan':'哈萨克斯坦','Slovenia':'斯洛文尼亚','Italy':'意大利','North Macedonia':'马其顿',
                             'Malta':'马耳他','Denmark':'丹麦','Finland':'芬兰','Northern Ireland':'北爱尔兰','Bosnia & Herzegovina':'波黑','Iceland':'冰岛',
@@ -313,7 +308,7 @@ def map_teams(home, away):
                             'Israel':'以色列','Kosovo':'科索沃','Andorra':'安道尔','Romania':'罗马尼亚','Ukraine':'乌克兰','Ireland':'爱尔兰','Albania':'阿尔巴尼亚',
                             'Estonia':'爱沙尼亚','Hungary':'匈牙利','Georgia':'格鲁吉亚','Latvia':'拉脱维亚'}
                   }
-                  #Last Edit: 7/14/2023
+                  #Last Edit: 9/10/2023
 
     for league_key, league_values in teams_dict.items():
         for key, value in league_values.items():
