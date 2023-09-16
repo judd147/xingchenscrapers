@@ -234,7 +234,7 @@ def remove_exclamation(text):
 
 # *** 连接层函数 *** #
 #onedrive
-@st.experimental_memo
+@st.cache_data
 def load_history():
     onedrive_link = 'https://1drv.ms/x/s!Ag9ZvloaJitBkDvM3TVDY7HffBxS'
     url = create_onedrive_directdownload(onedrive_link)
