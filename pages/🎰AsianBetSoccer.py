@@ -23,8 +23,7 @@ from selenium.common.exceptions import NoSuchElementException, StaleElementRefer
 
 def main():
   st.set_page_config(
-    page_title="亚盘数据获取",
-    #page_icon=Image.open('pages/sofascore.jpg')
+    page_title="亚盘数据获取"
     )
   st.title("ABS比分盘口自动获取系统")
   st.caption("增加数据检验功能，检查爬虫未识别的队名和合并数据后缺失数据；增加未来比赛盘口")
@@ -148,7 +147,6 @@ def scrape(driver):
   # Collect Match Data
   table1 = driver.find_element(By.ID, 'tablematch1') # locate data stored in table
   rows = table1.find_elements(By.TAG_NAME, 'tr') # locate each row of table
-  counter = 1
   home_name = away_name = home_score = away_score = ''
   Home = []
   Away = []
@@ -171,9 +169,6 @@ def scrape(driver):
         away_name = away_name[1:]
       Away.append(away_name)
       A.append(away_score)
-      if counter % 5 == 0:
-        print(home_name, home_score+'-'+away_score, away_name)
-      counter += 1
       
   # Collect Odds Data
   table2 = driver.find_element(By.ID, 'tablematch2') # locate data stored in table
