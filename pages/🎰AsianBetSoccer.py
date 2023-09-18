@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Last Edit 9/16/2023
+Last Edit 9/17/2023
 @author: zhangliyao
 Asian Handicap scraper with Streamlit
 """
@@ -233,47 +233,52 @@ def map_leagues(league):
 def map_teams(team):
   teams_dict = {
   '葡超':{'Moreirense':'莫雷拉人','Sporting Braga':'布拉加','Estrela da Amadora':'阿马多拉','FC Porto':'波尔图','Vizela':'维泽拉','Benfica':'本菲卡',
-        'SC Farense':'法鲁人','Rio Ave':'阿维河','FC Famalicao':'法马利康','':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
+        'SC Farense':'法鲁人','Rio Ave':'阿维河','FC Famalicao':'法马利康','Sporting CP':'葡萄牙体育','Vitoria Guimaraes':'吉马良斯','Portimonense':'波尔蒂芒人',
+        'FC Arouca':'阿罗卡','Casa Pia AC':'卡萨皮亚','Gil Vicente':'吉尔维森特','Estoril':'埃斯托里尔','':'','':'','':''},
 
   '美职联':{'Portland Timbers':'波特兰伐木者','Los Angeles FC':'洛杉矶FC','Minnesota United FC':'明尼苏达联','New England Revolution':'新英格兰革命',
-          'DC United':'华盛顿联','San Jose Earthquakes':'圣何塞地震','Inter Miami CF':'迈阿密国际','FC Kansas City':'堪萨斯城体育',
+          'DC United':'华盛顿联','San Jose Earthquakes':'圣何塞地震','Inter Miami CF':'迈阿密国际','FC Kansas City':'堪萨斯城体育','Austin FC':'奥斯汀FC',
           'Los Angeles Galaxy':'洛杉矶银河','St. Louis City':'圣路易斯城','Real Salt Lake':'皇家盐湖城','Colorado Rapids':'科罗拉多急流',
           'FC Dallas':'达拉斯FC','Seattle Sounders':'西雅图海湾人','Houston Dynamo':'休斯顿迪纳摩','Charlotte FC':'夏洛特FC','Montreal Impact':'蒙特利尔冲击',
           'Chicago Fire':'芝加哥火焰','Toronto FC':'多伦多FC','Vancouver Whitecaps':'温哥华白浪','Orlando City':'奥兰多城','Columbus Crew':'哥伦布机员',
           'Philadelphia Union':'费城联合','FC Cincinnati':'辛辛那提','Atlanta United':'亚特兰大联','New York City FC':'纽约城','New York Red Bulls':'纽约红牛',
-          '':'','':'','':'','':'','':''},
+          '':'','':'','':'','':''},
 
   '日职联':{'Urawa Red Diamonds':'浦和红钻','Kyoto Sanga':'京都不死鸟','Yokohama Marinos':'横滨水手','Sagan Tosu':'鸟栖砂岩','Kawasaki Frontale':'川崎前锋',
           'FC Tokyo':'东京FC','Avispa Fukuoka':'福冈黄蜂','Nagoya Grampus':'名古屋逆戟鲸','Consadole Sapporo':'札幌冈萨多','Shonan Bellmare':'湘南海洋',
-          'Hiroshima Sanfrecce':'广岛三箭','Vissel Kobe':'神户胜利船','Kashima Antlers':'鹿岛鹿角','Cerezo Osaka':'大阪樱花','':'',
-          '':'','':'','':'','':'','':'','':'','':'','':''},
+          'Hiroshima Sanfrecce':'广岛三箭','Vissel Kobe':'神户胜利船','Kashima Antlers':'鹿岛鹿角','Cerezo Osaka':'大阪樱花','Gamba Osaka':'大阪钢巴',
+          'Albirex Niigata':'新泻天鹅','Yokohama FC':'横滨FC','Kashiwa Reysol':'柏太阳神','':'','':'','':'','':'','':''},
 
   '德乙':{'Nurnberg':'纽伦堡','Greuther Furth':'菲尔特','SC Paderborn 07':'帕德博恩','SV Wehen Wiesbaden':'韦恩','Schalke 04':'沙尔克04','Magdeburg':'马格德堡',
         'Hansa Rostock':'罗斯托克','Fortuna Dusseldorf':'杜塞尔多夫','Karlsruher SC':'卡尔斯鲁厄','Kaiserslautern':'凯泽斯劳滕','SV Elversberg':'埃弗斯堡',
-        'Hamburger SV':'汉堡','':'','':'','':'','':'','':''},
+        'Hamburger SV':'汉堡','Hannover 96':'汉诺威96','VfL Osnabruck':'奥斯纳布吕克','Hertha Berlin':'柏林赫塔','Eintracht Braunschweig':'布伦瑞克',
+        'St. Pauli':'圣保利','Holstein Kiel':'基尔'},
 
   '德甲':{'Bayern Munchen':'拜仁慕尼黑','Bayer Leverkusen':'勒沃库森','VfL Bochum':'波鸿','Eintracht Frankfurt':'法兰克福','FC Koln':'科隆',
         'TSG Hoffenheim':'霍芬海姆','FSV Mainz 05':'美因茨','VfB Stuttgart':'斯图加特','RB Leipzig':'RB莱比锡','Augsburg':'奥格斯堡','SC Freiburg':'弗赖堡',
-        'Borussia Dortmund':'多特蒙德','VfL Wolfsburg':'沃尔夫斯堡','Union Berlin':'柏林联合','':'','':'','':'','':'','':'','':'','':'','':'','':''},
+        'Borussia Dortmund':'多特蒙德','VfL Wolfsburg':'沃尔夫斯堡','Union Berlin':'柏林联合','Darmstadt':'达姆施塔特','Borussia Monchengladbach':'门兴格拉德巴赫',
+        'Heidenheimer':'海登海姆','Werder Bremen':'云达不莱梅','':'','':'','':'','':'','':''},
 
   '西乙':{'Burgos CF':'布尔戈斯','Eibar':'埃瓦尔','Real Oviedo':'皇家奥维耶多','Sporting Gijon':'希洪竞技','Tenerife':'特内里费','Albacete':'阿尔瓦塞特',
         'Leganes':'莱加内斯','SD Huesca':'韦斯卡','Real Valladolid':'巴拉多利德','Elche':'埃尔切','FC Cartagena':'卡塔赫纳','Real Zaragoza':'萨拉戈萨',
-        'Mirandes':'米兰德斯','Andorra FC':'FC安道尔','Racing de Ferrol':'','Villarreal B':'比利亚雷亚尔B队','Racing Santander':'桑坦德竞技',
-        'SD Amorebieta':'亚摩勒比塔','Eldense':'埃登斯','AD Alcorcon':'阿尔科孔','Levante':'莱万特'},
+        'Mirandes':'米兰德斯','Andorra FC':'FC安道尔','Racing de Ferrol':'费罗尔竞技','Villarreal B':'比利亚雷亚尔B队','Racing Santander':'桑坦德竞技',
+        'SD Amorebieta':'亚摩勒比塔','Eldense':'埃登斯','AD Alcorcon':'阿尔科孔','Levante':'莱万特','RCD Espanyol':'西班牙人'},
 
   '西甲':{'Rayo Vallecano':'巴列卡诺','Alaves':'阿拉维斯','FC Barcelona':'巴塞罗那','Real Betis':'皇家贝蒂斯','Celta Vigo':'塞尔塔','Mallorca':'马略卡',
-        'Valencia':'巴伦西亚','Atletico Madrid':'马德里竞技','Athletic Bilbao':'毕尔巴鄂竞技','Cadiz':'加迪斯','':'','':'',
-        '':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
+        'Valencia':'巴伦西亚','Atletico Madrid':'马德里竞技','Athletic Bilbao':'毕尔巴鄂竞技','Cadiz':'加迪斯','Real Madrid':'皇家马德里','Real Sociedad':'皇家社会',
+        'Sevilla':'塞维利亚','Las Palmas':'拉斯帕尔马斯','Villarreal':'比利亚雷亚尔','Almeria':'阿尔梅里亚','Getafe':'赫塔费','Osasuna':'奥萨苏纳',
+        '':'','':'','':'','':''},
 
   '英冠':{'Southampton':'南安普顿','Leicester City':'莱斯特城','Hull City':'赫尔城','Coventry City':'考文垂','Cardiff City':'卡迪夫城','Swansea City':'斯旺西',
         'Blackburn Rovers':'布莱克本','Middlesbrough':'米德尔斯堡','Bristol City':'布里斯托尔城','West Bromwich(WBA)':'西布朗','Huddersfield Town':'哈德斯菲尔德',
         'Rotherham United':'罗瑟汉姆','Norwich City':'诺维奇','Stoke City':'斯托克城','Preston North End':'普雷斯顿','Plymouth Argyle':'普利茅斯',
         'Queens Park Rangers (QPR)':'女王公园巡游者','Sunderland A.F.C':'桑德兰','Sheffield Wednesday':'谢菲尔德星期三','Ipswich Town':'伊普斯维奇',
-        'Watford':'沃特福德','Birmingham City':'伯明翰','':'','':'','':'','':'','':''},
+        'Watford':'沃特福德','Birmingham City':'伯明翰','Millwall':'米尔沃尔','Leeds United':'利兹联','':'','':'','':''},
 
   '英超':{'Newcastle United':'纽卡斯尔','Brentford':'布伦特福德','Aston Villa':'阿斯顿维拉','Crystal Palace':'水晶宫','Fulham':'富勒姆','Luton Town':'卢顿',
         'Manchester United':'曼联','Brighton Hove Albion':'布莱顿','Tottenham Hotspur':'热刺','Sheffield United':'谢菲尔德联','West Ham United':'西汉姆联',
-        'Manchester City':'曼城','Wolves':'狼队','Liverpool':'利物浦','':'','':'','':'','':'','':'','':'','':'','':'','':''},
+        'Manchester City':'曼城','Wolves':'狼队','Liverpool':'利物浦','Everton':'埃弗顿','Arsenal':'阿森纳','AFC Bournemouth':'伯恩茅斯','Chelsea':'切尔西',
+        '':'','':'','':'','':'','':''},
 
   '欧冠':{'':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
 
@@ -281,42 +286,48 @@ def map_teams(team):
 
   '欧协联':{'':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
 
-  '法甲':{'Paris Saint Germain (PSG)':'巴黎圣日耳曼','Nice':'尼斯','Lens':'朗斯','Metz':'梅斯','Rennes':'雷恩','Lille':'里尔','':'',
-        '':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
+  '法甲':{'Paris Saint Germain (PSG)':'巴黎圣日耳曼','Nice':'尼斯','Lens':'朗斯','Metz':'梅斯','Rennes':'雷恩','Lille':'里尔','Lyon':'里昂',
+        'Le Havre':'勒阿弗尔','Marseille':'马赛','Toulouse':'图卢兹','Clermont':'克莱蒙','Nantes':'南特','Reims':'兰斯','Stade Brestois':'布雷斯特',
+        'Strasbourg':'斯特拉斯堡','Montpellier':'蒙彼利埃','Lorient':'洛里昂','Monaco':'摩纳哥','':''},
 
-  '意甲':{'Genoa':'热那亚','Napoli':'那不勒斯','Inter Milan':'国际米兰','AC Milan':'AC米兰','Juventus':'尤文图斯','Lazio':'拉齐奥','':'',
-        '':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
+  '意甲':{'Genoa':'热那亚','Napoli':'那不勒斯','Inter Milan':'国际米兰','AC Milan':'AC米兰','Juventus':'尤文图斯','Lazio':'拉齐奥','AS Roma':'罗马',
+        'Empoli':'恩波利','Fiorentina':'佛罗伦萨','Atalanta':'亚特兰大','Frosinone':'弗罗西诺内','Sassuolo':'萨索洛','Monza':'蒙扎','Lecce':'莱切',
+        'Cagliari':'卡利亚里','Udinese':'乌迪内斯','':'','':'','':'','':''},
 
   '阿甲':{'Banfield':'班菲尔德','Argentinos Juniors':'阿根廷青年人','Colon de Santa Fe':'哥伦布竞技','Rosario Central':'罗萨里奥中央',
         'Defensa Y Justicia':'国防与司法','Boca Juniors':'博卡青年','Club Atletico Tigre':'老虎竞技','Estudiantes La Plata':'拉普拉塔大学生',
         'Independiente':'独立','CA Huracan':'飓风','Talleres Cordoba':'塔列雷斯','Instituto AC Cordoba':'科尔多瓦学院','Atletico Tucuman':'图库曼竞技',
         'Barracas Central':'巴拉卡斯中央','San Lorenzo':'圣洛伦索','Racing Club':'竞技','Newells Old Boys':'纽维尔老男孩','Club Atlético Unión':'圣菲联',
-        '':'','':'','':''},
+        'River Plate':'河床','Arsenal de Sarandi':'萨兰迪兵工厂','Godoy Cruz Antonio Tomba':'戈多伊克鲁斯','Belgrano':'贝尔格拉诺'},
 
   '巴甲':{'Palmeiras':'帕尔梅拉斯','Goias':'戈亚斯','Cuiaba':'奎尔巴','America MG':'米内罗美洲','Bragantino':'布拉甘蒂诺红牛','Gremio (RS)':'格雷米奥',
         'Atletico Mineiro':'米内罗竞技','Botafogo RJ':'博塔弗戈','Vasco da Gama':'瓦斯科达伽马','Fluminense RJ':'弗鲁米嫩塞','':'',
         '':'','':'','':'','':'','':'','':'','':'','':'','':''},
 
   '墨超':{'Club Tijuana':'蒂华纳','Toluca':'托卢卡','Mazatlan FC':'马萨特兰','CDSyC Cruz Azul':'蓝十字','Club America':'美洲','Chivas Guadalajara':'瓜达拉哈拉',
-        'Monterrey':'蒙特雷','Club Leon':'莱昂','Necaxa':'内卡萨','FC Juarez':'华雷斯','':'','':'','':'','':'','':'',
-        '':'','':'','':'','':'','':'','':''},
+        'Monterrey':'蒙特雷','Club Leon':'莱昂','Necaxa':'内卡萨','FC Juarez':'华雷斯','Atlas':'阿特拉斯','Tigres UANL':'墨西哥老虎','Queretaro FC':'克雷塔罗',
+        'Puebla':'普埃布拉','Pumas U.N.A.M.':'美洲狮','Atletico San Luis':'圣路易斯','':'','':'','':'','':'','':''},
 
   '荷甲':{'Heracles Almelo':'阿尔梅罗大力神','FC Utrecht':'乌德勒支','PSV Eindhoven':'埃因霍温','NEC Nijmegen':'奈梅亨','Fortuna Sittard':'锡塔德幸运',
-        'Volendam':'福伦丹','Vitesse Arnhem':'维特斯','RKC Waalwijk':'瓦尔韦克','Feyenoord':'费耶诺德','SC Heerenveen':'海伦芬','':'',
-        '':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
+        'Volendam':'福伦丹','Vitesse Arnhem':'维特斯','RKC Waalwijk':'瓦尔韦克','Feyenoord':'费耶诺德','SC Heerenveen':'海伦芬','AZ Alkmaar':'阿尔克马尔',
+        'Sparta Rotterdam':'鹿特丹斯巴达','Excelsior SBV':'SBV精英','Almere City FC':'阿尔梅勒城','FC Twente Enschede':'特温特','AFC Ajax':'阿贾克斯',
+        'PEC Zwolle':'兹沃勒','Go Ahead Eagles':'前进之鹰','':'','':'','':''},
 
   '解放者杯':{'':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
 
   '南球杯':{'':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
 
   '瑞典超':{'Djurgardens':'佐加顿斯','IFK Varnamo':'瓦纳默','IFK Goteborg':'哥德堡','Brommapojkarna':'布洛马波卡纳','IK Sirius FK':'天狼星',
-          'Varbergs BoIS FC':'瓦尔贝里','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
+          'Varbergs BoIS FC':'瓦尔贝里','Elfsborg':'埃尔夫斯堡','Kalmar':'卡尔马','Hacken':'赫根','Halmstads':'哈尔姆斯塔德','Hammarby':'哈马比',
+          'Malmo FF':'马尔默','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
 
   '挪超':{'Haugesund':'海于格松','Viking':'维京','Molde':'莫尔德','Odd Grenland':'奥特','Sandefjord':'桑德菲杰','Stromsgodset':'斯托姆加斯特',
-        '':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
+        'Valerenga':'瓦勒伦加','Aalesund FK':'奥勒松','Rosenborg':'罗森博格','Bodo Glimt':'博多格林特','Sarpsborg 08':'萨普斯堡','Lillestrom':'利勒斯特罗姆',
+        'Stabaek':'斯塔贝克','Brann':'布兰','Tromso IL':'特罗姆瑟','Ham-Kam':'汉坎','':'','':'','':'','':'','':'','':'','':'','':''},
 
   '比甲':{'Westerlo':'韦斯特洛','Royal Antwerp':'安特卫普','Club Brugge':'布鲁日','Charleroi':'沙勒鲁瓦','Saint Gilloise':'圣吉罗斯','Racing Genk':'亨克',
-        'Jeunesse Molenbeek':'莫伦贝克','Cercle Brugge':'色格拉布鲁日','':'','':'','':'','':'','':'','':'','':'','':'','':''},
+        'Jeunesse Molenbeek':'莫伦贝克','Cercle Brugge':'色格拉布鲁日','Sint-Truidense':'圣图尔登','Mechelen':'梅赫伦','Oud Heverlee':'奥哈瓦里',
+        'KAA Gent':'根特','Kortrijk':'科特赖克','Anderlecht':'安德莱赫特','KAS Eupen':'欧本','Standard Liege':'标准列日','':''},
 
   '智甲':{'':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
 
@@ -332,7 +343,7 @@ def map_teams(team):
           'Albania':'阿尔巴尼亚','Poland':'波兰','Greece':'希腊','Ireland':'爱尔兰','Netherlands':'荷兰','Lithuania':'立陶宛','Serbia':'塞尔维亚',
           'Slovenia':'斯洛文尼亚','Faroe Islands':'法罗群岛','Moldova':'摩尔多瓦','Finland':'芬兰','Denmark':'丹麦','Montenegro':'黑山',
           'Bulgaria':'保加利亚','Kazakhstan':'哈萨克斯坦','Northern Ireland':'北爱尔兰','Wales':'威尔士','France':'法国','Norway':'挪威',
-          'Austria':'奥地利','Malta':'马耳他'},} #Last Edit: 9/16/2023
+          'Austria':'奥地利','Malta':'马耳他'},} #Last Edit: 9/17/2023
     
   for league_key, league_values in teams_dict.items():
     for key, value in league_values.items():
