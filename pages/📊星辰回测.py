@@ -3,7 +3,7 @@
 Liyao Zhang
 
 Start Date 4/4/2022
-Last Edit 3/16/2023
+Last Edit 9/19/2023
 
 星辰智盈自动回测系统 with Streamlit
 """
@@ -24,6 +24,7 @@ def main():
     #initial_sidebar_state="expanded"
     )
     st.title("星辰智盈数据自动回测系统")
+    st.caption("增加历史赛季胜率数据")
     
     source = st.sidebar.radio("选择数据源", ["OneDrive","本地文件"])
     file = None
@@ -122,19 +123,24 @@ def load_dashboard(df_history):
     
     #指标1：总体平均胜率
     recent_week = max(df_metric['week'])
-    df_past = df_metric[df_metric['week']!=recent_week]
-    last_week = max(df_past['week'])
-    
     total_avg_success = round(calc_success(df_metric), 3)
-    total_avg_success_past = round(calc_success(df_past), 3)
-    total_avg_success_delta = round(total_avg_success-total_avg_success_past, 3)
-    
+    if recent_week == 1:
+        total_avg_success_delta = 0
+    else:
+        df_past = df_metric[df_metric['week']!=recent_week]
+        last_week = max(df_past['week'])
+        total_avg_success_past = round(calc_success(df_past), 3)
+        total_avg_success_delta = round(total_avg_success-total_avg_success_past, 3)
+        
     #指标2：近期胜率
     df_recent_week = df_metric[df_metric['week']==recent_week]
     recent_avg_success = round(calc_success(df_recent_week), 3)
-    df_last_week = df_metric[df_metric['week']==last_week]
-    last_avg_success = round(calc_success(df_last_week), 3)
-    recent_avg_success_delta = round(recent_avg_success-last_avg_success, 3)
+    if recent_week == 1:
+        recent_avg_success_delta = 0
+    else:
+        df_last_week = df_metric[df_metric['week']==last_week]
+        last_avg_success = round(calc_success(df_last_week), 3)
+        recent_avg_success_delta = round(recent_avg_success-last_avg_success, 3)
     
     #指标3：最佳球队
     df_temp_teams = find_recommend(df_metric)
@@ -145,11 +151,11 @@ def load_dashboard(df_history):
     del df_table_team['index']
     
     #指标4：最佳联赛
-    df_table_league = df_metric.groupby('联赛').aggregate({'success': 'mean', '比赛':'count'}).sort_values(by='success').reset_index()
+    df_table_league = df_metric.groupby('联赛').aggregate({'success': 'mean', '比赛':'count'}).sort_values(by='success', ascending=False).reset_index()
     
     #指标5：最佳模型
-    df_table_model = df_metric.groupby('模型').aggregate({'success': 'mean', '比赛':'count'}).sort_values(by='success').reset_index()
-    
+    df_table_model = df_metric.groupby('模型').aggregate({'success': 'mean', '比赛':'count'}).sort_values(by='success', ascending=False).reset_index()
+
     #指标6：最佳盘口
     df_table_handicap = df_metric.groupby('盘口').aggregate({'success': 'mean', '比赛':'count'}).sort_values(by='success').reset_index()
     df_table_handicap = df_table_handicap[df_table_handicap['比赛'] > 5].reset_index()
@@ -162,8 +168,8 @@ def load_dashboard(df_history):
     col3.metric(label="最佳球队", value=df_table_team['team'][len(df_table_team)-1], delta=df_table_team['team'][len(df_table_team)-2], delta_color='off', help='推荐比赛中赢盘率最高的前两支球队')
 
     col4, col5, col6 = st.columns(3)
-    col4.metric(label="最佳联赛", value=df_table_league['联赛'][6], delta=df_table_league['联赛'][5], delta_color='off', help='胜率最高的前两个联赛')
-    col5.metric(label="最佳模型", value=df_table_model['模型'][5], delta=df_table_model['模型'][4], delta_color='off', help='胜率最高的前两个模型')
+    col4.metric(label="最佳联赛", value=df_table_league['联赛'][0], delta=df_table_league['联赛'][1], delta_color='off', help='胜率最高的前两个联赛')
+    col5.metric(label="最佳模型", value=df_table_model['模型'][0], delta=df_table_model['模型'][1], delta_color='off', help='胜率最高的前两个模型')
     col6.metric(label="最佳盘口", value=df_table_handicap['盘口'][len(df_table_handicap)-1], delta=df_table_handicap['盘口'][len(df_table_handicap)-2], delta_color='off', help='胜率最高的前两个盘口')
     
     st.metric(label='最佳组合', value='敬请期待')
@@ -177,7 +183,7 @@ def load_dashboard(df_history):
                    annotation_font_color="green")
     fig0.update_traces(textposition='top center')
     fig0.update_layout(hovermode="x")
-    with st.expander("22-23赛季胜率走势", expanded=True):
+    with st.expander("23-24赛季胜率走势", expanded=True): # Change me once a year
         st.plotly_chart(fig0)
         
     figcol1, figcol2 = st.columns(2)
@@ -238,7 +244,7 @@ def remove_exclamation(text):
 def load_history():
     onedrive_link = 'https://1drv.ms/x/s!Ag9ZvloaJitBkDvM3TVDY7HffBxS'
     url = create_onedrive_directdownload(onedrive_link)
-    df = pd.read_excel(url, sheet_name=0, converters = {'盘口': str, 'week': str})
+    df = pd.read_excel(url, sheet_name=1, converters = {'盘口': str, 'week': str}) # Change me once a year
     df = df[df['模型'].notnull()]
     df = df.reset_index()
     del df['index']
