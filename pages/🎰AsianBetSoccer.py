@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Last Edit 9/18/2023
+Last Edit 9/19/2023
 @author: zhangliyao
 Asian Handicap scraper with Streamlit
 """
@@ -218,8 +218,8 @@ def clean_handicap(handicap_value):
 def map_leagues(league):
   league_dict = {
     '美职联':'USA Major League Soccer','日职联':'J1 League','德乙':'German Bundesliga 2','德甲':'German Bundesliga','西甲':'Spanish La Liga',
-    '英超':'English Premier League','欧冠':'','阿甲':'Argentine Division 1','欧联':'','法甲':'France Ligue 1','巴甲':'Brazil Serie A',
-    '意甲':'Italian Serie A','欧国联':'','墨超':'Primera Division Liga MX','葡超':'Liga Portugal 1','荷甲':'Holland Eredivisie',
+    '英超':'English Premier League','欧冠':'UEFA Champions League','阿甲':'Argentine Division 1','欧联':'','法甲':'France Ligue 1',
+    '巴甲':'Brazil Serie A','意甲':'Italian Serie A','欧国联':'','墨超':'Primera Division Liga MX','葡超':'Liga Portugal 1','荷甲':'Holland Eredivisie',
     '英冠':'England Championship','解放者杯':'','欧预赛':'UEFA European Championship','南球杯':'',
     '瑞典超':'Swedish Allsvenskan','挪超':'Norwegian Tippeligaen',
     '世界杯':'','美洲杯':'','亚洲预选':'','西乙':'Spanish La Liga 2','比甲':'Belgian Pro League','智甲':'',
@@ -277,7 +277,8 @@ def map_teams(team):
         'Manchester City':'曼城','Wolves':'狼队','Liverpool':'利物浦','Everton':'埃弗顿','Arsenal':'阿森纳','AFC Bournemouth':'伯恩茅斯','Chelsea':'切尔西',
         'Nottingham Forest':'诺丁汉森林','Burnley':'伯恩利'},
 
-  '欧冠':{'':'哥本哈根','':'加拉塔萨雷','':'萨尔茨堡红牛','':'凯尔特人','':'伯尔尼年轻人','':'贝尔格莱德红星','':'顿涅茨克矿工'},
+  '欧冠':{'':'哥本哈根','':'加拉塔萨雷','':'萨尔茨堡红牛','Celtic FC':'凯尔特人','Young Boys':'伯尔尼年轻人',
+        'Crvena Zvezda':'贝尔格莱德红星','FC Shakhtar Donetsk':'顿涅茨克矿工'},
 
   '欧联':{'':'奥林匹亚科斯','':'托波拉','':'雅典AEK','':'阿里斯','':'流浪者','':'布拉格斯巴达',
         '':'琴斯托霍瓦','':'格拉茨风暴','':'林茨','':'海法马卡比','':'帕纳辛奈科斯','':'塞尔维特',
@@ -298,7 +299,7 @@ def map_teams(team):
         'Independiente':'独立','CA Huracan':'飓风','Talleres Cordoba':'塔列雷斯','Instituto AC Cordoba':'科尔多瓦学院','Atletico Tucuman':'图库曼竞技',
         'Barracas Central':'巴拉卡斯中央','San Lorenzo':'圣洛伦索','Racing Club':'竞技','Newells Old Boys':'纽维尔老男孩','Club Atlético Unión':'圣菲联',
         'River Plate':'河床','Arsenal de Sarandi':'萨兰迪兵工厂','Godoy Cruz Antonio Tomba':'戈多伊克鲁斯','Belgrano':'贝尔格拉诺','Lanus':'拉努斯',
-        'Sarmiento Junin':'萨米恩托'},
+        'Sarmiento Junin':'萨米恩托','Gimnasia La Plata':'拉普拉塔体操','Central Cordoba SDE':'科尔多瓦中央'},
   #7
   '巴甲':{'Palmeiras':'帕尔梅拉斯','Goias':'戈亚斯','Cuiaba':'奎尔巴','America MG':'米内罗美洲','Bragantino':'布拉甘蒂诺红牛','Gremio (RS)':'格雷米奥',
         'Atletico Mineiro':'米内罗竞技','Botafogo RJ':'博塔弗戈','Vasco da Gama':'瓦斯科达伽马','Fluminense RJ':'弗鲁米嫩塞','Corinthians Paulista (SP)':'科林蒂安',
@@ -347,8 +348,8 @@ def map_teams(team):
           'Albania':'阿尔巴尼亚','Poland':'波兰','Greece':'希腊','Ireland':'爱尔兰','Netherlands':'荷兰','Lithuania':'立陶宛','Serbia':'塞尔维亚',
           'Slovenia':'斯洛文尼亚','Faroe Islands':'法罗群岛','Moldova':'摩尔多瓦','Finland':'芬兰','Denmark':'丹麦','Montenegro':'黑山',
           'Bulgaria':'保加利亚','Kazakhstan':'哈萨克斯坦','Northern Ireland':'北爱尔兰','Wales':'威尔士','France':'法国','Norway':'挪威',
-          'Austria':'奥地利','Malta':'马耳他'},} #Last Edit: 9/18/2023
-  print(len(teams_dict.德乙))
+          'Austria':'奥地利','Malta':'马耳他'},} #Last Edit: 9/19/2023
+
   for league_key, league_values in teams_dict.items():
     for key, value in league_values.items():
       if team == key:
