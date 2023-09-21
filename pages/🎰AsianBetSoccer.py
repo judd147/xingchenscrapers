@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Last Edit 9/19/2023
+Last Edit 9/20/2023
 @author: zhangliyao
 Asian Handicap scraper with Streamlit
 """
@@ -218,12 +218,12 @@ def clean_handicap(handicap_value):
 def map_leagues(league):
   league_dict = {
     '美职联':'USA Major League Soccer','日职联':'J1 League','德乙':'German Bundesliga 2','德甲':'German Bundesliga','西甲':'Spanish La Liga',
-    '英超':'English Premier League','欧冠':'UEFA Champions League','阿甲':'Argentine Division 1','欧联':'','法甲':'France Ligue 1',
+    '英超':'English Premier League','欧冠':'UEFA Champions League','阿甲':'Argentine Division 1','欧联':'UEFA Europa League','法甲':'France Ligue 1',
     '巴甲':'Brazil Serie A','意甲':'Italian Serie A','欧国联':'','墨超':'Primera Division Liga MX','葡超':'Liga Portugal 1','荷甲':'Holland Eredivisie',
     '英冠':'England Championship','解放者杯':'','欧预赛':'UEFA European Championship','南球杯':'',
     '瑞典超':'Swedish Allsvenskan','挪超':'Norwegian Tippeligaen',
     '世界杯':'','美洲杯':'','亚洲预选':'','西乙':'Spanish La Liga 2','比甲':'Belgian Pro League','智甲':'',
-    '南美预选':'FIFA World Cup qualification (CONMEBOL)','世预赛':'','北美预选':'','欧洲杯':'','世俱杯':'','欧协联':''}
+    '南美预选':'FIFA World Cup qualification (CONMEBOL)','世预赛':'','北美预选':'','欧洲杯':'','世俱杯':'','欧协联':'UEFA Europa Conference League'}
 
   for key, value in league_dict.items():
     if league == key:
@@ -232,14 +232,14 @@ def map_leagues(league):
     
 def map_teams(team):
   teams_dict = {
-  #1
+  #✔
   '美职联':{'Portland Timbers':'波特兰伐木者','Los Angeles FC':'洛杉矶FC','Minnesota United FC':'明尼苏达联','New England Revolution':'新英格兰革命',
           'DC United':'华盛顿联','San Jose Earthquakes':'圣何塞地震','Inter Miami CF':'迈阿密国际','FC Kansas City':'堪萨斯城体育','Austin FC':'奥斯汀FC',
           'Los Angeles Galaxy':'洛杉矶银河','St. Louis City':'圣路易斯城','Real Salt Lake':'皇家盐湖城','Colorado Rapids':'科罗拉多急流',
           'FC Dallas':'达拉斯FC','Seattle Sounders':'西雅图海湾人','Houston Dynamo':'休斯顿迪纳摩','Charlotte FC':'夏洛特FC','Montreal Impact':'蒙特利尔冲击',
           'Chicago Fire':'芝加哥火焰','Toronto FC':'多伦多FC','Vancouver Whitecaps':'温哥华白浪','Orlando City':'奥兰多城','Columbus Crew':'哥伦布机员',
           'Philadelphia Union':'费城联合','FC Cincinnati':'辛辛那提','Atlanta United':'亚特兰大联','New York City FC':'纽约城','New York Red Bulls':'纽约红牛',
-          '':''},
+          'Nashville':'纳什维尔'},
   #✔
   '日职联':{'Urawa Red Diamonds':'浦和红钻','Kyoto Sanga':'京都不死鸟','Yokohama Marinos':'横滨水手','Sagan Tosu':'鸟栖砂岩','Kawasaki Frontale':'川崎前锋',
           'FC Tokyo':'东京FC','Avispa Fukuoka':'福冈黄蜂','Nagoya Grampus':'名古屋逆戟鲸','Consadole Sapporo':'札幌冈萨多','Shonan Bellmare':'湘南海洋',
@@ -276,15 +276,15 @@ def map_teams(team):
         'Manchester United':'曼联','Brighton Hove Albion':'布莱顿','Tottenham Hotspur':'热刺','Sheffield United':'谢菲尔德联','West Ham United':'西汉姆联',
         'Manchester City':'曼城','Wolves':'狼队','Liverpool':'利物浦','Everton':'埃弗顿','Arsenal':'阿森纳','AFC Bournemouth':'伯恩茅斯','Chelsea':'切尔西',
         'Nottingham Forest':'诺丁汉森林','Burnley':'伯恩利'},
-
-  '欧冠':{'':'哥本哈根','':'加拉塔萨雷','':'萨尔茨堡红牛','Celtic FC':'凯尔特人','Young Boys':'伯尔尼年轻人',
+  #✔
+  '欧冠':{'FC Copenhagen':'哥本哈根','Galatasaray':'加拉塔萨雷','Red Bull Salzburg':'萨尔茨堡红牛','Celtic FC':'凯尔特人','Young Boys':'伯尔尼年轻人',
         'Crvena Zvezda':'贝尔格莱德红星','FC Shakhtar Donetsk':'顿涅茨克矿工'},
 
   '欧联':{'':'奥林匹亚科斯','':'托波拉','':'雅典AEK','':'阿里斯','':'流浪者','':'布拉格斯巴达',
         '':'琴斯托霍瓦','':'格拉茨风暴','':'林茨','':'海法马卡比','':'帕纳辛奈科斯','':'塞尔维特',
         '':'蒂拉斯波尔警长','':'布拉格斯拉维亚','':'卡拉巴赫'},
 
-  '欧协联':{'':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
+  '欧协联':{'NK Olimpija Ljubljana':'卢布尔雅那奥林匹亚','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
   #✔
   '法甲':{'Paris Saint Germain (PSG)':'巴黎圣日耳曼','Nice':'尼斯','Lens':'朗斯','Metz':'梅斯','Rennes':'雷恩','Lille':'里尔','Lyon':'里昂',
         'Le Havre':'勒阿弗尔','Marseille':'马赛','Toulouse':'图卢兹','Clermont':'克莱蒙','Nantes':'南特','Reims':'兰斯','Stade Brestois':'布雷斯特',
@@ -299,11 +299,11 @@ def map_teams(team):
         'Independiente':'独立','CA Huracan':'飓风','Talleres Cordoba':'塔列雷斯','Instituto AC Cordoba':'科尔多瓦学院','Atletico Tucuman':'图库曼竞技',
         'Barracas Central':'巴拉卡斯中央','San Lorenzo':'圣洛伦索','Racing Club':'竞技','Newells Old Boys':'纽维尔老男孩','Club Atlético Unión':'圣菲联',
         'River Plate':'河床','Arsenal de Sarandi':'萨兰迪兵工厂','Godoy Cruz Antonio Tomba':'戈多伊克鲁斯','Belgrano':'贝尔格拉诺','Lanus':'拉努斯',
-        'Sarmiento Junin':'萨米恩托','Gimnasia La Plata':'拉普拉塔体操','Central Cordoba SDE':'科尔多瓦中央'},
-  #7
+        'Sarmiento Junin':'萨米恩托','Gimnasia La Plata':'拉普拉塔体操','Central Cordoba SDE':'科尔多瓦中央','Velez Sarsfield':'萨斯菲尔德'},
+  #3
   '巴甲':{'Palmeiras':'帕尔梅拉斯','Goias':'戈亚斯','Cuiaba':'奎尔巴','America MG':'米内罗美洲','Bragantino':'布拉甘蒂诺红牛','Gremio (RS)':'格雷米奥',
         'Atletico Mineiro':'米内罗竞技','Botafogo RJ':'博塔弗戈','Vasco da Gama':'瓦斯科达伽马','Fluminense RJ':'弗鲁米嫩塞','Corinthians Paulista (SP)':'科林蒂安',
-        'Bahia':'巴伊亚','Santos':'桑托斯','':'','':'','':'','':'','':'','':'','':''},
+        'Bahia':'巴伊亚','Santos':'桑托斯','Cruzeiro':'克鲁塞罗','Sao Paulo':'圣保罗','Fortaleza':'福塔莱萨','Flamengo':'弗拉门戈','':'','':'','':''},
   #2
   '墨超':{'Club Tijuana':'蒂华纳','Toluca':'托卢卡','Mazatlan FC':'马萨特兰','CDSyC Cruz Azul':'蓝十字','Club America':'美洲','Chivas Guadalajara':'瓜达拉哈拉',
         'Monterrey':'蒙特雷','Club Leon':'莱昂','Necaxa':'内卡萨','FC Juarez':'华雷斯','Atlas':'阿特拉斯','Tigres UANL':'墨西哥老虎','Queretaro FC':'克雷塔罗',
@@ -348,7 +348,7 @@ def map_teams(team):
           'Albania':'阿尔巴尼亚','Poland':'波兰','Greece':'希腊','Ireland':'爱尔兰','Netherlands':'荷兰','Lithuania':'立陶宛','Serbia':'塞尔维亚',
           'Slovenia':'斯洛文尼亚','Faroe Islands':'法罗群岛','Moldova':'摩尔多瓦','Finland':'芬兰','Denmark':'丹麦','Montenegro':'黑山',
           'Bulgaria':'保加利亚','Kazakhstan':'哈萨克斯坦','Northern Ireland':'北爱尔兰','Wales':'威尔士','France':'法国','Norway':'挪威',
-          'Austria':'奥地利','Malta':'马耳他'},} #Last Edit: 9/19/2023
+          'Austria':'奥地利','Malta':'马耳他'},} #Last Edit: 9/20/2023
 
   for league_key, league_values in teams_dict.items():
     for key, value in league_values.items():
