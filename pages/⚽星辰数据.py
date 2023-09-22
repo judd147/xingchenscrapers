@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Oct 5 19:17:17 2022
-Last Edit 9/20/2023
+Last Edit 9/21/2023
 @author: Liyao Zhang
 
 星辰智盈数据自动获取系统 with Streamlit
@@ -403,10 +403,11 @@ def clean_teams(home, away, league_name):
                   '法甲':{},
                   '意甲':{'克雷莫纳':'克雷莫内塞','弗洛西诺尼':'弗罗西诺内'},
                   '欧冠':{'比尔森':'比尔森胜利','萨尔茨堡':'萨尔茨堡红牛','格拉斯哥流浪者':'流浪者','年轻人':'伯尔尼年轻人'},
-                  '欧联':{'谢里夫':'蒂拉斯波尔警长'},
+                  '欧联':{'谢里夫':'蒂拉斯波尔警长','LASK林茨':'林茨','帕纳辛纳科斯':'帕纳辛奈科斯','艾里斯利马斯素尔':'阿里斯利马索尔'},
                   '欧协联':{'第聂伯罗特警':'SK第聂伯罗','波兹南':'波兹南莱赫','比尔舒华夏普尔':'贝尔谢巴工人','萨尔格里斯':'扎尔吉里斯',
                              '布加勒斯特星队':'布加勒斯特星','列加斯':'里加足球学校','伊斯坦布':'伊斯坦布尔','利马索尔阿波罗':'阿波罗利马索尔',
-                             '奥林比查':'卢布尔雅那奥林匹亚'},
+                             '奥林比查':'卢布尔雅那奥林匹亚','泰拿华斯巴达':'特纳瓦斯巴达','萨连斯基':'莫斯塔尔兹林斯基','卢甘斯克黎明':'索尔亚','卡拉卡斯维克':'克拉克斯维克',
+                             '贝雷达比历克':'布列达布利克'},
                   '德乙':{'不伦瑞克':'布伦瑞克'},
                   '英冠':{'加的夫城':'卡迪夫城','布里斯托城':'布里斯托尔城','西布罗姆维奇':'西布朗'},
                   '西乙':{'格拉纳达GF':'格拉纳达','米兰迪斯':'米兰德斯','安道尔CF':'FC安道尔','阿尔巴切特':'阿尔瓦塞特','特內里费':'特内里费','艾科坎':'阿尔科孔'},
@@ -429,7 +430,7 @@ def clean_teams(home, away, league_name):
                             '阿古拉斯多拉达斯':'里奥内格罗老鹰','卡萨大学队':'卡萨大学','普诺双国':'两国竞技','帕马科亚':'棕榈竞技','昆卡':'昆卡体育','托利马体育':'托里马体育',
                             '大学生体育':'秘鲁体育大学'},
                   '世界杯':{'沙特':'沙特阿拉伯'}
-                  #Last Edit: 9/20/2023
+                  #Last Edit: 9/21/2023
                   }
     
     for league_key, league_values in teams_dict.items():
@@ -526,7 +527,7 @@ def get_matches(driver, algo_name, start_time, end_time):
                         games_list.append(game)
                         unbought_match.click()
                         num_clicks += 1
-                        time.sleep(4)
+                        time.sleep(5)
                         
                         Item_list = driver.find_elements(AppiumBy.CLASS_NAME, value="android.view.View")
                         goal_flag = False
@@ -704,7 +705,7 @@ def get_matches(driver, algo_name, start_time, end_time):
                         games_list.append(game)
                         match.click()
                         num_clicks += 1
-                        time.sleep(4)
+                        time.sleep(5)
                         
                         Item_list = driver.find_elements(AppiumBy.CLASS_NAME, value="android.view.View")
                         goal_flag = False
