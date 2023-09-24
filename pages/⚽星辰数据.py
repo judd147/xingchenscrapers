@@ -471,14 +471,14 @@ def get_matches(driver, algo_name, start_time, end_time):
         for unbought_match in ImageView_list:
             if num_clicks < 4:
                 #判断比赛状态
-                status = ''
-                goal_distribution = [] #存储进球数概率分布，判断样本大小
-                if unbought_match.get_attribute('text').__contains__('已购'):
-                    status = '未开赛'
-                elif unbought_match.get_attribute('text').__contains__('进行中'):
-                    status = '进行中'
-                elif unbought_match.get_attribute('text').__contains__('完赛'):
-                    status = '已完赛'
+                #status = ''
+                #goal_distribution = [] #存储进球数概率分布，判断样本大小
+                #if unbought_match.get_attribute('text').__contains__('已购'):
+                #    status = '未开赛'
+                #elif unbought_match.get_attribute('text').__contains__('进行中'):
+                #    status = '进行中'
+                #elif unbought_match.get_attribute('text').__contains__('完赛'):
+                #    status = '已完赛'
                     
                 #if status != '':
                     #获取比赛基本信息
@@ -656,14 +656,14 @@ def get_matches(driver, algo_name, start_time, end_time):
         for match in View_list:
             if num_clicks < 4:
                 #判断比赛状态
-                status = ''
-                goal_distribution = [] #存储进球数概率分布，判断样本大小
-                if match.get_attribute('text').__contains__('已购'):
-                    status = '未开赛'
-                elif match.get_attribute('text').__contains__('进行中'):
-                    status = '进行中'
-                elif match.get_attribute('text').__contains__('完赛'):
-                    status = '已完赛'
+                #status = ''
+                #goal_distribution = [] #存储进球数概率分布，判断样本大小
+                #if match.get_attribute('text').__contains__('已购'):
+                #    status = '未开赛'
+                #elif match.get_attribute('text').__contains__('进行中'):
+                #    status = '进行中'
+                #elif match.get_attribute('text').__contains__('完赛'):
+                #    status = '已完赛'
                     
                 #if status != '':
                     #获取比赛基本信息
