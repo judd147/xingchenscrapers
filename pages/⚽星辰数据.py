@@ -286,18 +286,8 @@ def main():
                 df_final = pd.concat([df_gplj, df_sqnl, df_lsqt])
                 
         df_final = df_final.sort_values(by=['开球时间','联赛','比赛'])
-        
-        #下载数据
-        buffer = io.BytesIO()
-        with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
-            df_final.to_excel(writer, index=False)
-            writer.save()
-            st.download_button(
-                label="下载数据",
-                data=buffer,
-                file_name="星辰数据_"+mode+today.strftime('%m-%d')+".xlsx",
-                mime="application/vnd.ms-excel"
-            )
+        file_name="星辰数据_"+mode+today.strftime('%m-%d')+".xlsx"
+        df_final.to_excel(r'C:\Users\张力铫\Desktop\\'+file_name, index=False)
 
 def init_login(driver):
     '''
@@ -490,7 +480,7 @@ def get_matches(driver, algo_name, start_time, end_time):
                 elif unbought_match.get_attribute('text').__contains__('完赛'):
                     status = '已完赛'
                     
-                if status != '':
+                #if status != '':
                     #获取比赛基本信息
                     info = unbought_match.get_attribute('text')
                     if info.split('\n')[1].__contains__('竞彩'): #[0]:开球时间 [1]:竞彩编号 [2]:联赛名称 [3]:比赛状态 [4]:主客队及比分
@@ -675,7 +665,7 @@ def get_matches(driver, algo_name, start_time, end_time):
                 elif match.get_attribute('text').__contains__('完赛'):
                     status = '已完赛'
                     
-                if status != '':
+                #if status != '':
                     #获取比赛基本信息
                     info = match.get_attribute('text')
                     if info.split('\n')[1].__contains__('竞彩'): #[0]:开球时间 [1]:竞彩编号 [2]:联赛名称 [3]:比赛状态 [4]:主客队及比分
