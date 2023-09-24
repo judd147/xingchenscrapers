@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Oct 5 19:17:17 2022
-Last Edit 9/21/2023
+Last Edit 9/24/2023
 @author: Liyao Zhang
 
 星辰智盈数据自动获取系统 with Streamlit
@@ -16,6 +16,9 @@ from PIL import Image
 from datetime import datetime, timedelta
 from appium import webdriver
 from appium.webdriver.common.appiumby import AppiumBy
+
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 # For W3C actions
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.actions import interaction
@@ -143,7 +146,7 @@ def main():
             caps["noReset"] = True
         
         driver = webdriver.Remote("http://127.0.0.1:4723/wd/hub", caps)
-        driver.implicitly_wait(5)
+        driver.implicitly_wait(10)
         #重置模式
         if reset_app:
             init_login(driver)
@@ -466,21 +469,21 @@ def get_matches(driver, algo_name, start_time, end_time):
         num_clicks = 0 #相比上次划动后点击新比赛的次数
         num_duplicates = 0 #相比上次划动后重复比赛的数量
         ImageView_list = driver.find_elements(AppiumBy.CLASS_NAME, value="android.widget.ImageView") #未购买完赛比赛
-        View_list = driver.find_elements(AppiumBy.CLASS_NAME, value="android.view.View") #其余所有比赛        
+        View_list = driver.find_elements(AppiumBy.CLASS_NAME, value="android.view.View") #其余所有比赛   
         
         for unbought_match in ImageView_list:
             if num_clicks < 4:
                 #判断比赛状态
-                #status = ''
-                #goal_distribution = [] #存储进球数概率分布，判断样本大小
-                #if unbought_match.get_attribute('text').__contains__('已购'):
-                #    status = '未开赛'
-                #elif unbought_match.get_attribute('text').__contains__('进行中'):
-                #    status = '进行中'
-                #elif unbought_match.get_attribute('text').__contains__('完赛'):
-                #    status = '已完赛'
+                status = ''
+                goal_distribution = [] #存储进球数概率分布，判断样本大小
+                if unbought_match.get_attribute('text').__contains__('已购'):
+                    status = '未开赛'
+                elif unbought_match.get_attribute('text').__contains__('进行中'):
+                    status = '进行中'
+                elif unbought_match.get_attribute('text').__contains__('完赛'):
+                    status = '已完赛'
                     
-                #if status != '':
+                if status != '':
                     #获取比赛基本信息
                     info = unbought_match.get_attribute('text')
                     if info.split('\n')[1].__contains__('竞彩'): #[0]:开球时间 [1]:竞彩编号 [2]:联赛名称 [3]:比赛状态 [4]:主客队及比分
@@ -517,8 +520,10 @@ def get_matches(driver, algo_name, start_time, end_time):
                         games_list.append(game)
                         unbought_match.click()
                         num_clicks += 1
-                        time.sleep(5)
                         
+                        WebDriverWait(driver, 20).until(EC.presence_of_element_located((AppiumBy.CLASS_NAME,'android.view.View')))
+                        time.sleep(3)
+
                         Item_list = driver.find_elements(AppiumBy.CLASS_NAME, value="android.view.View")
                         goal_flag = False
                         rate_flag = False
@@ -656,16 +661,16 @@ def get_matches(driver, algo_name, start_time, end_time):
         for match in View_list:
             if num_clicks < 4:
                 #判断比赛状态
-                #status = ''
-                #goal_distribution = [] #存储进球数概率分布，判断样本大小
-                #if match.get_attribute('text').__contains__('已购'):
-                #    status = '未开赛'
-                #elif match.get_attribute('text').__contains__('进行中'):
-                #    status = '进行中'
-                #elif match.get_attribute('text').__contains__('完赛'):
-                #    status = '已完赛'
+                status = ''
+                goal_distribution = [] #存储进球数概率分布，判断样本大小
+                if match.get_attribute('text').__contains__('已买'):
+                    status = '未开赛'
+                elif match.get_attribute('text').__contains__('进行中'):
+                    status = '进行中'
+                elif match.get_attribute('text').__contains__('完赛'):
+                    status = '已完赛'
                     
-                #if status != '':
+                if status != '':
                     #获取比赛基本信息
                     info = match.get_attribute('text')
                     if info.split('\n')[1].__contains__('竞彩'): #[0]:开球时间 [1]:竞彩编号 [2]:联赛名称 [3]:比赛状态 [4]:主客队及比分
@@ -695,8 +700,10 @@ def get_matches(driver, algo_name, start_time, end_time):
                         games_list.append(game)
                         match.click()
                         num_clicks += 1
-                        time.sleep(5)
                         
+                        WebDriverWait(driver, 20).until(EC.presence_of_element_located((AppiumBy.CLASS_NAME,'android.view.View')))
+                        time.sleep(3)
+
                         Item_list = driver.find_elements(AppiumBy.CLASS_NAME, value="android.view.View")
                         goal_flag = False
                         rate_flag = False
