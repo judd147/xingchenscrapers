@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Last Edit 9/20/2023
+Last Edit 9/21/2023
 @author: zhangliyao
 Asian Handicap scraper with Streamlit
 """
@@ -39,10 +39,13 @@ def main():
     frames = []
     league_names = df_selected['联赛'].apply(map_leagues)
     for league_name in league_names.unique():
-      select_league(driver, league_name)
-      df_result = scrape(driver)
-      df_result = clean_result(df_result)
-      frames.append(df_result)
+      try:
+        select_league(driver, league_name)
+        df_result = scrape(driver)
+        df_result = clean_result(df_result)
+        frames.append(df_result)
+      except:
+        st.error("获取联赛失败："+league_name)
 
     # Combine all dfs to a single df
     final_result = pd.concat(frames)
@@ -69,6 +72,8 @@ def main():
           df_selected.at[k, 'A'] = A
           df_selected.at[k, '主赔'] = home_odd
           df_selected.at[k, '客赔'] = away_odd
+    df_selected['H'] = df_selected['H'].fillna(0)
+    df_selected['A'] = df_selected['A'].fillna(0)
     df_selected['H'] = df_selected['H'].astype(int)
     df_selected['A'] = df_selected['A'].astype(int)
 
@@ -220,10 +225,10 @@ def map_leagues(league):
     '美职联':'USA Major League Soccer','日职联':'J1 League','德乙':'German Bundesliga 2','德甲':'German Bundesliga','西甲':'Spanish La Liga',
     '英超':'English Premier League','欧冠':'UEFA Champions League','阿甲':'Argentine Division 1','欧联':'UEFA Europa League','法甲':'France Ligue 1',
     '巴甲':'Brazil Serie A','意甲':'Italian Serie A','欧国联':'','墨超':'Primera Division Liga MX','葡超':'Liga Portugal 1','荷甲':'Holland Eredivisie',
-    '英冠':'England Championship','解放者杯':'','欧预赛':'UEFA European Championship','南球杯':'',
-    '瑞典超':'Swedish Allsvenskan','挪超':'Norwegian Tippeligaen',
-    '世界杯':'','美洲杯':'','亚洲预选':'','西乙':'Spanish La Liga 2','比甲':'Belgian Pro League','智甲':'',
-    '南美预选':'FIFA World Cup qualification (CONMEBOL)','世预赛':'','北美预选':'','欧洲杯':'','世俱杯':'','欧协联':'UEFA Europa Conference League'}
+    '英冠':'England Championship','解放者杯':'','欧预赛':'UEFA European Championship','南球杯':'','瑞典超':'Swedish Allsvenskan',
+    '挪超':'Norwegian Tippeligaen','世界杯':'','美洲杯':'','亚洲预选':'',
+    '西乙':'Spanish La Liga 2','比甲':'Belgian Pro League','智甲':'','南美预选':'FIFA World Cup qualification (CONMEBOL)',
+    '世预赛':'','北美预选':'','欧洲杯':'','世俱杯':'','欧协联':'UEFA Europa Conference League'}
 
   for key, value in league_dict.items():
     if league == key:
@@ -280,11 +285,15 @@ def map_teams(team):
   '欧冠':{'FC Copenhagen':'哥本哈根','Galatasaray':'加拉塔萨雷','Red Bull Salzburg':'萨尔茨堡红牛','Celtic FC':'凯尔特人','Young Boys':'伯尔尼年轻人',
         'Crvena Zvezda':'贝尔格莱德红星','FC Shakhtar Donetsk':'顿涅茨克矿工'},
 
-  '欧联':{'':'奥林匹亚科斯','':'托波拉','':'雅典AEK','':'阿里斯','':'流浪者','':'布拉格斯巴达',
-        '':'琴斯托霍瓦','':'格拉茨风暴','':'林茨','':'海法马卡比','':'帕纳辛奈科斯','':'塞尔维特',
-        '':'蒂拉斯波尔警长','':'布拉格斯拉维亚','':'卡拉巴赫'},
+  '欧联':{'Olympiakos Piraeus':'奥林匹亚科斯','Backa Topola':'托波拉','AEK Athens':'雅典AEK','Aris Limassol':'阿里斯利马索尔','Glasgow Rangers':'流浪者',
+        'Sparta Praha':'布拉格斯巴达','Rakow Czestochowa':'琴斯托霍瓦','Sturm Graz':'格拉茨风暴','LASK Linz':'林茨','Maccabi Haifa':'海法马卡比',
+        'Panathinaikos':'帕纳辛奈科斯','Servette':'塞尔维特','Sheriff Tiraspol':'蒂拉斯波尔警长','Slavia Praha':'布拉格斯拉维亚','Qarabag':'卡拉巴赫'},
 
-  '欧协联':{'NK Olimpija Ljubljana':'卢布尔雅那奥林匹亚','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
+  '欧协联':{'NK Olimpija Ljubljana':'卢布尔雅那奥林匹亚','Besiktas JK':'贝西克塔斯','Dinamo Zagreb':'萨格勒布迪纳摩','Lokomotiv Astana':'阿斯塔纳',
+          'FC Viktoria Plzen':'比尔森胜利','KF Ballkani':'巴利卡尼','Lugano':'卢加诺','Maccabi Tel Aviv':'特拉维夫马卡比','Breidablik':'布列达布利克',
+          'Slovan Bratislava':'布拉迪斯拉发','KI Klaksvik':'克拉克斯维克','Zorya':'索尔亚','Aberdeen':'阿伯丁','Fenerbahce':'费内巴切','Nordsjaelland':'北西兰',
+          'Ferencvarosi TC':'费伦茨瓦罗斯','Cukaricki Stankom':'古拉瑞奇','HJK Helsinki':'赫尔辛基','PAOK Saloniki':'塞萨洛尼基','HSK Zrinjski Mostar':'莫斯塔尔兹林斯基',
+          'Legia Warszawa':'华沙莱吉亚','Ludogorets Razgrad':'卢多戈雷茨','Spartak Trnava':'特纳瓦斯巴达','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
   #✔
   '法甲':{'Paris Saint Germain (PSG)':'巴黎圣日耳曼','Nice':'尼斯','Lens':'朗斯','Metz':'梅斯','Rennes':'雷恩','Lille':'里尔','Lyon':'里昂',
         'Le Havre':'勒阿弗尔','Marseille':'马赛','Toulouse':'图卢兹','Clermont':'克莱蒙','Nantes':'南特','Reims':'兰斯','Stade Brestois':'布雷斯特',
@@ -299,11 +308,13 @@ def map_teams(team):
         'Independiente':'独立','CA Huracan':'飓风','Talleres Cordoba':'塔列雷斯','Instituto AC Cordoba':'科尔多瓦学院','Atletico Tucuman':'图库曼竞技',
         'Barracas Central':'巴拉卡斯中央','San Lorenzo':'圣洛伦索','Racing Club':'竞技','Newells Old Boys':'纽维尔老男孩','Club Atlético Unión':'圣菲联',
         'River Plate':'河床','Arsenal de Sarandi':'萨兰迪兵工厂','Godoy Cruz Antonio Tomba':'戈多伊克鲁斯','Belgrano':'贝尔格拉诺','Lanus':'拉努斯',
-        'Sarmiento Junin':'萨米恩托','Gimnasia La Plata':'拉普拉塔体操','Central Cordoba SDE':'科尔多瓦中央','Velez Sarsfield':'萨斯菲尔德'},
-  #3
+        'Sarmiento Junin':'萨米恩托','Gimnasia La Plata':'拉普拉塔体操','Central Cordoba SDE':'科尔多瓦中央','Velez Sarsfield':'萨斯菲尔德',
+        'CA Platense':'普拉滕斯竞技'},
+  #✔
   '巴甲':{'Palmeiras':'帕尔梅拉斯','Goias':'戈亚斯','Cuiaba':'奎尔巴','America MG':'米内罗美洲','Bragantino':'布拉甘蒂诺红牛','Gremio (RS)':'格雷米奥',
         'Atletico Mineiro':'米内罗竞技','Botafogo RJ':'博塔弗戈','Vasco da Gama':'瓦斯科达伽马','Fluminense RJ':'弗鲁米嫩塞','Corinthians Paulista (SP)':'科林蒂安',
-        'Bahia':'巴伊亚','Santos':'桑托斯','Cruzeiro':'克鲁塞罗','Sao Paulo':'圣保罗','Fortaleza':'福塔莱萨','Flamengo':'弗拉门戈','':'','':'','':''},
+        'Bahia':'巴伊亚','Santos':'桑托斯','Cruzeiro':'克鲁塞罗','Sao Paulo':'圣保罗','Fortaleza':'福塔莱萨','Flamengo':'弗拉门戈','Atletico Paranaense':'巴拉纳竞技',
+        'Internacional RS':'巴西国际','Coritiba PR':'库里蒂巴'},
   #2
   '墨超':{'Club Tijuana':'蒂华纳','Toluca':'托卢卡','Mazatlan FC':'马萨特兰','CDSyC Cruz Azul':'蓝十字','Club America':'美洲','Chivas Guadalajara':'瓜达拉哈拉',
         'Monterrey':'蒙特雷','Club Leon':'莱昂','Necaxa':'内卡萨','FC Juarez':'华雷斯','Atlas':'阿特拉斯','Tigres UANL':'墨西哥老虎','Queretaro FC':'克雷塔罗',
@@ -348,7 +359,7 @@ def map_teams(team):
           'Albania':'阿尔巴尼亚','Poland':'波兰','Greece':'希腊','Ireland':'爱尔兰','Netherlands':'荷兰','Lithuania':'立陶宛','Serbia':'塞尔维亚',
           'Slovenia':'斯洛文尼亚','Faroe Islands':'法罗群岛','Moldova':'摩尔多瓦','Finland':'芬兰','Denmark':'丹麦','Montenegro':'黑山',
           'Bulgaria':'保加利亚','Kazakhstan':'哈萨克斯坦','Northern Ireland':'北爱尔兰','Wales':'威尔士','France':'法国','Norway':'挪威',
-          'Austria':'奥地利','Malta':'马耳他'},} #Last Edit: 9/20/2023
+          'Austria':'奥地利','Malta':'马耳他'},} #Last Edit: 9/21/2023
 
   for league_key, league_values in teams_dict.items():
     for key, value in league_values.items():

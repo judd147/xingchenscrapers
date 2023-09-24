@@ -24,7 +24,7 @@ def main():
     #initial_sidebar_state="expanded"
     )
     st.title("星辰智盈数据自动回测系统")
-    st.caption("增加历史赛季胜率数据")
+    st.caption("增加历史赛季胜率数据；增加模拟盈亏计算")
     
     source = st.sidebar.radio("选择数据源", ["OneDrive","本地文件"])
     file = None
