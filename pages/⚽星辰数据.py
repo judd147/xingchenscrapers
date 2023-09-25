@@ -663,7 +663,7 @@ def get_matches(driver, algo_name, start_time, end_time):
                 #判断比赛状态
                 status = ''
                 goal_distribution = [] #存储进球数概率分布，判断样本大小
-                if match.get_attribute('text').__contains__('已买'):
+                if match.get_attribute('text').__contains__('已购'):
                     status = '未开赛'
                 elif match.get_attribute('text').__contains__('进行中'):
                     status = '进行中'
