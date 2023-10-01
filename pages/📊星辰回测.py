@@ -3,7 +3,7 @@
 Liyao Zhang
 
 Start Date 4/4/2022
-Last Edit 9/19/2023
+Last Edit 9/25/2023
 
 星辰智盈自动回测系统 with Streamlit
 """
@@ -80,7 +80,9 @@ def main():
             df = read_file(file)
         dfb = search(df, opt1)
         st.dataframe(dfb)
-        st.success('运行成功！')        
+
+        dfb.to_excel('/Users/zhangliyao/Desktop/result.xlsx', index=False) # change to download button when needed
+        st.success("运行成功！数据已下载至桌面")
 
 # *** 工具类函数 *** #
 def clean_history(df_history):
