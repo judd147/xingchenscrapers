@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Oct 5 19:17:17 2022
-Last Edit 9/30/2023
+Last Edit 10/7/2023
 @author: Liyao Zhang
 
 星辰智盈数据自动获取系统 with Streamlit
@@ -522,7 +522,7 @@ def get_matches(driver, algo_name, start_time, end_time):
                         num_clicks += 1
                         
                         WebDriverWait(driver, 20).until(EC.presence_of_element_located((AppiumBy.CLASS_NAME,'android.view.View')))
-                        time.sleep(3)
+                        time.sleep(5)
 
                         Item_list = driver.find_elements(AppiumBy.CLASS_NAME, value="android.view.View")
                         goal_flag = False
@@ -702,7 +702,7 @@ def get_matches(driver, algo_name, start_time, end_time):
                         num_clicks += 1
                         
                         WebDriverWait(driver, 20).until(EC.presence_of_element_located((AppiumBy.CLASS_NAME,'android.view.View')))
-                        time.sleep(3)
+                        time.sleep(5)
 
                         Item_list = driver.find_elements(AppiumBy.CLASS_NAME, value="android.view.View")
                         goal_flag = False
