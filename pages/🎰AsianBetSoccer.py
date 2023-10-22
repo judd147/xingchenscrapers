@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Last Edit 9/30/2023
+Last Edit 10/21/2023
 @author: zhangliyao
 Asian Handicap scraper with Streamlit
 """
@@ -315,10 +315,10 @@ def map_teams(team):
         'Atletico Mineiro':'米内罗竞技','Botafogo RJ':'博塔弗戈','Vasco da Gama':'瓦斯科达伽马','Fluminense RJ':'弗鲁米嫩塞','Corinthians Paulista (SP)':'科林蒂安',
         'Bahia':'巴伊亚','Santos':'桑托斯','Cruzeiro':'克鲁塞罗','Sao Paulo':'圣保罗','Fortaleza':'福塔莱萨','Flamengo':'弗拉门戈','Atletico Paranaense':'巴拉纳竞技',
         'Internacional RS':'巴西国际','Coritiba PR':'库里蒂巴'},
-  #1
+  #✔
   '墨超':{'Club Tijuana':'蒂华纳','Toluca':'托卢卡','Mazatlan FC':'马萨特兰','CDSyC Cruz Azul':'蓝十字','Club America':'美洲','Chivas Guadalajara':'瓜达拉哈拉',
         'Monterrey':'蒙特雷','Club Leon':'莱昂','Necaxa':'内卡萨','FC Juarez':'华雷斯','Atlas':'阿特拉斯','Tigres UANL':'墨西哥老虎','Queretaro FC':'克雷塔罗',
-        'Puebla':'普埃布拉','Pumas U.N.A.M.':'美洲狮','Atletico San Luis':'圣路易斯','Pachuca':'帕丘卡','':''},
+        'Puebla':'普埃布拉','Pumas U.N.A.M.':'美洲狮','Atletico San Luis':'圣路易斯','Pachuca':'帕丘卡','Santos Laguna':'桑托斯拉古纳'},
 
   '智甲':{'':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
 
@@ -359,7 +359,7 @@ def map_teams(team):
           'Albania':'阿尔巴尼亚','Poland':'波兰','Greece':'希腊','Ireland':'爱尔兰','Netherlands':'荷兰','Lithuania':'立陶宛','Serbia':'塞尔维亚',
           'Slovenia':'斯洛文尼亚','Faroe Islands':'法罗群岛','Moldova':'摩尔多瓦','Finland':'芬兰','Denmark':'丹麦','Montenegro':'黑山',
           'Bulgaria':'保加利亚','Kazakhstan':'哈萨克斯坦','Northern Ireland':'北爱尔兰','Wales':'威尔士','France':'法国','Norway':'挪威',
-          'Austria':'奥地利','Malta':'马耳他'},} #Last Edit: 9/30/2023
+          'Austria':'奥地利','Malta':'马耳他'},} #Last Edit: 10/21/2023
 
   for league_key, league_values in teams_dict.items():
     for key, value in league_values.items():
