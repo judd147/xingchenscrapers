@@ -522,7 +522,7 @@ def get_matches(driver, algo_name, start_time, end_time):
                         num_clicks += 1
                         
                         WebDriverWait(driver, 20).until(EC.presence_of_element_located((AppiumBy.CLASS_NAME,'android.view.View')))
-                        time.sleep(5)
+                        time.sleep(6) # longest wait
 
                         Item_list = driver.find_elements(AppiumBy.CLASS_NAME, value="android.view.View")
                         goal_flag = False
@@ -702,7 +702,7 @@ def get_matches(driver, algo_name, start_time, end_time):
                         num_clicks += 1
                         
                         WebDriverWait(driver, 20).until(EC.presence_of_element_located((AppiumBy.CLASS_NAME,'android.view.View')))
-                        time.sleep(5)
+                        time.sleep(6) # longest wait
 
                         Item_list = driver.find_elements(AppiumBy.CLASS_NAME, value="android.view.View")
                         goal_flag = False
