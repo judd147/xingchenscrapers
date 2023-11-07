@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Last Edit 10/21/2023
+Last Edit 11/7/2023
 @author: zhangliyao
 Asian Handicap scraper with Streamlit
 """
@@ -88,12 +88,14 @@ def init_service():
   Connect to the website and choose Bet365 as bookmaker
   '''
   # Initialize
+  #driver = webdriver.Chrome(service=Service(executable_path="/Users/zhangliyao/Downloads/chromedriver"))
   driver = webdriver.Safari(service=Service())
   driver.implicitly_wait(10)
   driver.get("https://www.asianbetsoccer.com/lastgame.html")
-  
+  time.sleep(2)
+
   # Select Bookmaker
-  buttons = driver.find_elements(By.CLASS_NAME, 'dropdown.element-filter')
+  buttons = driver.find_elements(By.CLASS_NAME, 'dropdown-toggle')
   buttons[3].click()
   
   select_element = driver.find_element(By.NAME, 'book_filter')
