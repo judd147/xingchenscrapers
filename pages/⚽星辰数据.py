@@ -52,14 +52,14 @@ def main():
                 start_time_qbl = st.slider(
                     "球伯乐开始时间",
                     value=today_modified,
-                    min_value=today_modified - timedelta(hours=24),
+                    min_value=today_modified - timedelta(hours=32),
                     max_value=today_modified + timedelta(hours=8),
                     step=timedelta(minutes=15),
                     format="MM/DD - HH:mm")
                 start_time_zsxt = st.slider(
                     "指数形态开始时间",
                     value=today_modified,
-                    min_value=today_modified - timedelta(hours=24),
+                    min_value=today_modified - timedelta(hours=32),
                     max_value=today_modified + timedelta(hours=8),
                     step=timedelta(minutes=15),
                     format="MM/DD - HH:mm")
@@ -67,21 +67,21 @@ def main():
                 start_time_gplj = st.slider(
                     "公平量价开始时间",
                     value=today_modified,
-                    min_value=today_modified - timedelta(hours=24),
+                    min_value=today_modified - timedelta(hours=32),
                     max_value=today_modified + timedelta(hours=8),
                     step=timedelta(minutes=15),
                     format="MM/DD - HH:mm")
                 start_time_sqnl = st.slider(
                     "赛前能量开始时间",
                     value=today_modified,
-                    min_value=today_modified - timedelta(hours=24),
+                    min_value=today_modified - timedelta(hours=32),
                     max_value=today_modified + timedelta(hours=8),
                     step=timedelta(minutes=15),
                     format="MM/DD - HH:mm")
                 start_time_lsqt = st.slider(
                     "联赛球探开始时间",
                     value=today_modified,
-                    min_value=today_modified - timedelta(hours=24),
+                    min_value=today_modified - timedelta(hours=32),
                     max_value=today_modified + timedelta(hours=8),
                     step=timedelta(minutes=15),
                     format="MM/DD - HH:mm")
