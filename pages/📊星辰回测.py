@@ -24,7 +24,6 @@ def main():
     #initial_sidebar_state="expanded"
     )
     st.title("星辰智盈数据自动回测系统")
-    st.caption("增加历史赛季胜率数据；增加模拟盈亏计算")
     
     source = st.sidebar.radio("选择数据源", ["OneDrive","本地文件"])
     file = None
@@ -161,6 +160,7 @@ def load_dashboard(df_history):
     #指标6：最佳盘口
     df_table_handicap = df_metric.groupby('盘口').aggregate({'success': 'mean', '比赛':'count'}).sort_values(by='success').reset_index()
     df_table_handicap = df_table_handicap[df_table_handicap['比赛'] > 5].reset_index()
+    df_table_handicap['盘口'] = '('+df_table_handicap['盘口']+')'
     del df_table_handicap['index']
 
     #指标展示
