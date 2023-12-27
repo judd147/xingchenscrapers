@@ -3,17 +3,19 @@
 Liyao Zhang
 
 Start Date 4/4/2022
-Last Edit 9/25/2023
+Last Edit 12/26/2023
 
 星辰智盈自动回测系统 with Streamlit
 """
-
 import re
 import io
+import os
 import base64
 import pandas as pd
 import streamlit as st
 import plotly.express as px
+from dotenv import load_dotenv
+from utils import create_onedrive_directdownload, pct_to_float
 from numpy import mean
 from collections import Counter
 
@@ -21,9 +23,11 @@ def main():
     st.set_page_config(
     page_title="星辰数据回测",
     page_icon="📊",
+    layout="wide"
     #initial_sidebar_state="expanded"
     )
     st.title("星辰智盈数据自动回测系统")
+    load_dotenv()
     
     source = st.sidebar.radio("选择数据源", ["OneDrive","本地文件"])
     file = None
@@ -55,7 +59,7 @@ def main():
     
     #运行回测
     if source == 'OneDrive' and run:
-        onedrive_link = 'https://1drv.ms/x/s!Ag9ZvloaJitBjy8YIdiLf5Wkr4O6?e=cwBjTO'
+        onedrive_link = os.getenv('ONEDRIVE_DATA_URL')
         with st.spinner("加载数据中..."):
             url = create_onedrive_directdownload(onedrive_link)
             df = read_file(url)
@@ -80,7 +84,7 @@ def main():
         dfb = search(df, opt1)
         st.dataframe(dfb)
 
-        dfb.to_excel('/Users/zhangliyao/Desktop/result.xlsx', index=False) # change to download button when needed
+        dfb.to_excel(os.getenv('DOWNLOAD_PATH') + '//result.xlsx', index=False) # change to download button when needed
         st.success("运行成功！数据已下载至桌面")
 
 # *** 工具类函数 *** #
@@ -232,9 +236,6 @@ def calc_success(df):
 def float_to_pct(floatpoint):
     return str(round(floatpoint*100, 3))+'%'
 
-def pct_to_float(pct):
-    return float(pct.strip('%'))/100
-
 def remove_exclamation(text):
     text = text.replace('！','').split('新发现')[1]
     text = text.replace('模型','')
@@ -244,31 +245,19 @@ def remove_exclamation(text):
 #onedrive
 @st.cache_data
 def load_history():
-    onedrive_link = 'https://1drv.ms/x/s!Ag9ZvloaJitBkDvM3TVDY7HffBxS'
+    onedrive_link = os.getenv('ONEDRIVE_HISTORY_URL')
     url = create_onedrive_directdownload(onedrive_link)
-    df = pd.read_excel(url, sheet_name=1, converters = {'盘口': str, 'week': str}) # Change me once a year
+    df = pd.read_excel(url, sheet_name=1, converters = {'盘口': str, 'week': str}) # Change me every season
     df = df[df['模型'].notnull()]
     df = df.reset_index()
     del df['index']
     return df
-
-def create_onedrive_directdownload(onedrive_link):
-    data_bytes64 = base64.b64encode(bytes(onedrive_link, 'utf-8'))
-    data_bytes64_String = data_bytes64.decode('utf-8').replace('/','_').replace('+','-').rstrip("=")
-    resultUrl = f"https://api.onedrive.com/v1.0/shares/u!{data_bytes64_String}/root/content"
-    return resultUrl
 
 def read_file(data):
     df = pd.read_excel(data, sheet_name = 1, converters = {'盘口': str, '竞彩': str, '比分': str})
     df['盘口数字'] = df['盘口'].astype(float)
     df['算法'] = df['算法'].fillna('球伯乐')
     df['注释'] = df['注释'].fillna('')
-    df['批注胜'] = df['批注胜'].fillna('')
-    df['批注平'] = df['批注平'].fillna('')
-    df['批注负'] = df['批注负'].fillna('')
-    df['批注让胜'] = df['批注让胜'].fillna('')
-    df['批注让平'] = df['批注让平'].fillna('')
-    df['批注让负'] = df['批注让负'].fillna('')
     return df
     
 # *** 核心层函数 *** #
@@ -489,7 +478,7 @@ def search(df, opt1):
     history = False
     if opt1:
         history = True
-    dfb = pd.DataFrame(columns=['联赛','比赛','让球方','盘口','模型','平均概率','最长遗漏','高频比分','频率','算法数量','正误','注释'])
+    dfb = pd.DataFrame(columns=['联赛','比赛','让球方','盘口','模型','平均概率','最长遗漏','高频比分','频率','算法数量','正误'])
     
     #储存每一行信息的变量
     liga = '中甲'
@@ -531,13 +520,6 @@ def search(df, opt1):
                 line, freq = score_freq(score)
             #上盘
             if sum(uppr_count)/algo > 0.5 and algo > 1:
-                #注释和批注
-                com_str = ''
-                if comment:
-                    for item in comment:
-                        item = str(item)
-                        com_str += str(item + ",")
-                    com_str = com_str[:-1]
                 #写入上盘信息
                 avg_best = mean(avg_uppr)
                 if home:
@@ -569,16 +551,9 @@ def search(df, opt1):
                     st.write('新发现！三星级上盘模型：',prev,'平均概率',round(avg_best,2),'%')
                 else:
                     model = ''
-                dfb = dfb.append({'联赛': liga, '比赛': prev, '让球方': side, '盘口': hand, '模型': model, '平均概率': str(round(avg_best,2))+'%', '最长遗漏': num_miss, '高频比分': line, '频率': freq, '算法数量': str(sum(uppr_count))+'/'+str(algo), '正误': outcome, '注释': com_str}, ignore_index=True)
+                dfb = dfb.append({'联赛': liga, '比赛': prev, '让球方': side, '盘口': hand, '模型': model, '平均概率': str(round(avg_best,2))+'%', '最长遗漏': num_miss, '高频比分': line, '频率': freq, '算法数量': str(sum(uppr_count))+'/'+str(algo), '正误': outcome}, ignore_index=True)
             #下盘
             elif sum(down_count)/algo > 0.5 and algo > 1:
-                #注释和批注
-                com_str = ''
-                if comment:
-                    for item in comment:
-                        item = str(item)
-                        com_str += str(item + ",")
-                    com_str = com_str[:-1]
                 #写入下盘信息
                 avg_best = mean(avg_down)
                 if home:
@@ -610,7 +585,7 @@ def search(df, opt1):
                     st.write('新发现！三星级下盘模型：',prev,'平均概率',round(avg_best,2),'%')
                 else:
                     model = ''
-                dfb = dfb.append({'联赛': liga, '比赛': prev, '让球方': side, '盘口': hand, '模型': model, '平均概率': str(round(avg_best,2))+'%', '最长遗漏': num_miss, '高频比分': line, '频率': freq, '算法数量': str(sum(down_count))+'/'+str(algo), '正误': outcome, '注释': com_str}, ignore_index=True)
+                dfb = dfb.append({'联赛': liga, '比赛': prev, '让球方': side, '盘口': hand, '模型': model, '平均概率': str(round(avg_best,2))+'%', '最长遗漏': num_miss, '高频比分': line, '频率': freq, '算法数量': str(sum(down_count))+'/'+str(algo), '正误': outcome}, ignore_index=True)
             st.write('=============================================')
             #重置上一场比赛信息
             algo = 1
@@ -835,34 +810,11 @@ def search(df, opt1):
         temp_score = tuple(temp_score)
         score += temp_score
         
-        #收集注释和批注
-        if row['算法'] == '球伯乐' and row['注释']:
-            comment.append(row['注释'])
-        if row['批注胜']:
-            comment.append('胜:'+row['批注胜'])
-        if row['批注平']:
-            comment.append('平:'+row['批注平'])
-        if row['批注负']:
-            comment.append('负:'+row['批注负'])
-        if row['批注让胜']:
-            comment.append('让胜:'+row['批注让胜'])
-        if row['批注让平']:
-            comment.append('让平:'+row['批注让平'])
-        if row['批注让负']:
-            comment.append('让负:'+row['批注让负'])
-        
         #处理最后一行        
         if index == df[df['H'].isnull() & df['盘口'].notnull()].index[-1]:
             line, freq = score_freq(score)
             #上盘
             if sum(uppr_count)/algo > 0.5 and algo > 1:
-                #注释和批注
-                com_str = ''
-                if comment:
-                    for item in comment:
-                        item = str(item)
-                        com_str += str(item + ",")
-                    com_str = com_str[:-1]
                 #写入上盘信息
                 avg_best = mean(avg_uppr)
                 if home:
@@ -894,16 +846,9 @@ def search(df, opt1):
                     st.write('新发现！三星级上盘模型：',prev,'平均概率',round(avg_best,2),'%')
                 else:
                     model = ''
-                dfb = dfb.append({'联赛': liga, '比赛': prev, '让球方': side, '盘口': hand, '模型': model, '平均概率': str(round(avg_best,2))+'%', '最长遗漏': num_miss, '高频比分': line, '频率': freq, '算法数量': str(sum(uppr_count))+'/'+str(algo), '正误': outcome, '注释': com_str}, ignore_index=True)
+                dfb = dfb.append({'联赛': liga, '比赛': prev, '让球方': side, '盘口': hand, '模型': model, '平均概率': str(round(avg_best,2))+'%', '最长遗漏': num_miss, '高频比分': line, '频率': freq, '算法数量': str(sum(uppr_count))+'/'+str(algo), '正误': outcome}, ignore_index=True)
             #下盘
             elif sum(down_count)/algo > 0.5 and algo > 1:
-                #注释和批注
-                com_str = ''
-                if comment:
-                    for item in comment:
-                        item = str(item)
-                        com_str += str(item + ",")
-                    com_str = com_str[:-1]
                 #写入下盘信息
                 avg_best = mean(avg_down)
                 if home:
@@ -935,7 +880,7 @@ def search(df, opt1):
                     st.write('新发现！三星级下盘模型：',prev,'平均概率',round(avg_best,2),'%')
                 else:
                     model = ''
-                dfb = dfb.append({'联赛': liga, '比赛': prev, '让球方': side, '盘口': hand, '模型': model, '平均概率': str(round(avg_best,2))+'%', '最长遗漏': num_miss, '高频比分': line, '频率': freq, '算法数量': str(sum(down_count))+'/'+str(algo), '正误': outcome, '注释': com_str}, ignore_index=True)
+                dfb = dfb.append({'联赛': liga, '比赛': prev, '让球方': side, '盘口': hand, '模型': model, '平均概率': str(round(avg_best,2))+'%', '最长遗漏': num_miss, '高频比分': line, '频率': freq, '算法数量': str(sum(down_count))+'/'+str(algo), '正误': outcome}, ignore_index=True)
             st.write('=============================================')
         #提取赛果并储存
         if history:

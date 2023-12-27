@@ -6,14 +6,18 @@ Last Edit 12/26/2023
 
 星辰智盈数据自动获取系统 with Streamlit
 """
-
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
+import io
+import os
 import time
+import base64
 import pandas as pd
 import streamlit as st
 from stqdm import stqdm
+from dotenv import load_dotenv
 from datetime import datetime, timedelta
+from utils import create_onedrive_directdownload, pct_to_float, clean_leagues, clean_teams
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
@@ -26,43 +30,41 @@ def main():
     page_title="星辰数据获取",
     )
     st.title("星辰智盈数据自动获取系统")
+    load_dotenv()
 
     # Mode & Time
-    # 全选
-    # 早盘-早场 适合前一天23:00左右运行，时间默认为前一天21:00 - 比赛日7:00
-    # 早盘-晚场 适合比赛日4:00左右运行，时间默认为比赛日7:00-20:00
-    # 临场-普通
-    # 临场-预约 用户指定比赛和盘口，根据开球时间自动抓取数据并回测，将结果发送邮箱
-
     today = datetime.today().replace(minute=0)
     today_modified = today.replace(minute=0, second=0, microsecond=0)
-    get_qbl = get_zsxt = get_gplj = get_sqnl = get_lsqt = False
+    get_qbl = get_zsxt = get_ohfc = get_gplj = get_sqnl = get_lsqt = False
     with st.form("user_input"):
-        mode = st.radio('选择模式', options=('全选', '早盘', '临场'), help='全选包括早盘临场5大算法，早盘算法指球伯乐及指数形态，临场算法指公平量价、赛前能量和联赛球探')
+        mode = st.radio('选择模式', options=('全选', '早盘', '临场', 'Autopilot'), 
+            help='全选包括早盘临场6大算法；早盘算法指球伯乐、指数形态和欧核方差；临场算法指公平量价、赛前能量和联赛球探；Autopilot指预约时间段自动抓取数据回测，并将结果发送邮箱')
         if mode == '全选':
-            get_qbl = get_zsxt = get_gplj = get_sqnl = get_lsqt = True
+            get_qbl = get_zsxt = get_ohfc = get_gplj = get_sqnl = get_lsqt = True
         elif mode == '早盘':
-            get_qbl = get_zsxt = True
+            get_qbl = get_zsxt = get_ohfc = True
         elif mode == '临场':
             get_gplj = get_sqnl = get_lsqt = True
+        # TODO Autopilot
         col1, col2 = st.columns(2)
         with col1:
             start_time = st.slider("开始时间", value=today_modified,
-                    min_value=today_modified - timedelta(hours=32),
-                    max_value=today_modified + timedelta(hours=8),
+                    min_value=today_modified - timedelta(hours=30),
+                    max_value=today_modified + timedelta(hours=10),
                     step=timedelta(minutes=30),
                     format="MM/DD - HH:mm").strftime('%m-%d %H:%M')
         with col2:
             end_time = st.slider("结束时间", value=today_modified,
                     min_value=today_modified - timedelta(hours=24),
-                    max_value=today_modified + timedelta(hours=12),
+                    max_value=today_modified + timedelta(hours=16),
                     step=timedelta(minutes=30),
                     format="MM/DD - HH:mm").strftime('%m-%d %H:%M')
             headless = st.toggle('Headless', value=False, help="运行时隐藏浏览器")
         submitted = st.form_submit_button("运行")
     
     if submitted:
-        st.write("已选择时间段：{}-{}".format(start_time, end_time))
+        # TODO 统计时间
+        st.write("已选择{}模式，时间段：{}-{}".format(mode, start_time, end_time))
         driver = init_service(headless)
         login(driver)
         time.sleep(5)
@@ -85,6 +87,15 @@ def main():
                 algo.click()
                 with st.spinner("正在获取指数形态数据..."):
                     df_zsxt = scrape(driver, text, start_time, end_time)
+            else:
+                pass
+
+        for algo in algos:
+            text = algo.text
+            if text == '欧核方差' and get_ohfc:
+                algo.click()
+                with st.spinner("正在获取欧核方差数据..."):
+                    df_ohfc = scrape(driver, text, start_time, end_time)
             else:
                 pass
             
@@ -117,101 +128,27 @@ def main():
             
         # Combine data
         if mode == '全选':                     
-            df_final = pd.concat([df_qbl, df_zsxt, df_gplj, df_sqnl, df_lsqt])
+            df_final = pd.concat([df_qbl, df_zsxt, df_ohfc, df_gplj, df_sqnl, df_lsqt])
         elif mode == '早盘':
-            df_final = pd.concat([df_qbl, df_zsxt])
+            df_final = pd.concat([df_qbl, df_zsxt, df_ohfc])
         elif mode == '临场':
             with st.spinner("合并数据中..."):
-                onedrive_link = 'https://1drv.ms/x/s!Ag9ZvloaJitBjy8YIdiLf5Wkr4O6?e=cwBjTO'
+                onedrive_link = os.getenv('ONEDRIVE_DATA_URL')
                 url = create_onedrive_directdownload(onedrive_link)
                 df = read_file(url)
-                min_time = min(start_time_gplj, start_time_sqnl, start_time_lsqt) #判断最早时间
-                df_selected = df[(df['开球时间']>=min_time.strftime('%m-%d %H:%M'))&(df['年']==2023)] #每年改一次
+                df_selected = df[(df['开球时间']>=start_time) & (df['年']==datetime.now().year)]
                 data_selected = pd.concat([df_gplj, df_sqnl, df_lsqt])
                 df_final = pd.concat([df_selected, data_selected])
-            st.success('数据合并成功！')
 
         # 下载/上传数据库
         # 方案一：所有读写均通过数据库，管理员定期负责下载最新数据并同步给excel
-        # 方案二：读写直接通过调用onedrive，可检查数据重复
-        file_name = "星辰数据_{mode}{date}.xlsx".format(mode=mode, date=today.strftime('%m-%d'))
-        df_final.to_excel('/Users/zhangliyao/Desktop//'+file_name, index=False)
+        # 方案二：读写直接通过调用onedrive，需要检查数据重复
+        df_final = df_final.sort_values(by=['开球时间','联赛','比赛'])
+        file_name = "//星辰数据_{mode}{date}.xlsx".format(mode=mode, date=today.strftime('%m-%d'))
+        df_final.to_excel(os.getenv('DOWNLOAD_PATH') + file_name, index=False)
 
         st.success('数据获取成功！')
   
-def clean_leagues(league_name):
-    '''返回清洗后的联赛名称及是否属于收录的联赛'''
-    league_dict = {'美职':'美职联','日职':'日职联','冠军杯':'欧冠','智利甲':'智甲','欧霸杯':'欧联','南俱杯':'南球杯','世美预':'南美预选'}
-
-    league_list = ['美职联','日职联','德乙','德甲','西甲','英超','欧冠','阿甲','欧联','法甲','巴甲','意甲','欧国联',
-                  '墨超','葡超','荷甲','英冠','解放者杯','欧预赛','南球杯','瑞典超','挪超','世界杯','美洲杯','亚洲预选',
-                  '西乙','比甲','智甲','南美预选','世预赛','北美预选','欧洲杯','欧协联']
-    
-    for key, value in league_dict.items():
-        league_name = league_name.replace(key, value)
-        
-    if league_name in league_list:
-        return league_name, True
-    else:
-        return league_name, False
-    
-def clean_teams(home, away, league_name):
-    '''
-    返回清洗后的球队名称
-    Last Edit: 11/30/2023
-    '''
-    teams_dict = {'日职联':{'鸟栖沙岩':'鸟栖砂岩','清水鼓动':'清水心跳','名古屋鲸八':'名古屋逆戟鲸'},
-                  '美职联':{'辛辛那提FC':'辛辛那提','温哥华白帽':'温哥华白浪','堪萨斯城竞技':'堪萨斯城体育','波特兰伐木工':'波特兰伐木者'},
-                  '阿甲':{'普拉腾斯':'普拉滕斯竞技','泰格雷':'老虎竞技','竞技俱乐部':'竞技','圣塔菲联':'圣菲联','巴拉卡斯中央队':'巴拉卡斯中央',
-                            '科隆竞技':'哥伦布竞技','铁路工场':'塔列雷斯','阿尔多西维':'阿尔多希维','科尔多瓦中央SDE':'科尔多瓦中央','联合队':'科尔多瓦学院',
-                            '阿根廷独立':'独立','萨尔米安杜':'萨米恩托','飓风队':'飓风','帕特罗纳图':'天主教青年','防御与正义':'国防与司法','天主教青年会':'天主教青年'},
-                  '德甲':{'莱比锡红牛':'RB莱比锡'},
-                  '西甲':{'维戈塞尔塔':'塞尔塔','马洛卡':'马略卡','阿尔梅利亚':'阿尔梅里亚','瓦拉多利德':'巴拉多利德','加的斯':'加迪斯'},
-                  '英超':{'南安普敦':'南安普顿','曼彻斯特联':'曼联','曼彻斯特城':'曼城','莱切斯特城':'莱斯特城','托特纳姆热刺':'热刺'},
-                  '法甲':{'巴黎圣日尔曼':'巴黎圣日耳曼'},
-                  '意甲':{'克雷莫纳':'克雷莫内塞','弗洛西诺尼':'弗罗西诺内'},
-                  '欧冠':{'比尔森':'比尔森胜利','萨尔茨堡':'萨尔茨堡红牛','格拉斯哥流浪者':'流浪者','年轻人':'伯尔尼年轻人'},
-                  '欧联':{'谢里夫':'蒂拉斯波尔警长','LASK林茨':'林茨','帕纳辛纳科斯':'帕纳辛奈科斯','利马索尔阿里斯':'阿里斯利马索尔'},
-                  '欧协联':{'第聂伯罗特警':'SK第聂伯罗','波兹南':'波兹南莱赫','比尔舒华夏普尔':'贝尔谢巴工人','萨尔格里斯':'扎尔吉里斯',
-                            '布加勒斯特星队':'布加勒斯特星','列加斯':'里加足球学校','伊斯坦布':'伊斯坦布尔','利马索尔阿波罗':'阿波罗利马索尔',
-                            '奥林比查':'卢布尔雅那奥林匹亚','泰拿华斯巴达':'特纳瓦斯巴达','萨连斯基':'莫斯塔尔兹林斯基','卢甘斯克黎明':'索尔亚','卡拉卡斯维克':'克拉克斯维克',
-                            '贝雷达比历克':'布列达布利克'},
-                  '德乙':{'不伦瑞克':'布伦瑞克'},
-                  '英冠':{'加的夫城':'卡迪夫城','布里斯托城':'布里斯托尔城','西布罗姆维奇':'西布朗'},
-                  '西乙':{'格拉纳达GF':'格拉纳达','米兰迪斯':'米兰德斯','安道尔CF':'FC安道尔','阿尔巴切特':'阿尔瓦塞特','特內里费':'特内里费','艾科坎':'阿尔科孔',
-                            '费路尔':'费罗尔竞技', '艾尔德斯':'埃登斯'},
-                  '巴甲':{'奥瓦':'阿瓦伊','科里蒂巴':'库里蒂巴','布拉干蒂诺RB':'布拉甘蒂诺红牛','戈伊亚斯':'戈亚斯','福塔雷萨':'福塔莱萨','库亚巴':'奎尔巴'},
-                  '墨超':{'老虎大学':'墨西哥老虎','马萨特兰FC':'马萨特兰','蒙特瑞':'蒙特雷','墨西哥美洲':'美洲','阿苏尔':'蓝十字',
-                            '拿加沙':'内卡萨','圣路易斯竞技':'圣路易斯','提华纳':'蒂华纳'},
-                  '葡超':{'波尔蒂芒尼斯':'波尔蒂芒人','沙维什':'沙维斯','吉维森特':'吉尔维森特','里奥阿维':'阿维河','里斯本竞技':'葡萄牙体育',
-                              '卡沙比亞':'卡萨皮亚','维兹拉':'维泽拉','费雷拉':'帕索斯费雷拉','马里迪莫':'马德拉航海','摩雷伦斯':'莫雷拉人','法伦斯':'法鲁人'},
-                  '荷甲':{'埃门':'埃蒙','福图纳锡塔德':'锡塔德幸运','PSV埃因霍温':'埃因霍温','维迪斯':'维特斯','赫拉克勒斯':'阿尔梅罗大力神'},
-                  '瑞典超':{'韦纳穆':'瓦纳默','IFK哥德堡':'哥德堡','AIK索尔纳':'索尔纳','布鲁马波卡纳':'布洛马波卡纳'},
-                  '挪超':{'奥德':'奥特','博德闪耀':'博多格林特','格里姆斯塔':'谢夫','桑纳菲尤尔':'桑德菲杰','萨尔普斯堡':'萨普斯堡'},
-                  '比甲':{'奥德赫维里':'奥哈瓦里','聚尔特瓦雷赫姆':'威尔郡','沙勒罗瓦':'沙勒鲁瓦','瑟兰联':'塞莱恩','吉马雷斯':'吉马良斯'},
-                  '智甲':{'尤尼昂':'拉卡勒拉联','科金博':'科金博联合','维尼亚德马埃弗顿':'比尼亚德尔马埃弗顿','库里科':'库里科联合','马加拉内斯':'麦哲伦',
-                          '塞雷那':'拉塞雷纳','纽夫莱恩斯':'纽布伦斯','希金斯':'奥希金斯','科布雷索':'科布雷萨尔','奥达斯':'奥达科斯意大利人','华奇巴托':'瓦奇巴托'},
-                  '解放者杯':{'万卡约':'万卡约体育','巴拉圭国民':'亚松森国民','水晶体育':'水晶竞技','曼特宁独立':'麦德林独立','时刻准备':'时刻准备着','麦罗波利塔诺':'大都会',
-                              '蒙得维的亚国民':'乌拉圭民族','国民体育会':'国民竞技','瓜亚基尔':'巴塞罗那SC','佩雷拉':'佩雷拉体育','蒙得维的':'利物浦','亚松森自由':'自由',
-                              '亚松森奥林匹亚':'奥林匹亚'},
-                  '南球杯':{'德尔瓦耶独立':'山谷独立','卡巴列罗':'卡巴雷罗将军','港发院':'卡贝略港大学','利加大学':'基多大学','德芬':'海豚','奥利恩特':'东方石油',
-                            '丹奴比奥':'多瑙河','亚松森瓜拉尼':'巴拉圭瓜拉尼','艾美利亚诺体育':'阿梅利亚诺体育','艾斯图第安特':'梅里达大学生','塔奇拉':'塔齐拉体育',
-                            '阿古拉斯多拉达斯':'里奥内格罗老鹰','卡萨大学队':'卡萨大学','普诺双国':'两国竞技','帕马科亚':'棕榈竞技','昆卡':'昆卡体育','托利马体育':'托里马体育',
-                            '大学生体育':'秘鲁体育大学'},
-                  '世界杯':{'沙特':'沙特阿拉伯'}
-                  }
-    
-    for league_key, league_values in teams_dict.items():
-        for key, value in league_values.items():
-            if home == key:
-                home = home.replace(key, value)
-            if away == key:
-                away = away.replace(key, value)
-    return home, away
-
-def pct_to_float(pct):
-    return float(pct.strip('%'))/100
-
 def strip_parent(string):
     new_string = string.split('(')[1].split(')')[0]
     if not new_string.startswith('-'):
@@ -219,7 +156,7 @@ def strip_parent(string):
     return new_string
 
 def init_service(headless):
-    driver_path = '/Users/zhangliyao/Downloads/chromedriver' # use env later
+    driver_path = os.getenv('CHROME_DRIVER_PATH')
 
     # Mobile Device
     mobile_emulation = {"deviceName": "iPhone 12 Pro"}
@@ -233,18 +170,18 @@ def init_service(headless):
     driver = webdriver.Chrome(service=Service(executable_path=driver_path), options=chrome_options)
 
     # Open web page
-    driver.get("https://xczy.sp1x2.net/xczy-web/") # use env later
+    driver.get(os.getenv('XINGCHEN_URL'))
     driver.fullscreen_window()
     return driver
 
 def login(driver):
     # Input the phone number
     phone_input = WebDriverWait(driver, 10).until(EC.presence_of_element_located(
-        (By.CLASS_NAME, 'van-field__control'))).send_keys('18566258659') # use env later
+        (By.CLASS_NAME, 'van-field__control'))).send_keys(os.getenv('XINGCHEN_NUMBER'))
 
     # Input the password
     password_input = driver.find_elements(By.CLASS_NAME, 'van-field__control')[1]
-    password_input.send_keys('990311') # use env later
+    password_input.send_keys(os.getenv('XINGCHEN_KEY'))
 
     # Login button
     login_button = WebDriverWait(driver, 10).until(
@@ -274,7 +211,8 @@ def get_matches(driver, algo_name, start_time, end_time):
                                '注释','比分','进球数','竞彩'])
     match_list = driver.find_element(By.CLASS_NAME, 'matchs-ul')
     matches = match_list.find_elements(By.TAG_NAME, 'li')
-    for match in stqdm(matches, algo_name):
+    # FIXME 进行中比赛无法获取bug
+    for match in stqdm(matches):
         match_info = match.text
         match_context = match_info.split('\n')[0]
         game = match_info.split('\n')[1]
@@ -311,7 +249,7 @@ def get_matches(driver, algo_name, start_time, end_time):
             time.sleep(2)
 
             # jingcai
-            detail_context = WebDriverWait(driver, 10).until(EC.presence_of_element_located(
+            detail_context = WebDriverWait(driver, 20).until(EC.presence_of_element_located(
                 (By.CSS_SELECTOR, 'div[class="time"][data-v-039f5c22]')))
             if detail_context.text.__contains__('竞彩'):
                 jingcai = '是'
@@ -319,7 +257,7 @@ def get_matches(driver, algo_name, start_time, end_time):
                 jingcai = ''
 
             # probabilities
-            prob1 = WebDriverWait(driver, 10).until(EC.presence_of_element_located(
+            prob1 = WebDriverWait(driver, 20).until(EC.presence_of_element_located(
                 (By.XPATH, '/html/body/div[1]/div/div[1]/div/div[4]/div/div[2]/div[2]/div/div[4]/div/div[2]/div[1]/div/div/div[1]'))).text
             p_win = pct_to_float(prob1.split('\n')[0].split('主胜')[1])
             sp_home = float(prob1.split('\n')[1].replace('sp', ''))
@@ -392,24 +330,11 @@ def scrape(driver, algo_name, start_time, end_time):
     back(driver)
     return df
 
-def create_onedrive_directdownload(onedrive_link):
-    '''Create onedrive url'''
-    data_bytes64 = base64.b64encode(bytes(onedrive_link, 'utf-8'))
-    data_bytes64_String = data_bytes64.decode('utf-8').replace('/','_').replace('+','-').rstrip("=")
-    resultUrl = f"https://api.onedrive.com/v1.0/shares/u!{data_bytes64_String}/root/content"
-    return resultUrl
-
 def read_file(data):
     '''Read excel from onedrive'''
     df = pd.read_excel(data, sheet_name = 1, converters = {'盘口': str, '竞彩': str, '比分': str})
     df['盘口数字'] = df['盘口'].astype(float)
     df['注释'] = df['注释'].fillna('')
-    df['批注胜'] = df['批注胜'].fillna('')
-    df['批注平'] = df['批注平'].fillna('')
-    df['批注负'] = df['批注负'].fillna('')
-    df['批注让胜'] = df['批注让胜'].fillna('')
-    df['批注让平'] = df['批注让平'].fillna('')
-    df['批注让负'] = df['批注让负'].fillna('')
     return df
 
 if __name__ == "__main__":
