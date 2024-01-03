@@ -7,6 +7,8 @@ Last Edit 12/26/2023
 
 星辰智盈自动回测系统 with Streamlit
 """
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 import re
 import io
 import os
@@ -149,11 +151,7 @@ def load_dashboard(df_history):
     
     #指标3：最佳球队
     df_temp_teams = find_recommend(df_metric)
-    
     df_table_team = df_temp_teams.groupby('team').aggregate({'success': 'mean', '比赛':'count'}).sort_values(by=['success', '比赛']).reset_index()
-    threshold = int(len(df_temp_teams)/150)
-    df_table_team = df_table_team[df_table_team['比赛']>=threshold].reset_index()
-    del df_table_team['index']
     
     #指标4：最佳联赛
     df_table_league = df_metric.groupby('联赛').aggregate({'success': 'mean', '比赛':'count'}).sort_values(by='success', ascending=False).reset_index()
@@ -167,18 +165,22 @@ def load_dashboard(df_history):
     df_table_handicap['盘口'] = '('+df_table_handicap['盘口']+')'
     del df_table_handicap['index']
 
+    #指标7：最佳组合
+    df_table_combo = df_metric.groupby(['模型', '盘口']).aggregate({'success': 'mean', '比赛':'count'}).sort_values(by='success', ascending=False).reset_index()
+    df_table_combo = df_table_combo[df_table_combo['success'] != 1].reset_index()
+    del df_table_combo['index']
+
     #指标展示
     col1, col2, col3 = st.columns(3)
     col1.metric(label="总体平均胜率", value=float_to_pct(total_avg_success), delta=float_to_pct(total_avg_success_delta))
     col2.metric(label="近期胜率", value=float_to_pct(recent_avg_success), delta=float_to_pct(recent_avg_success_delta), help='最近一个完整比赛周的胜率，并和再上一周的胜率进行对比')
     col3.metric(label="最佳球队", value=df_table_team['team'][len(df_table_team)-1], delta=df_table_team['team'][len(df_table_team)-2], delta_color='off', help='推荐比赛中赢盘率最高的前两支球队')
 
-    col4, col5, col6 = st.columns(3)
-    col4.metric(label="最佳联赛", value=df_table_league['联赛'][0], delta=df_table_league['联赛'][1], delta_color='off', help='胜率最高的前两个联赛')
-    col5.metric(label="最佳模型", value=df_table_model['模型'][0], delta=df_table_model['模型'][1], delta_color='off', help='胜率最高的前两个模型')
-    col6.metric(label="最佳盘口", value=df_table_handicap['盘口'][len(df_table_handicap)-1], delta=df_table_handicap['盘口'][len(df_table_handicap)-2], delta_color='off', help='胜率最高的前两个盘口')
+    col1.metric(label="最佳联赛", value=df_table_league['联赛'][0], delta=df_table_league['联赛'][1], delta_color='off', help='胜率最高的前两个联赛')
+    col2.metric(label="最佳模型", value=df_table_model['模型'][0], delta=df_table_model['模型'][1], delta_color='off', help='胜率最高的前两个模型')
+    col3.metric(label="最佳盘口", value=df_table_handicap['盘口'][len(df_table_handicap)-1], delta=df_table_handicap['盘口'][len(df_table_handicap)-2], delta_color='off', help='胜率最高的前两个盘口')
     
-    st.metric(label='最佳组合', value='敬请期待')
+    col1.metric(label='最佳组合', value=df_table_combo['模型'][0] + df_table_combo['盘口'][0], delta=df_table_combo['模型'][1] + df_table_combo['盘口'][1], delta_color='off', help='胜率最高的前两个模型盘口组合')
 
     #图0：每周胜率折线图
     df_table_weekly_success = df_metric.groupby('week').aggregate({'success': 'mean', '比赛':'count'}).reset_index().round(decimals=2)
@@ -192,6 +194,17 @@ def load_dashboard(df_history):
     with st.expander("23-24赛季胜率走势", expanded=True): # Change me once a year
         st.plotly_chart(fig0)
         
+    # #组合条件筛选
+    # cond_col1, cond_col2, cond_col3 = st.columns(3)
+    # league_select = cond_col1.selectbox('联赛', options=df_metric['联赛'].sort_values().unique())
+    # model_select = cond_col2.selectbox('模型', options=df_metric['模型'].sort_values().unique())
+    # handicap_select = cond_col3.selectbox('盘口', options=df_metric['盘口'].sort_values(ascending=False).unique())
+
+    #比赛数量筛选
+    threshold = st.slider('比赛数量筛选', value=int(len(df_temp_teams)/150), max_value=max(df_table_team['比赛']))
+    df_table_team = df_table_team[df_table_team['比赛']>=threshold].reset_index()
+    del df_table_team['index']
+
     figcol1, figcol2 = st.columns(2)
     with figcol1:
         #图1：各联赛胜率柱状图
@@ -220,6 +233,10 @@ def load_dashboard(df_history):
         with st.expander("最新盘口胜率", expanded=True):
                 st.plotly_chart(fig4)      
         
+    #表0：组合红黑榜
+    with st.expander('组合红黑榜', expanded=True):
+        st.dataframe(df_table_combo, width=1000)
+    
     #表1：球队红黑榜
     df_table_team = df_table_team.sort_values(by=['success', '比赛'], ascending=False).reset_index()
     del df_table_team['index']
@@ -254,7 +271,7 @@ def load_history():
     return df
 
 def read_file(data):
-    df = pd.read_excel(data, sheet_name = 1, converters = {'盘口': str, '竞彩': str, '比分': str})
+    df = pd.read_excel(data, sheet_name = 1, converters = {'盘口': str, '竞彩': str, '比分': str, '主赔': float, '客赔': float})
     df['盘口数字'] = df['盘口'].astype(float)
     df['算法'] = df['算法'].fillna('球伯乐')
     df['注释'] = df['注释'].fillna('')
@@ -606,7 +623,7 @@ def search(df, opt1):
         away = False
         deep = False
         
-        #判断让球方
+        #判断让球方 TODO
         if row['盘口'].__contains__('-'):
             if (row['盘口']=='-0.25') and (row['让胜'] <= row['平']+row['胜']+0.03) and (row['让胜'] >= row['平']+row['胜']-0.03) and (0 < (row['胜']+row['平']) < 1):
                 away = True

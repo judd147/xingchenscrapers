@@ -37,15 +37,14 @@ def main():
     today_modified = today.replace(minute=0, second=0, microsecond=0)
     get_qbl = get_zsxt = get_ohfc = get_gplj = get_sqnl = get_lsqt = False
     with st.form("user_input"):
-        mode = st.radio('选择模式', options=('全选', '早盘', '临场', 'Autopilot'), 
-            help='全选包括早盘临场6大算法；早盘算法指球伯乐、指数形态和欧核方差；临场算法指公平量价、赛前能量和联赛球探；Autopilot指预约时间段自动抓取数据回测，并将结果发送邮箱')
+        mode = st.radio('选择模式', options=('全选', '早盘', '临场'), 
+            help='全选包括早盘临场6大算法；早盘算法指球伯乐、指数形态和欧核方差；临场算法指公平量价、赛前能量和联赛球探')
         if mode == '全选':
             get_qbl = get_zsxt = get_ohfc = get_gplj = get_sqnl = get_lsqt = True
         elif mode == '早盘':
             get_qbl = get_zsxt = get_ohfc = True
         elif mode == '临场':
             get_gplj = get_sqnl = get_lsqt = True
-        # TODO Autopilot
         col1, col2 = st.columns(2)
         with col1:
             start_time = st.slider("开始时间", value=today_modified,
@@ -63,8 +62,8 @@ def main():
         submitted = st.form_submit_button("运行")
     
     if submitted:
-        # TODO 统计时间
-        st.write("已选择{}模式，时间段：{}-{}".format(mode, start_time, end_time))
+        start_clock = time.time() # 统计时间
+        st.info(f"已选择{mode}模式 {start_time}-{end_time}")
         driver = init_service(headless)
         login(driver)
         time.sleep(5)
@@ -141,13 +140,17 @@ def main():
                 df_final = pd.concat([df_selected, data_selected])
 
         # 下载/上传数据库
-        # 方案一：所有读写均通过数据库，管理员定期负责下载最新数据并同步给excel
+        # 现状：读通过onedrive，写通过下载excel表，人工审核后复制粘贴到onedrive
+        # 方案一：所有读写均通过MySQL数据库，管理员定期负责下载最新数据并同步给onedrive
         # 方案二：读写直接通过调用onedrive，需要检查数据重复
         df_final = df_final.sort_values(by=['开球时间','联赛','比赛'])
         file_name = "//星辰数据_{mode}{date}.xlsx".format(mode=mode, date=today.strftime('%m-%d'))
         df_final.to_excel(os.getenv('DOWNLOAD_PATH') + file_name, index=False)
 
-        st.success('数据获取成功！')
+        elapsed_time = time.time() - start_clock
+        minutes = int(elapsed_time // 60)
+        seconds = int(elapsed_time % 60)
+        st.success(f"数据获取成功！耗时: {minutes} 分 {seconds} 秒")
   
 def strip_parent(string):
     new_string = string.split('(')[1].split(')')[0]
@@ -211,13 +214,12 @@ def get_matches(driver, algo_name, start_time, end_time):
                                '注释','比分','进球数','竞彩'])
     match_list = driver.find_element(By.CLASS_NAME, 'matchs-ul')
     matches = match_list.find_elements(By.TAG_NAME, 'li')
-    # FIXME 进行中比赛无法获取bug
     for match in stqdm(matches):
         match_info = match.text
         match_context = match_info.split('\n')[0]
         game = match_info.split('\n')[1]
         date = match_context.split(' ')[0] + ' ' + match_context.split(' ')[1]
-        league = match_context.split(' ')[2].replace('完赛', '')
+        league = match_context.split(' ')[2].replace('完赛', '').replace('进行中', '')
         # proceed if league is target
         league_name, isTarget = clean_leagues(league)
         if isTarget and (start_time <= date <= end_time):
@@ -231,13 +233,17 @@ def get_matches(driver, algo_name, start_time, end_time):
             home, away = clean_teams(home, away, league_name)
             # scoreline
             if game.__contains__('VS'):
-                H = ''
-                A = ''
+                H = None
+                A = None
+                match_text = home+'-'+away
             else:
                 part1 = game.split(':')[0]
                 part2 = game.split(':')[1]
                 H = part1.split(' ')[-1]
                 A = part2.split(' ')[0]
+                match_text = home+H+'-'+A+away
+                H = int(H)
+                A = int(A)
 
             # Match detail
             if match_context.split(' ')[2].__contains__('完赛'):
@@ -314,8 +320,8 @@ def get_matches(driver, algo_name, start_time, end_time):
             
             # append to dataframe
             if not small_sample:
-                row_data = {'开球时间':date, '算法':algo_name, '联赛':league_name, '比赛':home+'-'+away,
-                            '胜':p_win, '平':p_draw, '负':p_loss, '让胜':p_hand_win,'让平':p_hand_draw,
+                row_data = {'开球时间':date, '算法':algo_name, '联赛':league_name, '比赛':match_text,
+                            '胜':p_win, '平':p_draw, '负':p_loss, 'H':H, 'A':A, '让胜':p_hand_win,'让平':p_hand_draw,
                             '让负':p_hand_loss, '注释':comment, '比分':scoreline, '竞彩':jingcai}
                 df = df.append(row_data, ignore_index=True)
 
