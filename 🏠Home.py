@@ -32,7 +32,7 @@ def main():
     st.checkbox('增加直播火线数据')
     st.subheader('星辰智盈数据自动回测系统')
     st.checkbox('增加组合查询功能', value=True)
-    st.checkbox('🚧 增加模拟盈亏功能，结合真实赔率数据计算盈利能力')
+    st.checkbox('增加模拟盈亏功能，结合真实赔率数据计算盈利能力', value=True)
     st.checkbox('🚧 升级算法提高预测成功率（方差法，伯努利抽样分布，提高数量门槛等）')
     st.checkbox('增加历史赛季胜率数据展示')
     st.subheader('比分盘口自动获取系统')
