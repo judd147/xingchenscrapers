@@ -23,7 +23,9 @@ def pct_to_float(pct):
   '''
   Convert percent String to float
   '''
-  return float(pct.strip('%'))/100
+  if isinstance(pct, str):
+      return float(pct.strip('%'))/100
+  return pct
 
 def map_leagues(league):
   '''Last Edit: 12/26/2023'''
