@@ -3,7 +3,7 @@
 Liyao Zhang
 
 Start Date 4/4/2022
-Last Edit 1/11/2024
+Last Edit 1/16/2024
 
 星辰智盈自动回测系统 with Streamlit
 """
@@ -53,7 +53,6 @@ def main():
             del df_season['index']
             load_dashboard(df_season)
         
-    
             #查询球队历史战绩
             with st.form("search_history_{i}".format(i=i)):
                 team2search = st.text_input('输入球队名称', help='用于查询球队历史战绩')
@@ -95,7 +94,8 @@ def main():
         with st.spinner("加载数据中..."):
             df = read_file(file)
         dfb = search(df, opt1)
-        dfb['week'] = df_history['week'].astype(int).max() + 1
+        df_season = df_history[worksheet_names[0]]
+        dfb['week'] = df_season['week'].astype(int).max() + 1
         st.dataframe(dfb)
 
         dfb.to_excel(os.getenv('DOWNLOAD_PATH') + '//result.xlsx', index=False) # change to download button when needed
@@ -134,7 +134,7 @@ def find_recommend(df_metric):
     df_temp_teams.loc[(df_temp_teams['让球方']=='客让')&(df_temp_teams['模型'].str.contains('下盘')), 'team'] = df_temp_teams['Home']
     return df_temp_teams
 
-def load_dashboard(df_history):
+def load_dashboard(df_history): # TODO 增加模拟盈亏指标计算及展示
     '''
     指标计算及可视化
     '''
@@ -186,8 +186,6 @@ def load_dashboard(df_history):
 
     #指标7：最佳组合
     df_table_combo = df_metric.groupby(['模型', '盘口']).aggregate({'success': 'mean', '比赛':'count'}).sort_values(by='success', ascending=False).reset_index()
-    df_table_combo = df_table_combo[df_table_combo['success'] != 1].reset_index()
-    del df_table_combo['index']
 
     #指标展示
     col1, col2, col3 = st.columns(3)
@@ -196,11 +194,11 @@ def load_dashboard(df_history):
     col3.metric(label="最佳球队", value=df_table_team['team'][len(df_table_team)-1], delta=df_table_team['team'][len(df_table_team)-2], delta_color='off', help='推荐比赛中赢盘率最高的前两支球队')
 
     if len(df_table_league['联赛'].unique()) > 1:
-        league_delta = df_table_league['联赛'][1]
+        league_delta = df_table_league['联赛'][len(df_table_league)-2]
     else:
         league_delta = '暂无'
-    col1.metric(label="最佳联赛", value=df_table_league['联赛'][0], delta=league_delta, delta_color='off', help='胜率最高的前两个联赛')
-    col2.metric(label="最佳模型", value=df_table_model['模型'][0], delta=df_table_model['模型'][1], delta_color='off', help='胜率最高的前两个模型')
+    col1.metric(label="最佳联赛", value=df_table_league['联赛'][len(df_table_league)-1], delta=league_delta, delta_color='off', help='胜率最高的前两个联赛')
+    col2.metric(label="最佳模型", value=df_table_model['模型'][len(df_table_model)-1], delta=df_table_model['模型'][len(df_table_model)-2], delta_color='off', help='胜率最高的前两个模型')
     col3.metric(label="最佳盘口", value=df_table_handicap['盘口'][len(df_table_handicap)-1], delta=df_table_handicap['盘口'][len(df_table_handicap)-2], delta_color='off', help='胜率最高的前两个盘口')
     
     col1.metric(label='最佳组合', value=df_table_combo['模型'][0] + df_table_combo['盘口'][0], delta=df_table_combo['模型'][1] + df_table_combo['盘口'][1], delta_color='off', help='胜率最高的前两个模型盘口组合')
@@ -223,8 +221,8 @@ def load_dashboard(df_history):
     # model_select = cond_col2.selectbox('模型', options=df_metric['模型'].sort_values().unique())
     # handicap_select = cond_col3.selectbox('盘口', options=df_metric['盘口'].sort_values(ascending=False).unique())
 
-    #比赛数量筛选
-    threshold = st.slider('比赛数量筛选', value=int(len(df_temp_teams)/150), max_value=max(df_table_team['比赛']))
+    #球队比赛数量筛选
+    threshold = st.slider('球队比赛数量筛选', value=int(len(df_temp_teams)/150), max_value=max(df_table_team['比赛']))
     df_table_team = df_table_team[df_table_team['比赛']>=threshold].reset_index()
     del df_table_team['index']
 
@@ -258,6 +256,8 @@ def load_dashboard(df_history):
         
     #表0：组合红黑榜
     with st.expander('组合红黑榜', expanded=True):
+        df_table_combo = df_table_combo[df_table_combo['比赛'] >= threshold].reset_index()
+        del df_table_combo['index']
         st.dataframe(df_table_combo, width=1000)
     
     #表1：球队红黑榜

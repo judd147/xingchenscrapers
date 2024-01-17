@@ -263,7 +263,7 @@ def get_matches(driver, algo_name, start_time, end_time):
                 jingcai = ''
 
             # probabilities
-            prob1 = WebDriverWait(driver, 20).until(EC.presence_of_element_located(
+            prob1 = WebDriverWait(driver, 50).until(EC.presence_of_element_located(
                 (By.XPATH, '/html/body/div[1]/div/div[1]/div/div[4]/div/div[2]/div[2]/div/div[4]/div/div[2]/div[1]/div/div/div[1]'))).text
             p_win = pct_to_float(prob1.split('\n')[0].split('主胜')[1])
             sp_home = float(prob1.split('\n')[1].replace('sp', ''))
