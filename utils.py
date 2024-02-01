@@ -14,7 +14,7 @@ def read_file(data):
   '''
   读取onedrive数据库(轻量级)
   '''
-  df = pd.read_excel(data, sheet_name=1, converters={'盘口': str, '竞彩': str, '比分': str}, skiprows=[1, 50000]) # read last n rows for performance
+  df = pd.read_excel(data, sheet_name=1, converters={'盘口': str, '竞彩': str, '比分': str}, skiprows=[1, 60000]) # read last n rows for performance
   df['开球时间'] = df['开球时间'].fillna('')
   df['注释'] = df['注释'].fillna('')
   return df
@@ -44,7 +44,7 @@ def map_leagues(league):
   return league
     
 def map_teams(team):
-  '''Last Edit: 1/26/2024'''
+  '''Last Edit: 1/31/2024'''
   teams_dict = {
   #✔
   '美职联':{'Portland Timbers':'波特兰伐木者','Los Angeles FC':'洛杉矶FC','Minnesota United FC':'明尼苏达联','New England Revolution':'新英格兰革命',
@@ -118,7 +118,7 @@ def map_teams(team):
         'Barracas Central':'巴拉卡斯中央','San Lorenzo':'圣洛伦索','Racing Club':'竞技','Newells Old Boys':'纽维尔老男孩','Club Atlético Unión':'圣菲联',
         'River Plate':'河床','Arsenal de Sarandi':'萨兰迪兵工厂','Godoy Cruz Antonio Tomba':'戈多伊克鲁斯','Belgrano':'贝尔格拉诺','Lanus':'拉努斯',
         'Sarmiento Junin':'萨米恩托','Gimnasia La Plata':'拉普拉塔体操','Central Cordoba SDE':'科尔多瓦中央','Velez Sarsfield':'萨斯菲尔德',
-        'CA Platense':'普拉滕斯竞技','Independiente Rivadavia':'里瓦达维亚独立'},
+        'CA Platense':'普拉滕斯竞技','Independiente Rivadavia':'里瓦达维亚独立','Deportivo Riestra':'利斯特雷'},
   #✔
   '巴甲':{'Palmeiras':'帕尔梅拉斯','Goias':'戈亚斯','Cuiaba':'奎尔巴','America MG':'米内罗美洲','Bragantino':'布拉甘蒂诺红牛','Gremio (RS)':'格雷米奥',
         'Atletico Mineiro':'米内罗竞技','Botafogo RJ':'博塔弗戈','Vasco da Gama':'瓦斯科达伽马','Fluminense RJ':'弗鲁米嫩塞','Corinthians Paulista (SP)':'科林蒂安',
