@@ -58,7 +58,7 @@ def map_teams(team):
   '日职联':{'Urawa Red Diamonds':'浦和红钻','Kyoto Sanga':'京都不死鸟','Yokohama Marinos':'横滨水手','Sagan Tosu':'鸟栖砂岩','Kawasaki Frontale':'川崎前锋',
           'FC Tokyo':'东京FC','Avispa Fukuoka':'福冈黄蜂','Nagoya Grampus':'名古屋逆戟鲸','Consadole Sapporo':'札幌冈萨多','Shonan Bellmare':'湘南海洋',
           'Hiroshima Sanfrecce':'广岛三箭','Vissel Kobe':'神户胜利船','Kashima Antlers':'鹿岛鹿角','Cerezo Osaka':'大阪樱花','Gamba Osaka':'大阪钢巴',
-          'Albirex Niigata':'新泻天鹅','Yokohama FC':'横滨FC','Kashiwa Reysol':'柏太阳神','Jubilo Iwata':'磐田喜悦','Machida Zelvia':'町田泽维亚'},
+          'Albirex Niigata':'新泻天鹅','Yokohama FC':'横滨FC','Kashiwa Reysol':'柏太阳神','Jubilo Iwata':'磐田喜悦','Machida Zelvia':'町田泽维亚','Tokyo Verdy':'东京绿茵'},
   #✔
   '德乙':{'Nurnberg':'纽伦堡','Greuther Furth':'菲尔特','SC Paderborn 07':'帕德博恩','SV Wehen Wiesbaden':'韦恩','Schalke 04':'沙尔克04','Magdeburg':'马格德堡',
         'Hansa Rostock':'罗斯托克','Fortuna Dusseldorf':'杜塞尔多夫','Karlsruher SC':'卡尔斯鲁厄','Kaiserslautern':'凯泽斯劳滕','SV Elversberg':'埃弗斯堡',
