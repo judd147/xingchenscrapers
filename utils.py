@@ -32,7 +32,7 @@ def map_leagues(league):
   league_dict = {
     '美职联':'USA Major League Soccer','日职联':'J1 League','德乙':'German Bundesliga 2','德甲':'German Bundesliga','西甲':'Spanish La Liga',
     '英超':'English Premier League','欧冠':'UEFA Champions League','阿甲':'Argentine Division 1','欧联':'UEFA Europa League','法甲':'France Ligue 1',
-    '巴甲':'Brazil Serie A','意甲':'Italian Serie A','欧国联':'','墨超':'Primera Division Liga MX','葡超':'Liga Portugal 1','荷甲':'Holland Eredivisie',
+    '巴甲':'Brazil Serie A','意甲':'Italian Serie A','欧国联':'UEFA Nations League','墨超':'Primera Division Liga MX','葡超':'Liga Portugal 1','荷甲':'Holland Eredivisie',
     '英冠':'England Championship','解放者杯':'Copa Libertadores','欧预赛':'UEFA European Championship','瑞典超':'Swedish Allsvenskan',
     '挪超':'Norwegian Tippeligaen','南球杯':'Copa Sudamericana','世界杯':'','美洲杯':'','亚洲预选':'',
     '西乙':'Spanish La Liga 2','比甲':'Belgian Pro League','智甲':'','南美预选':'FIFA World Cup qualification (CONMEBOL)',
@@ -161,14 +161,14 @@ def map_teams(team):
   'America':{'Peru':'秘鲁','Brazil':'巴西','Chile':'智利','Colombia':'哥伦比亚','Venezuela':'委内瑞拉','Paraguay':'巴拉圭','Ecuador':'厄瓜多尔',
             'Uruguay':'乌拉圭','Bolivia':'玻利维亚','Argentina':'阿根廷'},
 
-  'Europe':{'Bosnia-Herzegovina':'波黑','Croatia':'克罗地亚','Latvia':'拉脱维亚','Cyprus':'塞浦路斯','Scotland':'苏格兰','Luxembourg':'卢森堡',
+  'Europe':{'Bosnia and Herzegovina':'波黑','Croatia':'克罗地亚','Latvia':'拉脱维亚','Cyprus':'塞浦路斯','Scotland':'苏格兰','Luxembourg':'卢森堡',
           'Iceland':'冰岛','Slovakia':'斯洛伐克','Portugal':'葡萄牙','Turkey':'土耳其','Armenia':'亚美尼亚','Georgia':'格鲁吉亚','Spain':'西班牙',
           'Kosovo':'科索沃','Switzerland':'瑞士','North Macedonia':'马其顿','Italy':'意大利','Romania':'罗马尼亚','Israel':'以色列','Andorra':'安道尔',
           'Belarus':'白俄罗斯','Estonia':'爱沙尼亚','Sweden':'瑞典','Ukraine':'乌克兰','England':'英格兰','Azerbaijan':'阿塞拜疆','Belgium':'比利时',
           'Albania':'阿尔巴尼亚','Poland':'波兰','Greece':'希腊','Ireland':'爱尔兰','Netherlands':'荷兰','Lithuania':'立陶宛','Serbia':'塞尔维亚',
           'Slovenia':'斯洛文尼亚','Faroe Islands':'法罗群岛','Moldova':'摩尔多瓦','Finland':'芬兰','Denmark':'丹麦','Montenegro':'黑山',
           'Bulgaria':'保加利亚','Kazakhstan':'哈萨克斯坦','Northern Ireland':'北爱尔兰','Wales':'威尔士','France':'法国','Norway':'挪威',
-          'Austria':'奥地利','Malta':'马耳他'},}
+          'Austria':'奥地利','Malta':'马耳他','Gibraltar':'直布罗陀'},}
 
   for league_key, league_values in teams_dict.items():
     for key, value in league_values.items():

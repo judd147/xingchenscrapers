@@ -212,8 +212,12 @@ def clean_handicap(handicap_value):
 
 def read_db():
   '''Read from onedrive and collect target league names'''
-  onedrive_link = os.getenv('ONEDRIVE_DATA_URL')
-  url = create_onedrive_directdownload(onedrive_link)
+  # read from onedrive
+  # onedrive_link = os.getenv('ONEDRIVE_DATA_URL')
+  # url = create_onedrive_directdownload(onedrive_link)
+
+  # read from local file
+  url = os.getenv('LOCAL_DATA_PATH')
   df = read_file(url)
   df_selected = df[df['盘口'].isnull()]
   df_selected = df_selected.reset_index()

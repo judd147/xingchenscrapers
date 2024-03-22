@@ -71,9 +71,13 @@ def main():
     
     #运行回测
     if source == 'OneDrive' and run:
-        onedrive_link = os.getenv('ONEDRIVE_DATA_URL')
         with st.spinner("加载数据中..."):
-            url = create_onedrive_directdownload(onedrive_link)
+            # read from onedrive
+            # onedrive_link = os.getenv('ONEDRIVE_DATA_URL')
+            # url = create_onedrive_directdownload(onedrive_link)
+
+            # read from local file
+            url = os.getenv('LOCAL_DATA_PATH')
             df = read_file(url)
         st.write(df.tail(num_show))
         dfb = search(df, False)
@@ -285,8 +289,12 @@ def remove_exclamation(text):
 #onedrive
 @st.cache_data
 def load_history():
-    onedrive_link = os.getenv('ONEDRIVE_HISTORY_URL')
-    url = create_onedrive_directdownload(onedrive_link)
+    # read from onedrive
+    # onedrive_link = os.getenv('ONEDRIVE_HISTORY_URL')
+    # url = create_onedrive_directdownload(onedrive_link)
+
+    # read from local file
+    url = os.getenv('LOCAL_HISTORY_PATH')
     df = pd.read_excel(url, sheet_name=None, converters = {'盘口': str, 'week': str}) # read all worksheets
     return df
 
