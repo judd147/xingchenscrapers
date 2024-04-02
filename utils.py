@@ -150,7 +150,7 @@ def map_teams(team):
   #✔
   '挪超':{'Haugesund':'海于格松','Viking':'维京','Molde':'莫尔德','Odd Grenland':'奥特','Sandefjord':'桑德菲杰','Stromsgodset':'斯托姆加斯特',
         'Valerenga':'瓦勒伦加','Aalesund FK':'奥勒松','Rosenborg':'罗森博格','Bodo Glimt':'博多格林特','Sarpsborg 08':'萨普斯堡','Lillestrom':'利勒斯特罗姆',
-        'Stabaek':'斯塔贝克','Brann':'布兰','Tromso IL':'特罗姆瑟','Ham-Kam':'汉坎'},
+        'Stabaek':'斯塔贝克','Brann':'布兰','Tromso IL':'特罗姆瑟','Ham-Kam':'汉坎','Fredrikstad':'腓特烈斯塔','KFUM Oslo':'KFUM奥斯陆'},
   #✔
   '比甲':{'Westerlo':'韦斯特洛','Royal Antwerp':'安特卫普','Club Brugge':'布鲁日','Charleroi':'沙勒鲁瓦','Saint Gilloise':'圣吉罗斯','Racing Genk':'亨克',
         'Jeunesse Molenbeek':'莫伦贝克','Cercle Brugge':'色格拉布鲁日','Sint-Truidense':'圣图尔登','Mechelen':'梅赫伦','Oud Heverlee':'奥哈瓦里',
