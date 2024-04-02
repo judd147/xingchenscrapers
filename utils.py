@@ -146,11 +146,11 @@ def map_teams(team):
   #✔
   '瑞典超':{'Djurgardens':'佐加顿斯','IFK Varnamo':'瓦纳默','IFK Goteborg':'哥德堡','Brommapojkarna':'布洛马波卡纳','IK Sirius FK':'天狼星',
           'Varbergs BoIS FC':'瓦尔贝里','Elfsborg':'埃尔夫斯堡','Kalmar':'卡尔马','Hacken':'赫根','Halmstads':'哈尔姆斯塔德','Hammarby':'哈马比',
-          'Malmo FF':'马尔默','AIK Solna':'索尔纳','Degerfors IF':'代格福什','IFK Norrkoping FK':'北雪平','Mjallby AIF':'米亚尔比'},
+          'Malmo FF':'马尔默','AIK Solna':'索尔纳','Degerfors IF':'代格福什','IFK Norrkoping FK':'北雪平','Mjallby AIF':'米亚尔比','Vasteras SK FK':'韦斯特罗斯'},
   #✔
   '挪超':{'Haugesund':'海于格松','Viking':'维京','Molde':'莫尔德','Odd Grenland':'奥特','Sandefjord':'桑德菲杰','Stromsgodset':'斯托姆加斯特',
         'Valerenga':'瓦勒伦加','Aalesund FK':'奥勒松','Rosenborg':'罗森博格','Bodo Glimt':'博多格林特','Sarpsborg 08':'萨普斯堡','Lillestrom':'利勒斯特罗姆',
-        'Stabaek':'斯塔贝克','Brann':'布兰','Tromso IL':'特罗姆瑟','Ham-Kam':'汉坎','Fredrikstad':'腓特烈斯塔','KFUM Oslo':'KFUM奥斯陆'},
+        'Stabaek':'斯塔贝克','Brann':'布兰','Tromso IL':'特罗姆瑟','Ham-Kam':'汉坎','Fredrikstad':'腓特烈斯塔','KFUM Oslo':'KFUM奥斯陆','Kristiansund BK':'克里斯蒂安松'},
   #✔
   '比甲':{'Westerlo':'韦斯特洛','Royal Antwerp':'安特卫普','Club Brugge':'布鲁日','Charleroi':'沙勒鲁瓦','Saint Gilloise':'圣吉罗斯','Racing Genk':'亨克',
         'Jeunesse Molenbeek':'莫伦贝克','Cercle Brugge':'色格拉布鲁日','Sint-Truidense':'圣图尔登','Mechelen':'梅赫伦','Oud Heverlee':'奥哈瓦里',
