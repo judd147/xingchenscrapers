@@ -44,7 +44,7 @@ def map_leagues(league):
   return league
     
 def map_teams(team):
-  '''Last Edit: 2/24/2024'''
+  '''Last Edit: 4/2/2024'''
   teams_dict = {
   #✔
   '美职联':{'Portland Timbers':'波特兰伐木者','Los Angeles FC':'洛杉矶FC','Minnesota United FC':'明尼苏达联','New England Revolution':'新英格兰革命',
@@ -111,7 +111,7 @@ def map_teams(team):
   '意甲':{'Genoa':'热那亚','Napoli':'那不勒斯','Inter Milan':'国际米兰','AC Milan':'AC米兰','Juventus':'尤文图斯','Lazio':'拉齐奥','AS Roma':'罗马',
         'Empoli':'恩波利','Fiorentina':'佛罗伦萨','Atalanta':'亚特兰大','Frosinone':'弗罗西诺内','Sassuolo':'萨索洛','Monza':'蒙扎','Lecce':'莱切',
         'Cagliari':'卡利亚里','Udinese':'乌迪内斯','Verona':'维罗纳','Bologna':'博洛尼亚','Salernitana':'萨勒尼塔纳','Torino':'都灵'},
-
+  #✔
   '阿甲':{'Banfield':'班菲尔德','Argentinos Juniors':'阿根廷青年人','Colon de Santa Fe':'哥伦布竞技','Rosario Central':'罗萨里奥中央',
         'Defensa Y Justicia':'国防与司法','Boca Juniors':'博卡青年','Club Atletico Tigre':'老虎竞技','Estudiantes La Plata':'拉普拉塔大学生',
         'Independiente':'独立','CA Huracan':'飓风','Talleres Cordoba':'塔列雷斯','Instituto AC Cordoba':'科尔多瓦学院','Atletico Tucuman':'图库曼竞技',
@@ -131,9 +131,10 @@ def map_teams(team):
 
   '智甲':{'':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
 
-  '解放者杯':{'':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
+  '解放者杯':{'Liga Dep. Universitaria Quito':'基多大学','Millonarios':'百万富翁','Cobresal':'科布雷萨尔','Barcelona SC(ECU)':'巴塞罗那SC','The Strongest':'最强者',
+            'Deportivo Tachira':'塔齐拉体育','Universitario De Deportes':'秘鲁体育大学','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
 
-  '南球杯':{'Liga Dep. Universitaria Quito':'基多大学','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
+  '南球杯':{'':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
   #✔
   '荷甲':{'Heracles Almelo':'阿尔梅罗大力神','FC Utrecht':'乌德勒支','PSV Eindhoven':'埃因霍温','NEC Nijmegen':'奈梅亨','Fortuna Sittard':'锡塔德幸运',
         'Volendam':'福伦丹','Vitesse Arnhem':'维特斯','RKC Waalwijk':'瓦尔韦克','Feyenoord':'费耶诺德','SC Heerenveen':'海伦芬','AZ Alkmaar':'阿尔克马尔',
