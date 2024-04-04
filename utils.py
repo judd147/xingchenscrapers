@@ -132,9 +132,10 @@ def map_teams(team):
   '智甲':{'':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
 
   '解放者杯':{'Liga Dep. Universitaria Quito':'基多大学','Millonarios':'百万富翁','Cobresal':'科布雷萨尔','Barcelona SC(ECU)':'巴塞罗那SC','The Strongest':'最强者',
-            'Deportivo Tachira':'塔齐拉体育','Universitario De Deportes':'秘鲁体育大学','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
-
-  '南球杯':{'':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
+            'Deportivo Tachira':'塔齐拉体育','Universitario De Deportes':'秘鲁体育大学','Nacional Montevideo':'乌拉圭民族','Clud Libertad':'自由',
+            'Atletico Junior Barranquilla':'巴兰基亚青年','Huachipato':'瓦奇巴托','Colo Colo':'科洛科洛','Cerro Porteno':'波特诺山丘','Alianza Lima':'利马联盟',
+            '':'','':'','':'','':'',
+            '':'','':'','':'','':''},
   #✔
   '荷甲':{'Heracles Almelo':'阿尔梅罗大力神','FC Utrecht':'乌德勒支','PSV Eindhoven':'埃因霍温','NEC Nijmegen':'奈梅亨','Fortuna Sittard':'锡塔德幸运',
         'Volendam':'福伦丹','Vitesse Arnhem':'维特斯','RKC Waalwijk':'瓦尔韦克','Feyenoord':'费耶诺德','SC Heerenveen':'海伦芬','AZ Alkmaar':'阿尔克马尔',
