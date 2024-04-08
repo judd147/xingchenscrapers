@@ -1,5 +1,16 @@
+import os
+import time
 import base64
 import pandas as pd
+from selenium import webdriver
+from selenium.webdriver import ActionChains
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, TimeoutException
 
 def create_onedrive_directdownload(onedrive_link):
   '''
@@ -44,7 +55,7 @@ def map_leagues(league):
   return league
     
 def map_teams(team):
-  '''Last Edit: 4/2/2024'''
+  '''Last Edit: 4/8/2024'''
   teams_dict = {
   #✔
   '美职联':{'Portland Timbers':'波特兰伐木者','Los Angeles FC':'洛杉矶FC','Minnesota United FC':'明尼苏达联','New England Revolution':'新英格兰革命',
@@ -146,9 +157,9 @@ def map_teams(team):
         'SC Farense':'法鲁人','Rio Ave':'阿维河','FC Famalicao':'法马利康','Sporting CP':'葡萄牙体育','Vitoria Guimaraes':'吉马良斯','Portimonense':'波尔蒂芒人',
         'FC Arouca':'阿罗卡','Casa Pia AC':'卡萨皮亚','Gil Vicente':'吉尔维森特','Estoril':'埃斯托里尔','Boavista FC':'博阿维斯塔','GD Chaves':'沙维斯'},
   #✔
-  '瑞典超':{'Djurgardens':'佐加顿斯','IFK Varnamo':'瓦纳默','IFK Goteborg':'哥德堡','Brommapojkarna':'布洛马波卡纳','IK Sirius FK':'天狼星',
-          'Varbergs BoIS FC':'瓦尔贝里','Elfsborg':'埃尔夫斯堡','Kalmar':'卡尔马','Hacken':'赫根','Halmstads':'哈尔姆斯塔德','Hammarby':'哈马比',
-          'Malmo FF':'马尔默','AIK Solna':'索尔纳','Degerfors IF':'代格福什','IFK Norrkoping FK':'北雪平','Mjallby AIF':'米亚尔比','Vasteras SK FK':'韦斯特罗斯'},
+  '瑞典超':{'Djurgardens':'佐加顿斯','IFK Varnamo':'瓦纳默','IFK Goteborg':'哥德堡','Brommapojkarna':'布洛马波卡纳','IK Sirius FK':'天狼星','Varbergs BoIS FC':'瓦尔贝里',
+          'Elfsborg':'埃尔夫斯堡','Kalmar':'卡尔马','Hacken':'赫根','Halmstads':'哈尔姆斯塔德','Hammarby':'哈马比','GAIS':'哥德堡盖斯','Malmo FF':'马尔默','AIK Solna':'索尔纳',
+          'Degerfors IF':'代格福什','IFK Norrkoping FK':'北雪平','Mjallby AIF':'米亚尔比','Vasteras SK FK':'韦斯特罗斯'},
   #✔
   '挪超':{'Haugesund':'海于格松','Viking':'维京','Molde':'莫尔德','Odd Grenland':'奥特','Sandefjord':'桑德菲杰','Stromsgodset':'斯托姆加斯特',
         'Valerenga':'瓦勒伦加','Aalesund FK':'奥勒松','Rosenborg':'罗森博格','Bodo Glimt':'博多格林特','Sarpsborg 08':'萨普斯堡','Lillestrom':'利勒斯特罗姆',
@@ -197,7 +208,7 @@ def clean_leagues(league_name):
 def clean_teams(home, away, league_name):
   '''
   返回清洗后的球队名称
-  Last Edit: 1/28/2024
+  Last Edit: 4/8/2024
   '''
   teams_dict = {'日职联':{'鸟栖沙岩':'鸟栖砂岩','清水鼓动':'清水心跳','名古屋鲸八':'名古屋逆戟鲸'},
                 '美职联':{'辛辛那提FC':'辛辛那提','温哥华白帽':'温哥华白浪','堪萨斯城竞技':'堪萨斯城体育','波特兰伐木工':'波特兰伐木者'},
@@ -227,7 +238,7 @@ def clean_teams(home, away, league_name):
                         '卡沙比亞':'卡萨皮亚','维兹拉':'维泽拉','费雷拉':'帕索斯费雷拉','马里迪莫':'马德拉航海','摩雷伦斯':'莫雷拉人','法伦斯':'法鲁人'},
                 '荷甲':{'埃门':'埃蒙','福图纳锡塔德':'锡塔德幸运','PSV埃因霍温':'埃因霍温','维迪斯':'维特斯','赫拉克勒斯':'阿尔梅罗大力神'},
                 '瑞典超':{'韦纳穆':'瓦纳默','IFK哥德堡':'哥德堡','AIK索尔纳':'索尔纳','布鲁马波卡纳':'布洛马波卡纳'},
-                '挪超':{'奥德':'奥特','博德闪耀':'博多格林特','格里姆斯塔':'谢夫','桑纳菲尤尔':'桑德菲杰','萨尔普斯堡':'萨普斯堡'},
+                '挪超':{'奥德':'奥特','博德闪耀':'博多格林特','格里姆斯塔':'谢夫','桑纳菲尤尔':'桑德菲杰','萨尔普斯堡':'萨普斯堡','奥斯陆KFUM':'KFUM奥斯陆'},
                 '比甲':{'奥德赫维里':'奥哈瓦里','聚尔特瓦雷赫姆':'威尔郡','沙勒罗瓦':'沙勒鲁瓦','瑟兰联':'塞莱恩','吉马雷斯':'吉马良斯'},
                 '智甲':{'尤尼昂':'拉卡勒拉联','科金博':'科金博联合','维尼亚德马埃弗顿':'比尼亚德尔马埃弗顿','库里科':'库里科联合','马加拉内斯':'麦哲伦',
                         '塞雷那':'拉塞雷纳','纽夫莱恩斯':'纽布伦斯','希金斯':'奥希金斯','科布雷索':'科布雷萨尔','奥达斯':'奥达科斯意大利人','华奇巴托':'瓦奇巴托'},
@@ -248,3 +259,128 @@ def clean_teams(home, away, league_name):
       if away == key:
         away = away.replace(key, value)
   return home, away
+
+def init_service(mode):
+  '''
+  Connect to the website and choose Bet365 as bookmaker
+  '''
+  # Initialize
+  driver_path = os.getenv('CHROME_DRIVER_PATH')
+  chrome_options = webdriver.ChromeOptions()
+  chrome_options.add_argument('--headless')
+  driver = webdriver.Chrome(service=Service(executable_path=driver_path), options=chrome_options)
+
+  #driver = webdriver.Safari(service=Service())
+  driver.implicitly_wait(10)
+  if (mode == 'last'):
+    driver.get(os.getenv('HANDICAP_URL_LAST'))
+  elif (mode == 'next'):
+    driver.get(os.getenv('HANDICAP_URL_NEXT'))
+  time.sleep(2)
+
+  # Select Bookmaker
+  buttons = driver.find_elements(By.CLASS_NAME, 'dropdown-toggle')
+  buttons[3].click()
+  
+  select_element = driver.find_element(By.NAME, 'book_filter')
+  select = Select(select_element)
+  select.select_by_visible_text('Bet365')
+  
+  # Submit Bookmaker
+  submit_setting = driver.find_element(By.ID, 'setting_submit')
+  submit_setting.click()
+  time.sleep(2)
+  
+  return driver
+    
+def select_league(driver, league_name):
+  '''
+  Filter page content by the league name
+  '''
+  # Select League
+  buttons = driver.find_elements(By.CLASS_NAME, 'dropdown.element-filter')
+  buttons[0].click()
+  
+  select_element = driver.find_element(By.NAME, 'search_filter')
+  select = Select(select_element)
+  select.select_by_visible_text(league_name)
+  
+  # Submit League
+  submit_league = driver.find_element(By.ID, 'search_submit')
+  submit_league.click()
+  time.sleep(2)
+    
+def scrape(driver):
+  '''
+  The main scaper that collects team names, final scores and handicaps
+  '''
+  # Collect Match Data
+  table1 = driver.find_element(By.ID, 'tablematch1') # locate data stored in table
+  rows = table1.find_elements(By.TAG_NAME, 'tr') # locate each row of table
+  home_name = away_name = home_score = away_score = ''
+  Home = []
+  Away = []
+  H = []
+  A = []
+  for row in rows:
+    elements = row.find_elements(By.TAG_NAME, 'td') # locate each element of row
+    # if first element is H, homescore is [3], if first element is A, awayscore is [2]
+    if elements[0].text == 'H':
+      home_name = elements[1].text
+      home_score = elements[3].text
+      while home_name[0].isdigit():
+        home_name = home_name[1:]
+      Home.append(home_name)
+      H.append(home_score)
+    elif elements[0].text == 'A':
+      away_name = elements[1].text
+      away_score = elements[2].text
+      while away_name[0].isdigit():
+        away_name = away_name[1:]
+      Away.append(away_name)
+      A.append(away_score)
+      
+  # Collect Odds Data
+  table2 = driver.find_element(By.ID, 'tablematch2') # locate data stored in table
+  rows = table2.find_elements(By.TAG_NAME, 'tr') # locate each row of table
+  Handicap = []
+  HomeOdds = []
+  AwayOdds = []
+  for row in rows:
+    elements = row.find_elements(By.TAG_NAME, 'td') # locate each element of row
+    if elements[0].text == 'H':
+      home_handicap = elements[1].text
+      home_odds = elements[4].text
+      #print(home_handicap)
+      Handicap.append(home_handicap)
+      HomeOdds.append(home_odds)
+    elif elements[0].text == 'A':
+      away_odds = elements[4].text
+      AwayOdds.append(away_odds)
+          
+  # Create dataframe columns from lists
+  df_result = pd.DataFrame()
+  df_result['主队'] = Home
+  df_result['H'] = H
+  df_result['A'] = A
+  df_result['客队'] = Away
+  df_result['盘口'] = Handicap
+  df_result['主赔'] = HomeOdds
+  df_result['客赔'] = AwayOdds
+  
+  return df_result
+
+def clean_result(df_result):
+  # Data Cleaning
+  df_result.loc[(df_result['盘口']=='0') & (df_result['主赔'] < df_result['客赔']), '盘口'] = '-0'
+  df_result.loc[(df_result['盘口']=='0') & (df_result['主赔'] > df_result['客赔']), '盘口'] = '+0'
+  df_result.loc[(df_result['盘口']=='0') & (df_result['主赔'] == df_result['客赔']), '盘口'] = '0'
+  df_result['盘口'] = df_result['盘口'].apply(clean_handicap)
+  
+  return df_result
+    
+def clean_handicap(handicap_value):
+  if not handicap_value.startswith('-') and not handicap_value.startswith('+'):
+    return '+'+handicap_value
+  else:
+    return handicap_value

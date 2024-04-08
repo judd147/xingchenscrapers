@@ -17,7 +17,7 @@ import streamlit as st
 from stqdm import stqdm
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
-from utils import create_onedrive_directdownload, pct_to_float, clean_leagues, clean_teams
+from utils import create_onedrive_directdownload, pct_to_float, map_leagues, map_teams, clean_leagues, clean_teams, init_service, select_league, scrape, clean_result, clean_handicap
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
@@ -52,13 +52,15 @@ def main():
                     max_value=today_modified + timedelta(hours=10),
                     step=timedelta(minutes=30),
                     format="MM/DD - HH:mm").strftime('%m-%d %H:%M')
+            
         with col2:
             end_time = st.slider("结束时间", value=today_modified,
                     min_value=today_modified - timedelta(hours=24),
                     max_value=today_modified + timedelta(hours=16),
                     step=timedelta(minutes=30),
                     format="MM/DD - HH:mm").strftime('%m-%d %H:%M')
-            headless = st.toggle('Headless', value=False, help="运行时隐藏浏览器")
+            headless = st.toggle('Headless', value=True, help="运行时隐藏浏览器")
+            
         submitted = st.form_submit_button("运行")
     
     if submitted:
@@ -139,8 +141,7 @@ def main():
                 data_selected = pd.concat([df_gplj, df_sqnl, df_lsqt])
                 df_final = pd.concat([df_selected, data_selected])
 
-        # 下载/上传数据库
-        # 现状：读通过onedrive，写通过下载excel表，人工审核后复制粘贴到onedrive
+        # 下载/上传数据库现状：读通过onedrive，写通过下载excel表，人工审核后复制粘贴到onedrive
         # 方案一：所有读写均通过MySQL数据库，管理员定期负责下载最新数据并同步给onedrive
         # 方案二：读写直接通过调用onedrive，需要检查数据重复
         df_final = df_final.sort_values(by=['开球时间','联赛','比赛'])
