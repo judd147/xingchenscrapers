@@ -134,7 +134,7 @@ def map_teams(team):
   '巴甲':{'Palmeiras':'帕尔梅拉斯','Goias':'戈亚斯','Cuiaba':'奎尔巴','America MG':'米内罗美洲','Bragantino':'布拉甘蒂诺红牛','Gremio (RS)':'格雷米奥',
         'Atletico Mineiro':'米内罗竞技','Botafogo RJ':'博塔弗戈','Vasco da Gama':'瓦斯科达伽马','Fluminense RJ':'弗鲁米嫩塞','Corinthians Paulista (SP)':'科林蒂安',
         'Bahia':'巴伊亚','Santos':'桑托斯','Cruzeiro':'克鲁塞罗','Sao Paulo':'圣保罗','Fortaleza':'福塔莱萨','Flamengo':'弗拉门戈','Atletico Paranaense':'巴拉纳竞技',
-        'Internacional RS':'巴西国际','Coritiba PR':'库里蒂巴'},
+        'Internacional RS':'巴西国际','Coritiba PR':'库里蒂巴','Criciuma':'克里丘马','Juventude':'尤文图德'},
   #✔
   '墨超':{'Club Tijuana':'蒂华纳','Toluca':'托卢卡','Mazatlan FC':'马萨特兰','CDSyC Cruz Azul':'蓝十字','Club America':'美洲','Chivas Guadalajara':'瓜达拉哈拉',
         'Monterrey':'蒙特雷','Club Leon':'莱昂','Necaxa':'内卡萨','FC Juarez':'华雷斯','Atlas':'阿特拉斯','Tigres UANL':'墨西哥老虎','Queretaro FC':'克雷塔罗',
