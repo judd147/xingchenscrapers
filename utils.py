@@ -11,6 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, TimeoutException
+from webdriver_manager.chrome import ChromeDriverManager
 
 def create_onedrive_directdownload(onedrive_link):
   '''
@@ -268,7 +269,7 @@ def init_service(mode):
   driver_path = os.getenv('CHROME_DRIVER_PATH')
   chrome_options = webdriver.ChromeOptions()
   chrome_options.add_argument('--headless')
-  driver = webdriver.Chrome(service=Service(executable_path=driver_path), options=chrome_options)
+  driver = webdriver.Chrome(service=Service(executable_path=ChromeDriverManager().install()), options=chrome_options)
 
   #driver = webdriver.Safari(service=Service())
   driver.implicitly_wait(10)

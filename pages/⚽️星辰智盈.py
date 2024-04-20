@@ -24,6 +24,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
 
 def main():
     st.set_page_config(
@@ -160,18 +161,17 @@ def strip_parent(string):
     return new_string
 
 def init_service(headless):
-    driver_path = os.getenv('CHROME_DRIVER_PATH')
-
+    #driver_path = os.getenv('CHROME_DRIVER_PATH')
     # Mobile Device
     mobile_emulation = {"deviceName": "iPhone 12 Pro"}
 
-    # Initialize Chrome Driver
+    # Initialize Driver
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument('--enable-automation')
     if headless:
         chrome_options.add_argument('--headless')
     chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
-    driver = webdriver.Chrome(service=Service(executable_path=driver_path), options=chrome_options)
+    driver = webdriver.Chrome(service=Service(executable_path=ChromeDriverManager().install()), options=chrome_options)
 
     # Open web page
     driver.get(os.getenv('XINGCHEN_URL'))
