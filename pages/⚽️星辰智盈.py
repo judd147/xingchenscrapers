@@ -161,7 +161,7 @@ def strip_parent(string):
     return new_string
 
 def init_service(headless):
-    #driver_path = os.getenv('CHROME_DRIVER_PATH')
+    driver_path = os.getenv('CHROME_DRIVER_PATH')
     # Mobile Device
     mobile_emulation = {"deviceName": "iPhone 12 Pro"}
 
@@ -171,7 +171,11 @@ def init_service(headless):
     if headless:
         chrome_options.add_argument('--headless')
     chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
-    driver = webdriver.Chrome(service=Service(executable_path=ChromeDriverManager().install()), options=chrome_options)
+    try:
+        driver = webdriver.Chrome(service=Service(executable_path=ChromeDriverManager().install()), options=chrome_options)
+    except:
+        driver = webdriver.Chrome(service=Service(executable_path=driver_path), options=chrome_options)
+        
 
     # Open web page
     driver.get(os.getenv('XINGCHEN_URL'))
