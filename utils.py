@@ -269,7 +269,10 @@ def init_service(mode):
   driver_path = os.getenv('CHROME_DRIVER_PATH')
   chrome_options = webdriver.ChromeOptions()
   chrome_options.add_argument('--headless')
-  driver = webdriver.Chrome(service=Service(executable_path=ChromeDriverManager().install()), options=chrome_options)
+  try:
+    driver = webdriver.Chrome(service=Service(executable_path=ChromeDriverManager().install()), options=chrome_options)
+  except:
+    driver = webdriver.Chrome(service=Service(executable_path=driver_path), options=chrome_options)
 
   #driver = webdriver.Safari(service=Service())
   driver.implicitly_wait(10)

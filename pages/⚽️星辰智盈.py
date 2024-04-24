@@ -17,7 +17,7 @@ import streamlit as st
 from stqdm import stqdm
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
-from utils import create_onedrive_directdownload, pct_to_float, map_leagues, map_teams, clean_leagues, clean_teams, init_service, select_league, scrape, clean_result, clean_handicap
+from utils import create_onedrive_directdownload, pct_to_float, clean_leagues, clean_teams
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
