@@ -283,16 +283,10 @@ def init_service(mode):
   time.sleep(2)
 
   # Select Bookmaker
-  buttons = driver.find_elements(By.CLASS_NAME, 'dropdown-toggle')
-  buttons[3].click()
-  
   select_element = driver.find_element(By.NAME, 'book_filter')
   select = Select(select_element)
   select.select_by_visible_text('Bet365')
-  
-  # Submit Bookmaker
-  submit_setting = driver.find_element(By.ID, 'setting_submit')
-  submit_setting.click()
+
   time.sleep(2)
   
   return driver
@@ -301,17 +295,11 @@ def select_league(driver, league_name):
   '''
   Filter page content by the league name
   '''
-  # Select League
-  buttons = driver.find_elements(By.CLASS_NAME, 'dropdown.element-filter')
-  buttons[0].click()
-  
+  # Select League  
   select_element = driver.find_element(By.NAME, 'search_filter')
   select = Select(select_element)
   select.select_by_visible_text(league_name)
-  
-  # Submit League
-  submit_league = driver.find_element(By.ID, 'search_submit')
-  submit_league.click()
+
   time.sleep(2)
     
 def scrape(driver):
