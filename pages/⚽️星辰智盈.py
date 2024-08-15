@@ -14,7 +14,6 @@ import time
 import base64
 import pandas as pd
 import streamlit as st
-from stqdm import stqdm
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
 from utils import create_onedrive_directdownload, pct_to_float, clean_leagues, clean_teams
@@ -176,7 +175,6 @@ def init_service(headless):
     except:
         driver = webdriver.Chrome(service=Service(executable_path=driver_path), options=chrome_options)
         
-
     # Open web page
     driver.get(os.getenv('XINGCHEN_URL'))
     driver.fullscreen_window()
@@ -219,7 +217,7 @@ def get_matches(driver, algo_name, start_time, end_time):
                                '注释','比分','进球数','竞彩'])
     match_list = driver.find_element(By.CLASS_NAME, 'matchs-ul')
     matches = match_list.find_elements(By.TAG_NAME, 'li')
-    for match in stqdm(matches):
+    for match in matches:
         match_info = match.text
         match_context = match_info.split('\n')[0]
         game = match_info.split('\n')[1]
@@ -261,7 +259,7 @@ def get_matches(driver, algo_name, start_time, end_time):
 
             # jingcai
             detail_context = WebDriverWait(driver, 20).until(EC.presence_of_element_located(
-                (By.CSS_SELECTOR, 'div[class="time"][data-v-039f5c22]')))
+                (By.CSS_SELECTOR, 'div[class="time"][data-v-0a37cbfe]')))
             if detail_context.text.__contains__('竞彩'):
                 jingcai = '是'
             else:
@@ -290,7 +288,7 @@ def get_matches(driver, algo_name, start_time, end_time):
             p_hand_loss = pct_to_float(prob6.split('\n')[0].split('让负')[1])
 
             # handicap
-            hand_info = driver.find_element(By.CSS_SELECTOR, 'span[class="h-d"][data-v-039f5c22]').text
+            hand_info = driver.find_element(By.XPATH, '//*[@id="app"]/div/div[1]/div/div[4]/div/div[2]/div[2]/div/div[4]/div/div[2]/div[2]/p/span[1]').text
             num_hand = strip_parent(hand_info).replace('1', '')
 
             if jingcai == '是':
@@ -305,7 +303,7 @@ def get_matches(driver, algo_name, start_time, end_time):
 
             # sample size
             bar_list = []
-            bars = driver.find_elements(By.CSS_SELECTOR, 'span[class="d-s-per"][data-v-039f5c22]')
+            bars = driver.find_elements(By.CLASS_NAME, 'd-s-per')
             for bar in bars:
                 bar_list.append(bar.text)
             goals_list = list(map(pct_to_float, bar_list))
@@ -319,8 +317,8 @@ def get_matches(driver, algo_name, start_time, end_time):
                 #print('小样本', min(goals_list))
 
             # recommended scoreline
-            top_score = driver.find_elements(By.CSS_SELECTOR, 'div[class="p-b-d-s first-s"][data-v-039f5c22]')[2].text.split('\n')[0]
-            sec_score = driver.find_elements(By.CSS_SELECTOR, 'div[class="p-b-d-s second-s"][data-v-039f5c22]')[2].text.split('\n')[0]
+            top_score = driver.find_elements(By.CLASS_NAME, 'p-b-d-s.first-s')[-1].text.split('\n')[0]
+            sec_score = driver.find_elements(By.CLASS_NAME, 'p-b-d-s.second-s')[-1].text.split('\n')[0]
             scoreline = top_score.replace(':', '-') + ' ' + sec_score.replace(':', '-')
             
             # append to dataframe
@@ -328,9 +326,11 @@ def get_matches(driver, algo_name, start_time, end_time):
                 row_data = {'开球时间':date, '算法':algo_name, '联赛':league_name, '比赛':match_text,
                             '胜':p_win, '平':p_draw, '负':p_loss, 'H':H, 'A':A, '让胜':p_hand_win,'让平':p_hand_draw,
                             '让负':p_hand_loss, '注释':comment, '比分':scoreline, '竞彩':jingcai}
-                df = df.append(row_data, ignore_index=True)
+                #df = df.append(row_data, ignore_index=True)
+                row_data_df = pd.DataFrame([row_data])
+                df = pd.concat([df, row_data_df], ignore_index=True)
 
-            back_button = driver.find_element(By.CSS_SELECTOR, 'img[class="back"][data-v-039f5c22]')
+            back_button = driver.find_element(By.XPATH, '//*[@id="app"]/div/div[1]/div/div[4]/div/div[2]/div[2]/div/div[4]/div/div[1]/div/img')
             back_button.click()
     return df
 

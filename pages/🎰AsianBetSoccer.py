@@ -11,7 +11,7 @@ import os
 import re
 import pandas as pd
 import streamlit as st
-from stqdm import stqdm
+#from stqdm import stqdm # not working as of 2024/6/29
 from datetime import datetime
 from dotenv import load_dotenv
 from utils import create_onedrive_directdownload, read_file, map_leagues, map_teams, init_service, select_league, scrape, clean_result, clean_handicap
@@ -24,27 +24,31 @@ def main():
   load_dotenv()
 
   with st.form("user_input"):
-    mode = st.radio('选择模式', options=('赛前盘口', '终场盘口'))
+    mode = st.radio('选择模式', options=('赛前盘口', '终场盘口'), index=1)
     if mode == '赛前盘口':
         mode_text = 'next'
     elif mode == '终场盘口':
         mode_text = 'last'
+
+    headless = st.toggle('Headless', value=True, help="运行时隐藏浏览器")
     submitted = st.form_submit_button("运行")
         
   if submitted:
-    driver = init_service(mode_text)
+    driver = init_service(mode_text, headless)
     st.success('初始化完成！')
     df_selected = read_db()
 
     # Scrape matches for each league and save as a df
     frames = []
     league_names = df_selected['联赛'].apply(map_leagues)
-    for league_name in stqdm(league_names.unique(), '获取数据中'):
+    for league_name in league_names.unique():
+    #for league_name in stqdm(league_names.unique(), '获取数据中'):
       try:
-        select_league(driver, league_name)
-        df_result = scrape(driver)
-        df_result = clean_result(df_result)
-        frames.append(df_result)
+        with st.spinner("正在获取"+league_name+'...'):
+          select_league(driver, league_name)
+          df_result = scrape(driver)
+          df_result = clean_result(df_result)
+          frames.append(df_result)
       except:
         st.error("获取联赛失败："+league_name)
 
@@ -92,7 +96,7 @@ def main():
     st.dataframe(final_result[final_result['error']])
 
 def contains_alphabet(text):
-  return bool(re.search(r'[a-zA-Z]', text))
+  return bool(re.search(r'[a-z]', text))
 
 def read_db():
   '''Read from onedrive and collect target league names'''

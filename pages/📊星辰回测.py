@@ -87,7 +87,7 @@ def main():
         buffer = io.BytesIO()
         with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
             dfb.to_excel(writer, index=False)
-            writer.save()
+            writer.close()
             st.download_button(
                 label="下载数据",
                 data=buffer,
@@ -145,7 +145,10 @@ def load_dashboard(df_history): # TODO 增加模拟盈亏指标计算及展示
     df_metric = clean_history(df_history)
 
     #联赛筛选
-    league_options = st.multiselect('联赛筛选', options=df_metric['联赛'].unique(), default=['英超','西甲','德甲','意甲','法甲','欧冠','欧联'])
+    try:
+        league_options = st.multiselect('联赛筛选', options=df_metric['联赛'].unique(), default=['英超','西甲','德甲','意甲','法甲','欧冠','欧联'])
+    except:
+        league_options = st.multiselect('联赛筛选', options=df_metric['联赛'].unique(), default=['欧洲杯'])
     df_metric = df_metric[df_metric['联赛'].isin(league_options)]
     if len(league_options) == 0:
         st.error('请选择至少一个联赛')
@@ -202,9 +205,14 @@ def load_dashboard(df_history): # TODO 增加模拟盈亏指标计算及展示
     else:
         league_delta = '暂无'
     col1.metric(label="最佳联赛", value=df_table_league['联赛'][len(df_table_league)-1], delta=league_delta, delta_color='off', help='胜率最高的前两个联赛')
-    col2.metric(label="最佳模型", value=df_table_model['模型'][len(df_table_model)-1], delta=df_table_model['模型'][len(df_table_model)-2], delta_color='off', help='胜率最高的前两个模型')
-    col3.metric(label="最佳盘口", value=df_table_handicap['盘口'][len(df_table_handicap)-1], delta=df_table_handicap['盘口'][len(df_table_handicap)-2], delta_color='off', help='胜率最高的前两个盘口')
-    
+    try:
+        col2.metric(label="最佳模型", value=df_table_model['模型'][len(df_table_model)-1], delta=df_table_model['模型'][len(df_table_model)-2], delta_color='off', help='胜率最高的前两个模型')
+    except:
+        pass
+    try:
+        col3.metric(label="最佳盘口", value=df_table_handicap['盘口'][len(df_table_handicap)-1], delta=df_table_handicap['盘口'][len(df_table_handicap)-2], delta_color='off', help='胜率最高的前两个盘口')
+    except:
+        pass
     col1.metric(label='最佳组合', value=df_table_combo['模型'][0] + df_table_combo['盘口'][0], delta=df_table_combo['模型'][1] + df_table_combo['盘口'][1], delta_color='off', help='胜率最高的前两个模型盘口组合')
 
     #图0：每周胜率折线图
@@ -938,8 +946,11 @@ def search(df, opt1):
                 else:
                     model = ''
                 if model != '':
-                    dfb = dfb.append({'开球时间': date, '联赛': liga, '比赛': prev, '让球方': side, '盘口': hand, '模型': model, '平均概率': round(avg_best/100, 4),
-                        '最长遗漏': num_miss, '高频比分': line, '频率': freq, '算法数量': str(sum(down_count))+'/'+str(algo), '正误': outcome, '模拟盈亏': profit}, ignore_index=True)
+                    row_data = {'开球时间': date, '联赛': liga, '比赛': prev, '让球方': side, '盘口': hand, '模型': model, '平均概率': round(avg_best/100, 4),
+                        '最长遗漏': num_miss, '高频比分': line, '频率': freq, '算法数量': str(sum(down_count))+'/'+str(algo), '正误': outcome, '模拟盈亏': profit}
+                    row_data_df = pd.DataFrame([row_data])
+                    dfb = pd.concat([dfb, row_data_df], ignore_index=True)
+                    
             st.write('=============================================')
         #提取赛果并储存
         if history:

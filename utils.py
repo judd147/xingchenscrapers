@@ -46,9 +46,9 @@ def map_leagues(league):
     '英超':'English Premier League','欧冠':'UEFA Champions League','阿甲':'Argentine Division 1','欧联':'UEFA Europa League','法甲':'France Ligue 1',
     '巴甲':'Brazil Serie A','意甲':'Italian Serie A','欧国联':'UEFA Nations League','墨超':'Primera Division Liga MX','葡超':'Liga Portugal 1','荷甲':'Holland Eredivisie',
     '英冠':'England Championship','解放者杯':'Copa Libertadores','欧预赛':'UEFA European Championship','瑞典超':'Swedish Allsvenskan',
-    '挪超':'Norwegian Tippeligaen','南球杯':'Copa Sudamericana','世界杯':'','美洲杯':'','亚洲预选':'',
-    '西乙':'Spanish La Liga 2','比甲':'Belgian Pro League','智甲':'','南美预选':'FIFA World Cup qualification (CONMEBOL)',
-    '世预赛':'','北美预选':'','欧洲杯':'','欧协联':'UEFA Europa Conference League'}
+    '挪超':'Norwegian Tippeligaen','南球杯':'Copa Sudamericana','世界杯':'','美洲杯':'Copa America','亚洲预选':'',
+    '西乙':'Spanish La Liga 2','比甲':'Belgian Pro League','智甲':'Chile Primera Division','南美预选':'FIFA World Cup qualification (CONMEBOL)',
+    '世预赛':'','北美预选':'','欧洲杯':'UEFA European Championship','欧协联':'UEFA Europa Conference League'}
 
   for key, value in league_dict.items():
     if league == key:
@@ -60,7 +60,7 @@ def map_teams(team):
   teams_dict = {
   #✔
   '美职联':{'Portland Timbers':'波特兰伐木者','Los Angeles FC':'洛杉矶FC','Minnesota United FC':'明尼苏达联','New England Revolution':'新英格兰革命',
-          'DC United':'华盛顿联','San Jose Earthquakes':'圣何塞地震','Inter Miami CF':'迈阿密国际','FC Kansas City':'堪萨斯城体育','Austin FC':'奥斯汀FC',
+          'DC United':'华盛顿联','San Jose Earthquakes':'圣何塞地震','Inter Miami CF':'迈阿密国际','Sporting Kansas City':'堪萨斯城体育','Austin FC':'奥斯汀FC',
           'Los Angeles Galaxy':'洛杉矶银河','St. Louis City':'圣路易斯城','Real Salt Lake':'皇家盐湖城','Colorado Rapids':'科罗拉多急流',
           'FC Dallas':'达拉斯FC','Seattle Sounders':'西雅图海湾人','Houston Dynamo':'休斯顿迪纳摩','Charlotte FC':'夏洛特FC','Montreal Impact':'蒙特利尔冲击',
           'Chicago Fire':'芝加哥火焰','Toronto FC':'多伦多FC','Vancouver Whitecaps':'温哥华白浪','Orlando City':'奥兰多城','Columbus Crew':'哥伦布机员',
@@ -75,7 +75,7 @@ def map_teams(team):
   '德乙':{'Nurnberg':'纽伦堡','Greuther Furth':'菲尔特','SC Paderborn 07':'帕德博恩','SV Wehen Wiesbaden':'韦恩','Schalke 04':'沙尔克04','Magdeburg':'马格德堡',
         'Hansa Rostock':'罗斯托克','Fortuna Dusseldorf':'杜塞尔多夫','Karlsruher SC':'卡尔斯鲁厄','Kaiserslautern':'凯泽斯劳滕','SV Elversberg':'埃弗斯堡',
         'Hamburger SV':'汉堡','Hannover 96':'汉诺威96','VfL Osnabruck':'奥斯纳布吕克','Hertha Berlin':'柏林赫塔','Eintracht Braunschweig':'布伦瑞克',
-        'St. Pauli':'圣保利','Holstein Kiel':'基尔'},
+        'St. Pauli':'圣保利','Holstein Kiel':'基尔','Jahn Regensburg':'雷根斯堡','SSV Ulm 1846':'乌尔姆','Preuben Munster':'明斯特普鲁士'},
   #✔
   '德甲':{'Bayern Munchen':'拜仁慕尼黑','Bayer Leverkusen':'勒沃库森','VfL Bochum':'波鸿','Eintracht Frankfurt':'法兰克福','FC Koln':'科隆',
         'TSG Hoffenheim':'霍芬海姆','FSV Mainz 05':'美因茨','VfB Stuttgart':'斯图加特','RB Leipzig':'RB莱比锡','Augsburg':'奥格斯堡','SC Freiburg':'弗赖堡',
@@ -96,7 +96,8 @@ def map_teams(team):
         'Blackburn Rovers':'布莱克本','Middlesbrough':'米德尔斯堡','Bristol City':'布里斯托尔城','West Bromwich(WBA)':'西布朗','Huddersfield Town':'哈德斯菲尔德',
         'Rotherham United':'罗瑟汉姆','Norwich City':'诺维奇','Stoke City':'斯托克城','Preston North End':'普雷斯顿','Plymouth Argyle':'普利茅斯',
         'Queens Park Rangers (QPR)':'女王公园巡游者','Sunderland A.F.C':'桑德兰','Sheffield Wednesday':'谢菲尔德星期三','Ipswich Town':'伊普斯维奇',
-        'Watford':'沃特福德','Birmingham City':'伯明翰','Millwall':'米尔沃尔','Leeds United':'利兹联'},
+        'Watford':'沃特福德','Birmingham City':'伯明翰','Millwall':'米尔沃尔','Leeds United':'利兹联','Portsmouth':'朴茨茅斯','Derby County':'德比郡',
+        'Oxford United':'牛津联队'},
   #✔
   '英超':{'Newcastle United':'纽卡斯尔','Brentford':'布伦特福德','Aston Villa':'阿斯顿维拉','Crystal Palace':'水晶宫','Fulham':'富勒姆','Luton Town':'卢顿',
         'Manchester United':'曼联','Brighton Hove Albion':'布莱顿','Tottenham Hotspur':'热刺','Sheffield United':'谢菲尔德联','West Ham United':'西汉姆联',
@@ -109,12 +110,12 @@ def map_teams(team):
   '欧联':{'Olympiakos Piraeus':'奥林匹亚科斯','Backa Topola':'托波拉','AEK Athens':'雅典AEK','Aris Limassol':'阿里斯利马索尔','Glasgow Rangers':'流浪者',
         'Sparta Praha':'布拉格斯巴达','Rakow Czestochowa':'琴斯托霍瓦','Sturm Graz':'格拉茨风暴','LASK Linz':'林茨','Maccabi Haifa':'海法马卡比',
         'Panathinaikos':'帕纳辛奈科斯','Servette':'塞尔维特','Sheriff Tiraspol':'蒂拉斯波尔警长','Slavia Praha':'布拉格斯拉维亚','Qarabag':'卡拉巴赫'},
-
+  #✔
   '欧协联':{'NK Olimpija Ljubljana':'卢布尔雅那奥林匹亚','Besiktas JK':'贝西克塔斯','Dinamo Zagreb':'萨格勒布迪纳摩','Lokomotiv Astana':'阿斯塔纳',
           'FC Viktoria Plzen':'比尔森胜利','KF Ballkani':'巴利卡尼','Lugano':'卢加诺','Maccabi Tel Aviv':'特拉维夫马卡比','Breidablik':'布列达布利克',
           'Slovan Bratislava':'布拉迪斯拉发','KI Klaksvik':'克拉克斯维克','Zorya':'索尔亚','Aberdeen':'阿伯丁','Fenerbahce':'费内巴切','Nordsjaelland':'北西兰',
           'Ferencvarosi TC':'费伦茨瓦罗斯','Cukaricki Stankom':'古拉瑞奇','HJK Helsinki':'赫尔辛基','PAOK Saloniki':'塞萨洛尼基','HSK Zrinjski Mostar':'莫斯塔尔兹林斯基',
-          'Legia Warszawa':'华沙莱吉亚','Ludogorets Razgrad':'卢多戈雷茨','Spartak Trnava':'特纳瓦斯巴达','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
+          'Legia Warszawa':'华沙莱吉亚','Ludogorets Razgrad':'卢多戈雷茨','Spartak Trnava':'特纳瓦斯巴达'},
   #✔
   '法甲':{'Paris Saint Germain (PSG)':'巴黎圣日耳曼','Nice':'尼斯','Lens':'朗斯','Metz':'梅斯','Rennes':'雷恩','Lille':'里尔','Lyon':'里昂',
         'Le Havre':'勒阿弗尔','Marseille':'马赛','Toulouse':'图卢兹','Clermont':'克莱蒙','Nantes':'南特','Reims':'兰斯','Stade Brestois':'布雷斯特',
@@ -141,22 +142,28 @@ def map_teams(team):
         'Monterrey':'蒙特雷','Club Leon':'莱昂','Necaxa':'内卡萨','FC Juarez':'华雷斯','Atlas':'阿特拉斯','Tigres UANL':'墨西哥老虎','Queretaro FC':'克雷塔罗',
         'Puebla':'普埃布拉','Pumas U.N.A.M.':'美洲狮','Atletico San Luis':'圣路易斯','Pachuca':'帕丘卡','Santos Laguna':'桑托斯拉古纳'},
 
-  '智甲':{'':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
-
-  '解放者杯':{'Liga Dep. Universitaria Quito':'基多大学','Millonarios':'百万富翁','Cobresal':'科布雷萨尔','Barcelona SC(ECU)':'巴塞罗那SC','The Strongest':'最强者',
+  '智甲':{'Huachipato':'瓦奇巴托','Cobresal':'科布雷萨尔','Audax Italiano':'奥达科斯意大利人','Coquimbo Unido':'科金博联合','Union La Calera':'拉卡勒拉联',
+        'Union Espanola':'西班牙联合','Univ Catolica':'天主大学','Municipal Iquique':'伊基克体育','Everton CD':'比尼亚德尔马埃弗顿','O.Higgins':'奥希金斯',
+        'Universidad de Chile':'智利大学','Nublense':'纽布伦斯','CD Copiapo S.A.':'科皮亚波','Cobreloa':'科布雷洛'},
+  #✔
+  '解放者杯':{'Liga Dep. Universitaria Quito':'基多大学','Millonarios':'百万富翁','Barcelona SC(ECU)':'巴塞罗那SC','The Strongest':'最强者',
             'Deportivo Tachira':'塔齐拉体育','Universitario De Deportes':'秘鲁体育大学','Nacional Montevideo':'乌拉圭民族','Clud Libertad':'自由',
-            'Atletico Junior Barranquilla':'巴兰基亚青年','Huachipato':'瓦奇巴托','Colo Colo':'科洛科洛','Cerro Porteno':'波特诺山丘','Alianza Lima':'利马联盟',
-            'Caracas FC':'卡拉卡斯','CA Penarol':'佩纳罗尔','Liverpool URU':'利物浦','Independiente Jose Teran':'山谷独立','Palestino':'巴勒斯坦人','Bolivar':'玻利瓦尔'
-            ,'':'','':''},
+            'Atletico Junior Barranquilla':'巴兰基亚青年','Colo Colo':'科洛科洛','Cerro Porteno':'波特诺山丘','Alianza Lima':'利马联盟',
+            'Caracas FC':'卡拉卡斯','CA Penarol':'佩纳罗尔','Liverpool URU':'利物浦','Independiente Jose Teran':'山谷独立','Palestino':'巴勒斯坦人','Bolivar':'玻利瓦尔'},
+  #
+  '南球杯':{'Metropolitanos FC':'大都会','Nacional Potosi':'波托西国民','Univ.Cesar Vallejo':'卡萨大学','Dep.Independiente Medellin':'麦德林独立','Always Ready':'时刻准备着',
+            'Sportivo Trinidense':'泰里尼登斯','Deportivo Garcilaso':'加西拉索','Danubio FC':'多瑙河','Deportivo Rayo Zuliano':'祖利亚诺','Sportivo Ameliano':'阿梅利亚诺体育',
+            'Universidad Catolica':'基多天主大学','Alianza Petrolera':'阿利安萨','Real Tomayapo':'皇家托马亚波','Delfin SC':'海豚','Racing Club Montevideo':'蒙特维多竞技'},
   #✔
   '荷甲':{'Heracles Almelo':'阿尔梅罗大力神','FC Utrecht':'乌德勒支','PSV Eindhoven':'埃因霍温','NEC Nijmegen':'奈梅亨','Fortuna Sittard':'锡塔德幸运',
         'Volendam':'福伦丹','Vitesse Arnhem':'维特斯','RKC Waalwijk':'瓦尔韦克','Feyenoord':'费耶诺德','SC Heerenveen':'海伦芬','AZ Alkmaar':'阿尔克马尔',
         'Sparta Rotterdam':'鹿特丹斯巴达','Excelsior SBV':'SBV精英','Almere City FC':'阿尔梅勒城','FC Twente Enschede':'特温特','AFC Ajax':'阿贾克斯',
-        'PEC Zwolle':'兹沃勒','Go Ahead Eagles':'前进之鹰'},
+        'PEC Zwolle':'兹沃勒','Go Ahead Eagles':'前进之鹰','Groningen':'格罗宁根','NAC Breda':'布雷达','Willem II':'威廉二世'},
   #✔
   '葡超':{'Moreirense':'莫雷拉人','Sporting Braga':'布拉加','Estrela da Amadora':'阿马多拉','FC Porto':'波尔图','Vizela':'维泽拉','Benfica':'本菲卡',
         'SC Farense':'法鲁人','Rio Ave':'阿维河','FC Famalicao':'法马利康','Sporting CP':'葡萄牙体育','Vitoria Guimaraes':'吉马良斯','Portimonense':'波尔蒂芒人',
-        'FC Arouca':'阿罗卡','Casa Pia AC':'卡萨皮亚','Gil Vicente':'吉尔维森特','Estoril':'埃斯托里尔','Boavista FC':'博阿维斯塔','GD Chaves':'沙维斯'},
+        'FC Arouca':'阿罗卡','Casa Pia AC':'卡萨皮亚','Gil Vicente':'吉尔维森特','Estoril':'埃斯托里尔','Boavista FC':'博阿维斯塔','GD Chaves':'沙维斯',
+        'AVS Futebol SAD':'阿维斯SAD','Nacional da Madeira':'马德拉国民','Santa Clara':'圣克拉拉'},
   #✔
   '瑞典超':{'Djurgardens':'佐加顿斯','IFK Varnamo':'瓦纳默','IFK Goteborg':'哥德堡','Brommapojkarna':'布洛马波卡纳','IK Sirius FK':'天狼星','Varbergs BoIS FC':'瓦尔贝里',
           'Elfsborg':'埃尔夫斯堡','Kalmar':'卡尔马','Hacken':'赫根','Halmstads':'哈尔姆斯塔德','Hammarby':'哈马比','GAIS':'哥德堡盖斯','Malmo FF':'马尔默','AIK Solna':'索尔纳',
@@ -168,21 +175,21 @@ def map_teams(team):
   #✔
   '比甲':{'Westerlo':'韦斯特洛','Royal Antwerp':'安特卫普','Club Brugge':'布鲁日','Charleroi':'沙勒鲁瓦','Saint Gilloise':'圣吉罗斯','Racing Genk':'亨克',
         'Jeunesse Molenbeek':'莫伦贝克','Cercle Brugge':'色格拉布鲁日','Sint-Truidense':'圣图尔登','Mechelen':'梅赫伦','Oud Heverlee':'奥哈瓦里',
-        'KAA Gent':'根特','Kortrijk':'科特赖克','Anderlecht':'安德莱赫特','KAS Eupen':'欧本','Standard Liege':'标准列日'},
+        'KAA Gent':'根特','Kortrijk':'科特赖克','Anderlecht':'安德莱赫特','KAS Eupen':'欧本','Standard Liege':'标准列日','FCV Dender EH':'登德','Beerschot Wilrijk':'比尔肖特'},
 
   'Asia':{'':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':'','':''},
-
-  'America':{'Peru':'秘鲁','Brazil':'巴西','Chile':'智利','Colombia':'哥伦比亚','Venezuela':'委内瑞拉','Paraguay':'巴拉圭','Ecuador':'厄瓜多尔',
-            'Uruguay':'乌拉圭','Bolivia':'玻利维亚','Argentina':'阿根廷'},
-
+  #✔
+  'America':{'Peru':'秘鲁','Brazil':'巴西','Chile':'智利','Colombia':'哥伦比亚','Venezuela':'委内瑞拉','Paraguay':'巴拉圭','Ecuador':'厄瓜多尔','Costa Rica':'哥斯达黎加',
+            'Uruguay':'乌拉圭','Bolivia':'玻利维亚','Argentina':'阿根廷','Canada':'加拿大','Mexico':'墨西哥','Jamaica':'牙买加','USA':'美国','Panama':'巴拿马'},
+  #✔
   'Europe':{'Bosnia and Herzegovina':'波黑','Croatia':'克罗地亚','Latvia':'拉脱维亚','Cyprus':'塞浦路斯','Scotland':'苏格兰','Luxembourg':'卢森堡',
           'Iceland':'冰岛','Slovakia':'斯洛伐克','Portugal':'葡萄牙','Turkey':'土耳其','Armenia':'亚美尼亚','Georgia':'格鲁吉亚','Spain':'西班牙',
           'Kosovo':'科索沃','Switzerland':'瑞士','North Macedonia':'马其顿','Italy':'意大利','Romania':'罗马尼亚','Israel':'以色列','Andorra':'安道尔',
           'Belarus':'白俄罗斯','Estonia':'爱沙尼亚','Sweden':'瑞典','Ukraine':'乌克兰','England':'英格兰','Azerbaijan':'阿塞拜疆','Belgium':'比利时',
           'Albania':'阿尔巴尼亚','Poland':'波兰','Greece':'希腊','Ireland':'爱尔兰','Netherlands':'荷兰','Lithuania':'立陶宛','Serbia':'塞尔维亚',
-          'Slovenia':'斯洛文尼亚','Faroe Islands':'法罗群岛','Moldova':'摩尔多瓦','Finland':'芬兰','Denmark':'丹麦','Montenegro':'黑山',
-          'Bulgaria':'保加利亚','Kazakhstan':'哈萨克斯坦','Northern Ireland':'北爱尔兰','Wales':'威尔士','France':'法国','Norway':'挪威',
-          'Austria':'奥地利','Malta':'马耳他','Gibraltar':'直布罗陀'},}
+          'Slovenia':'斯洛文尼亚','Faroe Islands':'法罗群岛','Moldova':'摩尔多瓦','Finland':'芬兰','Denmark':'丹麦','Montenegro':'黑山','Germany':'德国',
+          'Bulgaria':'保加利亚','Kazakhstan':'哈萨克斯坦','Northern Ireland':'北爱尔兰','Wales':'威尔士','France':'法国','Norway':'挪威','Hungary':'匈牙利',
+          'Austria':'奥地利','Malta':'马耳他','Gibraltar':'直布罗陀','Czech Republic':'捷克'},}
 
   for league_key, league_values in teams_dict.items():
     for key, value in league_values.items():
@@ -209,14 +216,15 @@ def clean_leagues(league_name):
 def clean_teams(home, away, league_name):
   '''
   返回清洗后的球队名称
-  Last Edit: 4/8/2024
+  Last Edit: 6/15/2024
   '''
-  teams_dict = {'日职联':{'鸟栖沙岩':'鸟栖砂岩','清水鼓动':'清水心跳','名古屋鲸八':'名古屋逆戟鲸'},
-                '美职联':{'辛辛那提FC':'辛辛那提','温哥华白帽':'温哥华白浪','堪萨斯城竞技':'堪萨斯城体育','波特兰伐木工':'波特兰伐木者','奥斯汀':'奥斯汀FC'},
+  teams_dict = {'日职联':{'鸟栖沙岩':'鸟栖砂岩','清水鼓动':'清水心跳','名古屋鲸八':'名古屋逆戟鲸','东京':'东京FC'},
+                '美职联':{'辛辛那提FC':'辛辛那提','温哥华白帽':'温哥华白浪','堪萨斯城竞技':'堪萨斯城体育','波特兰伐木工':'波特兰伐木者','奥斯汀':'奥斯汀FC',
+                        '圣路易城':'圣路易斯城','达拉斯':'达拉斯FC'},
                 '阿甲':{'普拉腾斯':'普拉滕斯竞技','泰格雷':'老虎竞技','竞技俱乐部':'竞技','圣塔菲联':'圣菲联','巴拉卡斯中央队':'巴拉卡斯中央',
                         '科隆竞技':'哥伦布竞技','铁路工场':'塔列雷斯','阿尔多西维':'阿尔多希维','科尔多瓦中央SDE':'科尔多瓦中央','联合队':'科尔多瓦学院',
                         '阿根廷独立':'独立','萨尔米安杜':'萨米恩托','飓风队':'飓风','帕特罗纳图':'天主教青年','防御与正义':'国防与司法','天主教青年会':'天主教青年',
-                        '门多萨独立':'里瓦达维亚独立'},
+                        '门多萨独立':'里瓦达维亚独立','图库曼体育会':'图库曼竞技'},
                 '德甲':{'莱比锡红牛':'RB莱比锡'},
                 '西甲':{'维戈塞尔塔':'塞尔塔','马洛卡':'马略卡','阿尔梅利亚':'阿尔梅里亚','瓦拉多利德':'巴拉多利德','加的斯':'加迪斯'},
                 '英超':{'南安普敦':'南安普顿','曼彻斯特联':'曼联','曼彻斯特城':'曼城','莱切斯特城':'莱斯特城','托特纳姆热刺':'热刺'},
@@ -235,18 +243,19 @@ def clean_teams(home, away, league_name):
                 '巴甲':{'奥瓦':'阿瓦伊','科里蒂巴':'库里蒂巴','布拉干蒂诺RB':'布拉甘蒂诺红牛','戈伊亚斯':'戈亚斯','福塔雷萨':'福塔莱萨','库亚巴':'奎尔巴'},
                 '墨超':{'老虎大学':'墨西哥老虎','马萨特兰FC':'马萨特兰','蒙特瑞':'蒙特雷','墨西哥美洲':'美洲','阿苏尔':'蓝十字',
                         '拿加沙':'内卡萨','圣路易斯竞技':'圣路易斯','提华纳':'蒂华纳'},
-                '葡超':{'波尔蒂芒尼斯':'波尔蒂芒人','沙维什':'沙维斯','吉维森特':'吉尔维森特','里奥阿维':'阿维河','里斯本竞技':'葡萄牙体育',
-                        '卡沙比亞':'卡萨皮亚','维兹拉':'维泽拉','费雷拉':'帕索斯费雷拉','马里迪莫':'马德拉航海','摩雷伦斯':'莫雷拉人','法伦斯':'法鲁人'},
+                '葡超':{'波尔蒂芒尼斯':'波尔蒂芒人','沙维什':'沙维斯','吉维森特':'吉尔维森特','里奥阿维':'阿维河','里斯本竞技':'葡萄牙体育','吉马雷斯':'吉马良斯',
+                        '卡沙比亞':'卡萨皮亚','维兹拉':'维泽拉','费雷拉':'帕索斯费雷拉','马里迪莫':'马德拉航海','摩雷伦斯':'莫雷拉人','法伦斯':'法鲁人','葡萄牙国民':'马德拉国民'},
                 '荷甲':{'埃门':'埃蒙','福图纳锡塔德':'锡塔德幸运','PSV埃因霍温':'埃因霍温','维迪斯':'维特斯','赫拉克勒斯':'阿尔梅罗大力神'},
                 '瑞典超':{'韦纳穆':'瓦纳默','IFK哥德堡':'哥德堡','AIK索尔纳':'索尔纳','布鲁马波卡纳':'布洛马波卡纳'},
                 '挪超':{'奥德':'奥特','博德闪耀':'博多格林特','格里姆斯塔':'谢夫','桑纳菲尤尔':'桑德菲杰','萨尔普斯堡':'萨普斯堡','奥斯陆KFUM':'KFUM奥斯陆'},
-                '比甲':{'奥德赫维里':'奥哈瓦里','聚尔特瓦雷赫姆':'威尔郡','沙勒罗瓦':'沙勒鲁瓦','瑟兰联':'塞莱恩','吉马雷斯':'吉马良斯'},
+                '比甲':{'奥德赫维里':'奥哈瓦里','聚尔特瓦雷赫姆':'威尔郡','沙勒罗瓦':'沙勒鲁瓦','瑟兰联':'塞莱恩','比斯查':'比尔肖特'},
                 '智甲':{'尤尼昂':'拉卡勒拉联','科金博':'科金博联合','维尼亚德马埃弗顿':'比尼亚德尔马埃弗顿','库里科':'库里科联合','马加拉内斯':'麦哲伦',
-                        '塞雷那':'拉塞雷纳','纽夫莱恩斯':'纽布伦斯','希金斯':'奥希金斯','科布雷索':'科布雷萨尔','奥达斯':'奥达科斯意大利人','华奇巴托':'瓦奇巴托'},
+                        '塞雷那':'拉塞雷纳','纽夫莱恩斯':'纽布伦斯','希金斯':'奥希金斯','科布雷索':'科布雷萨尔','奥达斯':'奥达科斯意大利人','华奇巴托':'瓦奇巴托',
+                        '智利天主大学':'天主大学'},
                 '解放者杯':{'万卡约':'万卡约体育','巴拉圭国民':'亚松森国民','水晶体育':'水晶竞技','曼特宁独立':'麦德林独立','时刻准备':'时刻准备着','麦罗波利塔诺':'大都会',
                           '蒙得维的亚国民':'乌拉圭民族','国民体育会':'国民竞技','瓜亚基尔':'巴塞罗那SC','佩雷拉':'佩雷拉体育','蒙得维的':'利物浦','亚松森自由':'自由',
-                          '亚松森奥林匹亚':'奥林匹亚'},
-                '南球杯':{'德尔瓦耶独立':'山谷独立','卡巴列罗':'卡巴雷罗将军','港发院':'卡贝略港大学','利加大学':'基多大学','德芬':'海豚','奥利恩特':'东方石油',
+                          '亚松森奥林匹亚':'奥林匹亚','波哥大百万富翁':'百万富翁'},
+                '南球杯':{'德尔瓦耶独立':'山谷独立','卡巴列罗':'卡巴雷罗将军','港发院':'卡贝略港大学','基多体育大学':'基多大学','德芬':'海豚','奥利恩特':'东方石油',
                           '丹奴比奥':'多瑙河','亚松森瓜拉尼':'巴拉圭瓜拉尼','艾美利亚诺体育':'阿梅利亚诺体育','艾斯图第安特':'梅里达大学生','塔奇拉':'塔齐拉体育',
                           '阿古拉斯多拉达斯':'里奥内格罗老鹰','卡萨大学队':'卡萨大学','普诺双国':'两国竞技','帕马科亚':'棕榈竞技','昆卡':'昆卡体育','托利马体育':'托里马体育',
                           '大学生体育':'秘鲁体育大学'},
@@ -261,14 +270,16 @@ def clean_teams(home, away, league_name):
         away = away.replace(key, value)
   return home, away
 
-def init_service(mode):
+def init_service(mode, headless):
   '''
   Connect to the website and choose Bet365 as bookmaker
   '''
   # Initialize
   driver_path = os.getenv('CHROME_DRIVER_PATH')
   chrome_options = webdriver.ChromeOptions()
-  chrome_options.add_argument('--headless')
+  chrome_options.add_argument('--enable-automation')
+  if headless:
+      chrome_options.add_argument('--headless')
   try:
     driver = webdriver.Chrome(service=Service(executable_path=ChromeDriverManager().install()), options=chrome_options)
   except:
@@ -282,13 +293,21 @@ def init_service(mode):
     driver.get(os.getenv('HANDICAP_URL_NEXT'))
   time.sleep(2)
 
+  try:
+    driver.find_element(By.ID, 'CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll').click()
+  except:
+    print('no cookie settings')
+    #pass
+  time.sleep(1)
+  driver.fullscreen_window()
+  time.sleep(2) # allow select bookmaker to catch up
+
   # Select Bookmaker
   select_element = driver.find_element(By.NAME, 'book_filter')
   select = Select(select_element)
   select.select_by_visible_text('Bet365')
 
   time.sleep(2)
-  
   return driver
     
 def select_league(driver, league_name):
