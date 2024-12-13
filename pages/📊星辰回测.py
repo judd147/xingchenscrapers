@@ -148,7 +148,7 @@ def load_dashboard(df_history): # TODO 增加模拟盈亏指标计算及展示
     try:
         league_options = st.multiselect('联赛筛选', options=df_metric['联赛'].unique(), default=['英超','西甲','德甲','意甲','法甲','欧冠','欧联'])
     except:
-        league_options = st.multiselect('联赛筛选', options=df_metric['联赛'].unique(), default=['欧洲杯'])
+        league_options = st.multiselect('联赛筛选', options=df_metric['联赛'].unique(), default=['英超','西甲','德甲','意甲','法甲'])
     df_metric = df_metric[df_metric['联赛'].isin(league_options)]
     if len(league_options) == 0:
         st.error('请选择至少一个联赛')
@@ -613,8 +613,10 @@ def search(df, opt1):
                 else:
                     model = ''
                 if model != '':
-                    dfb = dfb.append({'开球时间': date, '联赛': liga, '比赛': prev, '让球方': side, '盘口': hand, '模型': model, '平均概率': round(avg_best/100, 4),
-                        '最长遗漏': num_miss, '高频比分': line, '频率': freq, '算法数量': str(sum(uppr_count))+'/'+str(algo), '正误': outcome, '模拟盈亏': profit}, ignore_index=True)
+                    row_data = {'开球时间': date, '联赛': liga, '比赛': prev, '让球方': side, '盘口': hand, '模型': model, '平均概率': round(avg_best/100, 4),
+                        '最长遗漏': num_miss, '高频比分': line, '频率': freq, '算法数量': str(sum(uppr_count))+'/'+str(algo), '正误': outcome, '模拟盈亏': profit}
+                    row_data_df = pd.DataFrame([row_data])
+                    dfb = pd.concat([dfb, row_data_df], ignore_index=True)
             #下盘
             elif sum(down_count)/algo >= 0.5 and algo > 1:
                 #写入下盘信息
@@ -650,8 +652,10 @@ def search(df, opt1):
                 else:
                     model = ''
                 if model != '':
-                    dfb = dfb.append({'开球时间': date, '联赛': liga, '比赛': prev, '让球方': side, '盘口': hand, '模型': model, '平均概率': round(avg_best/100, 4),
-                        '最长遗漏': num_miss, '高频比分': line, '频率': freq, '算法数量': str(sum(down_count))+'/'+str(algo), '正误': outcome, '模拟盈亏': profit}, ignore_index=True)
+                    row_data = {'开球时间': date, '联赛': liga, '比赛': prev, '让球方': side, '盘口': hand, '模型': model, '平均概率': round(avg_best/100, 4),
+                        '最长遗漏': num_miss, '高频比分': line, '频率': freq, '算法数量': str(sum(down_count))+'/'+str(algo), '正误': outcome, '模拟盈亏': profit}
+                    row_data_df = pd.DataFrame([row_data])
+                    dfb = pd.concat([dfb, row_data_df], ignore_index=True)
             st.write('=============================================')
             #重置上一场比赛信息
             algo = 1
@@ -909,8 +913,10 @@ def search(df, opt1):
                 else:
                     model = ''
                 if model != '':
-                    dfb = dfb.append({'开球时间': date, '联赛': liga, '比赛': prev, '让球方': side, '盘口': hand, '模型': model, '平均概率': round(avg_best/100, 4),
-                        '最长遗漏': num_miss, '高频比分': line, '频率': freq, '算法数量': str(sum(uppr_count))+'/'+str(algo), '正误': outcome, '模拟盈亏': profit}, ignore_index=True)
+                    row_data = {'开球时间': date, '联赛': liga, '比赛': prev, '让球方': side, '盘口': hand, '模型': model, '平均概率': round(avg_best/100, 4),
+                        '最长遗漏': num_miss, '高频比分': line, '频率': freq, '算法数量': str(sum(uppr_count))+'/'+str(algo), '正误': outcome, '模拟盈亏': profit}
+                    row_data_df = pd.DataFrame([row_data])
+                    dfb = pd.concat([dfb, row_data_df], ignore_index=True)
             #下盘
             elif sum(down_count)/algo >= 0.5 and algo > 1:
                 #写入下盘信息

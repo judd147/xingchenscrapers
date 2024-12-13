@@ -181,6 +181,10 @@ def init_service(headless):
     return driver
 
 def login(driver):
+    try:
+        driver.find_element(By.CLASS_NAME, 'van-dialog__cancel').click()
+    except:
+        pass
     # Input the phone number
     phone_input = WebDriverWait(driver, 10).until(EC.presence_of_element_located(
         (By.CLASS_NAME, 'van-field__control'))).send_keys(os.getenv('XINGCHEN_NUMBER'))
