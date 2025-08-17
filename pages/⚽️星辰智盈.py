@@ -8,15 +8,14 @@ Last Edit 12/26/2023
 """
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
-import io
+
 import os
 import time
-import base64
 import pandas as pd
 import streamlit as st
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
-from utils import create_onedrive_directdownload, pct_to_float, clean_leagues, clean_teams
+from utils import pct_to_float, clean_leagues, clean_teams
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
@@ -134,8 +133,7 @@ def main():
             df_final = pd.concat([df_qbl, df_zsxt, df_ohfc])
         elif mode == '临场':
             with st.spinner("合并数据中..."):
-                onedrive_link = os.getenv('ONEDRIVE_DATA_URL')
-                url = create_onedrive_directdownload(onedrive_link)
+                url = os.getenv('LOCAL_DATA_PATH')
                 df = read_file(url)
                 df_selected = df[(df['开球时间']>=start_time) & (df['年']==datetime.now().year)]
                 data_selected = pd.concat([df_gplj, df_sqnl, df_lsqt])

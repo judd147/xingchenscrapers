@@ -24,8 +24,8 @@ def main():
 
     st.header('Updates and Plans')
     st.subheader('架构设计')
-    st.checkbox('数据库从OneDrive迁移至MySQL')
-    st.checkbox('Deploy to Streamlit Cloud & Auth0')
+    st.checkbox('数据库迁移至SQLlite')
+    st.checkbox('增加后台获取数据功能')
     st.write("https://github.com/conradbez/streamlit-auth0")
     st.subheader('星辰智盈数据自动获取系统')
     st.caption('数据源由安卓模拟器改为网页，抓取速度和稳定性获得大幅提升')

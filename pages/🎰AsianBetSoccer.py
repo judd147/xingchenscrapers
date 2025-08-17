@@ -6,7 +6,7 @@ Last Edit 4/8/2024
 
 Asian Handicap scraper with Streamlit
 """
-import io
+
 import os
 import re
 import pandas as pd
@@ -14,7 +14,7 @@ import streamlit as st
 #from stqdm import stqdm # not working as of 2024/6/29
 from datetime import datetime
 from dotenv import load_dotenv
-from utils import create_onedrive_directdownload, read_file, map_leagues, map_teams, init_service, select_league, scrape, clean_result, clean_handicap
+from utils import read_file, map_leagues, map_teams, init_service, select_league, scrape, clean_result
 
 def main():
   st.set_page_config(
