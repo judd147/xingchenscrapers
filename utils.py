@@ -226,6 +226,7 @@ def map_teams(team):
             "Malaga": "马拉加",
             "Cultural Leonesa": "莱昂内萨",
             "AD Ceuta": "休达",
+            "Real Sociedad B": "皇家社会B队",
         },
         # ✔
         "西甲": {
@@ -404,6 +405,7 @@ def map_teams(team):
             "Saint Etienne": "圣埃蒂安",
             "AJ Auxerre": "欧塞尔",
             "Angers": "昂热",
+            "Paris FC": "巴黎FC",
         },
         # ✔
         "意甲": {
@@ -1114,10 +1116,9 @@ def clean_teams(home, away, league_name):
     }
 
     for league_key, league_values in teams_dict.items():
-        if league_key == league_name:
-            for key, value in league_values.items():
-                if home == key:
-                    home = home.replace(key, value)
-                if away == key:
-                    away = away.replace(key, value)
+        for key, value in league_values.items():
+            if home == key:
+                home = home.replace(key, value)
+            if away == key:
+                away = away.replace(key, value)
     return home, away
