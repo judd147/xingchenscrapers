@@ -25,11 +25,13 @@ def main():
     scraper = HandicapScraper()
 
     with st.form("user_input"):
-        mode = st.radio("选择模式", options=("赛前盘口", "终场盘口"), index=1)
+        mode = st.radio("选择模式", options=("赛前盘口", "终场盘口", "晚场"), index=1)
         if mode == "赛前盘口":
             mode_text = "next"
         elif mode == "终场盘口":
             mode_text = "last"
+        elif mode == "晚场":  # workaround for bug on ABS
+            mode_text = "live"
 
         headless = st.toggle("Headless", value=True, help="运行时隐藏浏览器")
         submitted = st.form_submit_button("运行")

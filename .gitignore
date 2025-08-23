@@ -2,3 +2,4 @@
 .env
 .streamlit
 __pycache__
+soccer_data.db

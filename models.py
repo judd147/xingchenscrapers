@@ -3,9 +3,11 @@ import time
 import pandas as pd
 from dotenv import load_dotenv
 from utils import pct_to_float, strip_parent, clean_leagues, clean_teams
+from datetime import datetime, timedelta
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -17,6 +19,7 @@ class XingchenScraper:
         load_dotenv()
 
     def init_service(self, headless):
+        """create and return a selenium driver that opens the Xingchen webpage"""
         driver_path = os.getenv("CHROME_DRIVER_PATH")
         # Mobile Device
         mobile_emulation = {"deviceName": "iPhone 12 Pro"}
@@ -43,6 +46,7 @@ class XingchenScraper:
         return driver
 
     def login(self, driver):
+        """Login to Xingchen"""
         try:
             driver.find_element(By.CLASS_NAME, "van-dialog__cancel").click()
         except:
@@ -218,19 +222,36 @@ class XingchenScraper:
                 # handicap
                 hand_info = driver.find_element(
                     By.XPATH,
-                    '//*[@id="app"]/div/div[1]/div/div[4]/div/div[2]/div[2]/div/div[4]/div/div[2]/div[2]/p/span[1]',
+                    "//p[@class='p-t' and contains(., '亚洲指数')]//span[@class='h-d']",
                 ).text
-                num_hand = strip_parent(hand_info).replace("1", "")
 
-                if jingcai == "是":
-                    comment = num_hand
-                else:
+                # hand_info = driver.find_element(
+                #     By.XPATH,
+                #     '//*[@id="app"]/div/div[1]/div/div[4]/div/div[2]/div[2]/div/div[4]/div/div[2]/div[2]/p/span[1]',
+                # ).text
+                num_hand = strip_parent(hand_info)
+
+                if num_hand == "0":
                     if sp_home < sp_away:
                         comment = "-"
                     elif sp_home > sp_away:
                         comment = "+"
                     else:
                         comment = "NA"
+                elif num_hand.startswith("-"):
+                    comment = "-"
+                else:
+                    comment = "+"
+
+                # if jingcai == "是":
+                #     comment = num_hand
+                # else:
+                #     if sp_home < sp_away:
+                #         comment = "-"
+                #     elif sp_home > sp_away:
+                #         comment = "+"
+                #     else:
+                #         comment = "NA"
 
                 # sample size
                 bar_list = []
@@ -333,17 +354,31 @@ class HandicapScraper:
             driver.get(os.getenv("HANDICAP_URL_LAST"))
         elif mode == "next":
             driver.get(os.getenv("HANDICAP_URL_NEXT"))
+        elif mode == "live":
+            driver.get(os.getenv("HANDICAP_URL_LIVE"))
         time.sleep(2)
 
+        # dismiss cookie modal
         try:
             driver.find_element(
                 By.ID, "CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll"
             ).click()
         except:
             print("no cookie settings")
-            # pass
-        time.sleep(1)
+
+        time.sleep(2)
         driver.fullscreen_window()
+
+        # dismiss new update modal
+        try:
+            driver.find_element(By.CLASS_NAME, "banner-close").click()
+        except:
+            print("no new update banner")
+
+        if mode == "next":
+            date_input = driver.find_element(By.ID, "value_next")
+            date_input.send_keys(Keys.ARROW_UP)  # move to next day
+
         time.sleep(2)  # allow select bookmaker to catch up
 
         # Select Bookmaker
@@ -456,7 +491,9 @@ class HandicapScraper:
             return handicap_value
 
     def read_file(self):
-        # read from local file
+        """
+        Read local excel file for matches that need handicap data
+        """
         url = os.getenv("LOCAL_DATA_PATH")
 
         df = pd.read_excel(
