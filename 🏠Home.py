@@ -35,9 +35,10 @@ def main():
         )
 
         st.header("Updates and Plans")
+        st.checkbox("部署至Streamlit Cloud，实现全天候自动获取数据")
         st.subheader("架构设计")
-        st.checkbox("数据库迁移至SQLlite")
-        st.checkbox("增加后台获取数据功能")
+        st.caption("数据库迁移至SQLlite")
+        st.caption("增加后台获取数据功能")
         st.checkbox("增加火线数据获取和回测功能")
         st.subheader("Dashboard")
         st.checkbox("增加模拟盈亏指标展示")

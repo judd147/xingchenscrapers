@@ -3,7 +3,6 @@ import time
 import pandas as pd
 from dotenv import load_dotenv
 from utils import pct_to_float, strip_parent, clean_leagues, clean_teams
-from datetime import datetime, timedelta
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
@@ -377,7 +376,13 @@ class HandicapScraper:
 
         if mode == "next":
             date_input = driver.find_element(By.ID, "value_next")
-            date_input.send_keys(Keys.ARROW_UP)  # move to next day
+            date_input.send_keys(Keys.ARROW_RIGHT)  # move to day input
+            date_input.send_keys(Keys.ARROW_DOWN)
+
+        # elif mode == "last":
+        #     date_input = driver.find_element(By.ID, "value_last")
+        #     date_input.send_keys(Keys.ARROW_RIGHT)
+        #     date_input.send_keys(Keys.ARROW_DOWN)
 
         time.sleep(2)  # allow select bookmaker to catch up
 
@@ -389,7 +394,7 @@ class HandicapScraper:
         time.sleep(2)
         return driver
 
-    def select_league(self, driver, league_name):
+    def select_league(self, driver, league_name, mode):
         """
         Filter page content by the league name
         """
@@ -397,6 +402,11 @@ class HandicapScraper:
         select_element = driver.find_element(By.NAME, "search_filter")
         select = Select(select_element)
         select.select_by_visible_text(league_name)
+
+        if mode == "next":
+            date_input = driver.find_element(By.ID, "value_next")
+            date_input.send_keys(Keys.ARROW_RIGHT)  # move to day input
+            date_input.send_keys(Keys.ARROW_DOWN)
 
         time.sleep(2)
 

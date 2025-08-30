@@ -48,7 +48,7 @@ def main():
             # for league_name in stqdm(league_names.unique(), '获取数据中'):
             try:
                 with st.spinner("正在获取" + league_name + "..."):
-                    scraper.select_league(driver, league_name)
+                    scraper.select_league(driver, league_name, mode_text)
                     df_result = scraper.scrape(driver)
                     df_result = scraper.clean_result(df_result)
                     frames.append(df_result)

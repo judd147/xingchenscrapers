@@ -228,20 +228,6 @@ class DatabaseManager:
             print(f"Error retrieving Handicap data: {e}")
             return pd.DataFrame()
 
-    def get_existing_matches(self, start_time: str, end_time: str) -> set:
-        """Get existing match IDs (开球时间 + 比赛) to avoid duplicates"""
-        try:
-            with sqlite3.connect(self.db_path) as conn:
-                query = """
-                    SELECT DISTINCT 开球时间 || '|' || 比赛 as match_id 
-                    FROM xingchen_data 
-                    WHERE 开球时间 BETWEEN ? AND ?
-                """
-                cursor = conn.execute(query, (start_time, end_time))
-                return {row[0] for row in cursor.fetchall()}
-        except Exception:
-            return set()
-
     def update_fetch_status(
         self,
         source: str,
@@ -305,7 +291,7 @@ class DatabaseManager:
                 conn.execute("DELETE FROM xingchen_data")
                 conn.execute("DELETE FROM handicap_data")
                 conn.execute("DELETE FROM backtest_results")
-                conn.execute("UPDATE fetch_status SET records_fetched = 0")
+                conn.execute("DELETE FROM fetch_status")
                 conn.commit()
         except Exception as e:
             print(f"Error resetting database: {e}")
@@ -364,6 +350,7 @@ class BackgroundTaskManager:
                 )
 
                 # Wait for next interval
+                print("Next fetch in", self.fetch_interval // 60, "minutes")
                 time.sleep(self.fetch_interval)
 
             except Exception as e:
@@ -383,23 +370,13 @@ class BackgroundTaskManager:
             # Fetch for next 12 hours
             end_time = (now + timedelta(hours=12)).strftime("%m-%d %H:%M")
 
-            # Get existing matches to avoid complete duplicates
-            existing_matches = self.db_manager.get_existing_matches(
-                start_time, end_time
-            )
-
             print(f"Fetching Xingchen data from {start_time} to {end_time}")
 
             # Fetch data using existing scraper logic
             df_data = self._scrape_xingchen_background(start_time, end_time)
 
             if not df_data.empty:
-                # Filter out existing matches
-                df_data["match_id"] = df_data["开球时间"] + "|" + df_data["比赛"]
-                df_new = df_data[~df_data["match_id"].isin(existing_matches)]
-                df_new = df_new.drop("match_id", axis=1)
-
-                new_records = self.db_manager.insert_xingchen_data(df_new)
+                new_records = self.db_manager.insert_xingchen_data(df_data)
                 self.db_manager.update_fetch_status(
                     "xingchen", "success", records_fetched=new_records
                 )
@@ -515,7 +492,7 @@ class BackgroundTaskManager:
 
             for league_name in league_names.unique():
                 try:
-                    self.handicap_scraper.select_league(driver, league_name)
+                    self.handicap_scraper.select_league(driver, league_name, "next")
                     df_result = self.handicap_scraper.scrape(driver)
                     df_result = self.handicap_scraper.clean_result(df_result)
                     if not df_result.empty:

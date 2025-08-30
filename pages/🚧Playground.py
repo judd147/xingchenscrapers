@@ -6,6 +6,7 @@ Created on 08/17/2025
 Streamlit app with background data fetching, SQLite storage, and real-time updates
 """
 
+import io
 import os
 import time
 import pandas as pd
@@ -195,12 +196,15 @@ class StreamlitApp:
                     )
 
                     # Download button
-                    csv = df_filtered.to_csv(index=False).encode("utf-8")
+                    buffer = io.BytesIO()
+                    with pd.ExcelWriter(buffer, engine="xlsxwriter") as writer:
+                        df_filtered.to_excel(writer, index=False)
+                    buffer.seek(0)
                     st.download_button(
-                        "📥 下载 CSV",
-                        csv,
-                        f"soccer_data_{datetime.now().strftime('%Y%m%d_%H%M')}.csv",
-                        "text/csv",
+                        label="下载数据",
+                        data=buffer,
+                        file_name=f"soccer_data_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx",
+                        mime="application/vnd.ms-excel",
                     )
                 else:
                     st.warning("未找到符合条件的数据")
@@ -557,13 +561,16 @@ CREATE TABLE backtest_results (
             "数据获取间隔 (分钟)",
             min_value=5,
             max_value=60,
-            value=current_interval,
+            value=15,
+            step=5,
             help="设置后台自动获取数据的时间间隔",
         )
 
         if new_interval != current_interval:
             self.background_manager.fetch_interval = new_interval * 60
-            st.success(f"✅ 获取间隔已更新为 {new_interval} 分钟")
+            st.success(
+                f"✅ 获取间隔已更新为 {self.background_manager.fetch_interval // 60} 分钟"
+            )
 
         # Database management
         st.subheader("🗄️ 数据库管理")
@@ -585,21 +592,27 @@ CREATE TABLE backtest_results (
                     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
                     if not xingchen_data.empty:
-                        xingchen_csv = xingchen_data.to_csv(index=False)
+                        buffer = io.BytesIO()
+                        with pd.ExcelWriter(buffer, engine="xlsxwriter") as writer:
+                            xingchen_data.to_excel(writer, index=False)
+                        buffer.seek(0)
                         st.download_button(
-                            "📥 下载星辰数据",
-                            xingchen_csv,
-                            f"xingchen_data_{timestamp}.csv",
-                            "text/csv",
+                            label="下载星辰数据",
+                            data=buffer,
+                            file_name=f"xingchen_data_{timestamp}.xlsx",
+                            mime="application/vnd.ms-excel",
                         )
 
                     if not handicap_data.empty:
-                        handicap_csv = handicap_data.to_csv(index=False)
+                        buffer = io.BytesIO()
+                        with pd.ExcelWriter(buffer, engine="xlsxwriter") as writer:
+                            handicap_data.to_excel(writer, index=False)
+                        buffer.seek(0)
                         st.download_button(
-                            "📥 下载盘口数据",
-                            handicap_csv,
-                            f"handicap_data_{timestamp}.csv",
-                            "text/csv",
+                            label="下载盘口数据",
+                            data=buffer,
+                            file_name=f"handicap_data_{timestamp}.xlsx",
+                            mime="application/vnd.ms-excel",
                         )
 
                     if xingchen_data.empty and handicap_data.empty:
