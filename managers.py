@@ -2,6 +2,7 @@ import warnings
 
 warnings.simplefilter(action="ignore", category=FutureWarning)
 import time
+import os
 import sqlite3
 import threading
 import pandas as pd
@@ -10,6 +11,7 @@ from typing import Dict, Any, List
 from concurrent.futures import ThreadPoolExecutor
 from utils import map_leagues, map_teams
 from models import XingchenScraper, HandicapScraper  # BacktestEngine
+from ML_model import SoccerMLPredictor, predict_upcoming_matches
 
 
 class DatabaseManager:
@@ -72,7 +74,7 @@ class DatabaseManager:
             """
             )
 
-            # Backtest results table (placeholder for future ML model)
+            # Legacy backtest results table (kept for compatibility)
             conn.execute(
                 """
                 CREATE TABLE IF NOT EXISTS backtest_results (
@@ -86,6 +88,30 @@ class DatabaseManager:
                     actual_result TEXT,
                     profit_loss REAL,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            """
+            )
+
+            # Prediction results table for ML model (requested name: backtest_result)
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS backtest_result (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    比赛 TEXT,
+                    开球时间 TEXT,
+                    联赛 TEXT,
+                    算法 TEXT,
+                    盘口 TEXT,
+                    主赔 REAL,
+                    客赔 REAL,
+                    model_used TEXT,
+                    prediction TEXT,
+                    confidence REAL,
+                    strength TEXT,
+                    prob_upper REAL,
+                    prob_lower REAL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE(比赛, 开球时间, 算法)
                 )
             """
             )
@@ -284,6 +310,45 @@ class DatabaseManager:
         except Exception:
             return 0
 
+    def insert_backtest_results(self, df: pd.DataFrame) -> int:
+        """Insert or replace ML prediction results into backtest_result table."""
+        if df is None or df.empty:
+            return 0
+
+        # Ensure required columns exist
+        required = [
+            "比赛",
+            "开球时间",
+            "联赛",
+            "算法",
+            "盘口",
+            "主赔",
+            "客赔",
+            "model_used",
+            "prediction",
+            "confidence",
+            "strength",
+            "prob_upper",
+            "prob_lower",
+        ]
+        for col in required:
+            if col not in df.columns:
+                df[col] = None
+
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                columns = required
+                placeholders = ",".join(["?"] * len(columns))
+                column_names = ",".join(columns)
+                query = f"INSERT OR REPLACE INTO backtest_result ({column_names}) VALUES ({placeholders})"
+                values = df[columns].values.tolist()
+                conn.executemany(query, values)
+                conn.commit()
+                return len(values)
+        except Exception as e:
+            print(f"Error inserting backtest_result: {e}")
+            return 0
+
     def reset_database(self):
         """Reset all data tables (admin function)"""
         try:
@@ -342,8 +407,8 @@ class BackgroundTaskManager:
                             f"Updated {updated_records} xingchen records with handicap data"
                         )
 
-                    # Future: Run backtest engine here
-                    # self._run_backtest()
+                    # Run ML predictions on upcoming matches using saved model
+                    self._run_ml_predictions()
 
                 print(
                     f"Background fetch completed. Xingchen: {xingchen_records}, Handicap: {handicap_records}"
@@ -535,3 +600,74 @@ class BackgroundTaskManager:
                 )
         except Exception as e:
             print(f"Manual fetch error: {e}")
+
+    def _run_ml_predictions(self):
+        """Load trained model and run predictions for upcoming matches, then store results."""
+        try:
+            model_path = os.getenv("ML_MODEL_PATH", "saved_model.pkl")
+            if not os.path.exists(model_path):
+                print(f"No model found at {model_path}; skipping predictions.")
+                return
+
+            predictor = SoccerMLPredictor.load_model(model_path)
+
+            # Time window: now to +12h (same as fetch)
+            now = datetime.now()
+            start_time = (now - timedelta(hours=0)).strftime("%m-%d %H:%M")
+            end_time = (now + timedelta(hours=12)).strftime("%m-%d %H:%M")
+
+            # Query upcoming matches with required fields present
+            with sqlite3.connect(self.db_manager.db_path) as conn:
+                sql = (
+                    "SELECT 开球时间, 联赛, 比赛, 算法, 胜, 平, 负, 让胜, 让平, 让负, 盘口, 竞彩, 主赔, 客赔, H, A "
+                    "FROM xingchen_data WHERE 开球时间 BETWEEN ? AND ? "
+                    "AND (H IS NULL OR A IS NULL) "
+                    "AND 盘口 IS NOT NULL AND 盘口 != '' "
+                    "AND 主赔 IS NOT NULL AND 客赔 IS NOT NULL"
+                )
+                df = pd.read_sql_query(sql, conn, params=[start_time, end_time])
+
+            if df.empty:
+                print("No upcoming matches eligible for prediction.")
+                return
+
+            # Filter to model's handicap range for prediction consistency
+            tmp = df.copy()
+            tmp["__handicap_value__"] = tmp["盘口"].apply(predictor.parse_handicap)
+            tmp = tmp[
+                (tmp["__handicap_value__"] >= predictor.handicap_min)
+                & (tmp["__handicap_value__"] <= predictor.handicap_max)
+            ].drop(columns=["__handicap_value__"], errors="ignore")
+
+            if tmp.empty:
+                print("No matches within handicap range for prediction.")
+                return
+
+            # Run predictions
+            preds = predict_upcoming_matches(predictor, tmp)
+            if preds is None or len(preds) == 0:
+                print("Prediction function returned no results.")
+                return
+
+            # Merge predictions with source fields
+            preds = preds.rename(
+                columns={
+                    "match": "比赛",
+                    "league": "联赛",
+                    "handicap": "盘口",
+                    "algorithm": "算法",
+                    "model": "model_used",
+                }
+            )
+            merged = pd.merge(
+                preds,
+                tmp[["比赛", "开球时间", "联赛", "算法", "盘口", "主赔", "客赔"]],
+                on=["比赛", "联赛", "算法", "盘口"],
+                how="left",
+            )
+
+            inserted = self.db_manager.insert_backtest_results(merged)
+            print(f"Inserted/updated {inserted} ML prediction records.")
+
+        except Exception as e:
+            print(f"Error running ML predictions: {e}")

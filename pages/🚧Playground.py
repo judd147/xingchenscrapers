@@ -9,10 +9,12 @@ Streamlit app with background data fetching, SQLite storage, and real-time updat
 import io
 import os
 import time
+import sqlite3
 import pandas as pd
 import streamlit as st
 from datetime import datetime, timedelta
 from managers import DatabaseManager, BackgroundTaskManager
+from ML_model import SoccerMLPredictor, predict_upcoming_matches
 
 
 class StreamlitApp:
@@ -338,129 +340,141 @@ class StreamlitApp:
             st.markdown("- 网络连接问题")
 
     def _render_predictions(self):
-        """Render predictions interface (placeholder for future ML model)"""
+        """Render predictions interface with manual trigger"""
         st.header("🎯 预测结果")
 
-        st.info("🚧 智能预测引擎正在开发中...")
-
-        # Placeholder for BacktestEngine integration
-        st.markdown(
-            """
-        ### 即将推出的功能：
-        - 🤖 多算法融合预测模型
-        - 📊 实时胜率分析与置信度评分
-        - 💰 智能投注建议系统
-        - 📈 历史回测结果与性能分析
-        - 🎯 个性化策略推荐
-        - 📱 实时推送与预警
-        """
-        )
-
-        # Mock prediction interface for demonstration
-        st.subheader("🎲 模拟预测演示")
-
-        col1, col2 = st.columns([2, 1])
-
+        # Controls
+        col1, col2, col3 = st.columns(3)
         with col1:
-            if st.button("🎯 生成模拟预测", type="primary"):
-                # Get some recent matches for demo
-                recent_matches = self.db_manager.get_xingchen_data()
-                if not recent_matches.empty:
-                    sample_matches = recent_matches.sample(min(5, len(recent_matches)))
+            hours_ahead = st.slider("预测时间范围 (小时)", 2, 24, 12, 2)
+        with col2:
+            min_handicap = st.number_input(
+                "盘口下限", value=-1.5, step=0.25, format="%.2f"
+            )
+        with col3:
+            max_handicap = st.number_input(
+                "盘口上限", value=1.5, step=0.25, format="%.2f"
+            )
 
-                    # Create mock predictions
-                    mock_predictions = []
-                    for _, match in sample_matches.iterrows():
-                        import random
+        run_col, save_col = st.columns([2, 1])
+        with run_col:
+            run_pred = st.button("🚀 手动运行预测", type="primary")
+        with save_col:
+            save_to_db = st.checkbox("保存到数据库", value=True)
 
-                        confidence = random.uniform(0.6, 0.95)
-                        prediction = random.choice(["主胜", "平局", "客胜"])
-                        recommendation = "是" if confidence > 0.8 else "否"
+        model_path = os.getenv("ML_MODEL_PATH", "saved_model.pkl")
 
-                        mock_predictions.append(
-                            {
-                                "比赛": match["比赛"],
-                                "开球时间": match["开球时间"],
-                                "联赛": match["联赛"],
-                                "预测结果": prediction,
-                                "置信度": confidence,
-                                "建议投注": recommendation,
-                                "算法来源": match["算法"],
-                            }
-                        )
+        if run_pred:
+            if not os.path.exists(model_path):
+                st.error(f"未找到已训练模型: {model_path}")
+                return
 
-                    mock_df = pd.DataFrame(mock_predictions)
-                    st.dataframe(
-                        mock_df,
-                        use_container_width=True,
-                        column_config={
-                            "置信度": st.column_config.ProgressColumn(
-                                "置信度", min_value=0, max_value=1
-                            ),
-                        },
+            with st.spinner("加载模型并生成预测..."):
+                try:
+                    predictor = SoccerMLPredictor.load_model(model_path)
+                except Exception as e:
+                    st.error(f"模型加载失败: {e}")
+                    return
+
+                # Override handicap range if user adjusted
+                predictor.set_handicap_range(min_handicap, max_handicap)
+
+                # Query upcoming matches within window
+                now = datetime.now()
+                start_time = (now - timedelta(hours=0)).strftime("%m-%d %H:%M")
+                end_time = (now + timedelta(hours=hours_ahead)).strftime("%m-%d %H:%M")
+
+                with sqlite3.connect(self.db_manager.db_path) as conn:
+                    sql = (
+                        "SELECT 开球时间, 联赛, 比赛, 算法, 胜, 平, 负, 让胜, 让平, 让负, 盘口, 竞彩, 主赔, 客赔, H, A "
+                        "FROM xingchen_data WHERE 开球时间 BETWEEN ? AND ? "
+                        "AND (H IS NULL OR A IS NULL) "
+                        "AND 盘口 IS NOT NULL AND 盘口 != '' "
+                        "AND 主赔 IS NOT NULL AND 客赔 IS NOT NULL"
+                    )
+                    df_upcoming = pd.read_sql_query(
+                        sql, conn, params=[start_time, end_time]
                     )
 
-                    st.success("✨ 模拟预测已生成！实际预测引擎将基于机器学习模型")
-                else:
-                    st.warning("暂无数据可用于预测演示")
+                if df_upcoming.empty:
+                    st.info("暂无符合条件的比赛用于预测")
+                    return
 
-        with col2:
-            st.markdown("**预测说明**")
-            st.markdown(
-                """
-            - 🎯 **置信度**：模型对预测结果的信心程度
-            - 💡 **建议投注**：基于风险评估的投注建议
-            - 🔄 **多算法融合**：结合多个数据源的预测
-            - ⚡ **实时更新**：随数据更新自动刷新预测
-            """
-            )
+                # Filter by handicap range
+                df_upcoming["__handicap_value__"] = df_upcoming["盘口"].apply(
+                    predictor.parse_handicap
+                )
+                df_upcoming = df_upcoming[
+                    (df_upcoming["__handicap_value__"] >= predictor.handicap_min)
+                    & (df_upcoming["__handicap_value__"] <= predictor.handicap_max)
+                ].drop(columns=["__handicap_value__"], errors="ignore")
 
-        # Future ML model integration placeholder
-        st.subheader("🔮 未来集成计划")
+                if df_upcoming.empty:
+                    st.warning("筛选后无比赛在盘口范围内")
+                    return
 
-        col1, col2 = st.columns(2)
+                preds = predict_upcoming_matches(predictor, df_upcoming)
+                if preds is None or len(preds) == 0:
+                    st.warning("未生成任何预测结果")
+                    return
 
-        with col1:
-            st.markdown("**机器学习模型**")
-            st.code(
-                """
-# 预期的集成接口
-from models import BacktestEngine
+                preds = preds.rename(
+                    columns={
+                        "match": "比赛",
+                        "league": "联赛",
+                        "handicap": "盘口",
+                        "algorithm": "算法",
+                        "model": "model_used",
+                    }
+                )
 
-backtest_engine = BacktestEngine()
+                # Merge metadata (开球时间/赔率)
+                merged = pd.merge(
+                    preds,
+                    df_upcoming[
+                        ["比赛", "开球时间", "联赛", "算法", "盘口", "主赔", "客赔"]
+                    ],
+                    on=["比赛", "联赛", "算法", "盘口"],
+                    how="left",
+                )
 
-# 获取预测
-predictions = backtest_engine.predict(
-    xingchen_data=df_xingchen,
-    handicap_data=df_handicap,
-    confidence_threshold=0.75
-)
+                # Display results
+                st.success(f"生成 {len(merged)} 条预测")
+                st.dataframe(
+                    merged[
+                        [
+                            "开球时间",
+                            "联赛",
+                            "比赛",
+                            "算法",
+                            "盘口",
+                            "prediction",
+                            "confidence",
+                            "strength",
+                            "prob_upper",
+                            "prob_lower",
+                            "model_used",
+                        ]
+                    ].sort_values(["confidence"], ascending=False),
+                    use_container_width=True,
+                )
 
-# 存储结果
-db_manager.insert_backtest_results(predictions)
-            """,
-                language="python",
-            )
+                # Save to DB if requested
+                if save_to_db:
+                    inserted = self.db_manager.insert_backtest_results(merged)
+                    st.info(f"已写入/更新 {inserted} 条预测到 backtest_result 表")
 
-        with col2:
-            st.markdown("**预测结果存储**")
-            st.code(
-                """
-# 预测结果表结构
-CREATE TABLE backtest_results (
-    strategy_name TEXT,
-    match_id TEXT,
-    比赛 TEXT,
-    开球时间 TEXT,
-    prediction TEXT,
-    confidence REAL,
-    actual_result TEXT,
-    profit_loss REAL,
-    created_at TIMESTAMP
-)
-            """,
-                language="sql",
-            )
+                # Download option
+                buffer = io.BytesIO()
+                with pd.ExcelWriter(buffer, engine="xlsxwriter") as writer:
+                    merged.to_excel(writer, index=False)
+                buffer.seek(0)
+                st.download_button(
+                    label="下载预测结果",
+                    data=buffer,
+                    file_name=f"predictions_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx",
+                    mime="application/vnd.ms-excel",
+                )
 
     def _render_system_status(self):
         """Render system status and management interface"""
@@ -620,21 +634,6 @@ CREATE TABLE backtest_results (
 
                 except Exception as e:
                     st.error(f"❌ 导出失败: {e}")
-
-        # System logs (placeholder)
-        st.subheader("📋 系统日志")
-
-        # Mock recent logs
-        with st.expander("查看最近日志", expanded=False):
-            mock_logs = [
-                f"[{datetime.now().strftime('%H:%M:%S')}] INFO: 后台数据获取服务正常运行",
-                f"[{(datetime.now() - timedelta(minutes=5)).strftime('%H:%M:%S')}] SUCCESS: 星辰数据获取完成，新增 {xingchen_count % 100} 条记录",
-                f"[{(datetime.now() - timedelta(minutes=8)).strftime('%H:%M:%S')}] SUCCESS: 盘口数据获取完成，新增 {handicap_count % 50} 条记录",
-                f"[{(datetime.now() - timedelta(minutes=15)).strftime('%H:%M:%S')}] INFO: 开始定期数据获取任务",
-            ]
-
-            for log in mock_logs:
-                st.code(log, language="log")
 
     def _run_backtest_placeholder(self):
         """Placeholder for future backtest engine integration"""
