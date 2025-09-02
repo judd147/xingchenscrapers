@@ -683,7 +683,7 @@ def map_teams(team):
             "Bryne": "布莱尼",
             "Valerenga": "瓦勒伦加",
             "Aalesund FK": "奥勒松",
-            "Rosenborg": "罗森博格",
+            "Rosenborg BK": "罗森博格",
             "Bodo Glimt": "博多格林特",
             "Sarpsborg 08": "萨普斯堡",
             "Lillestrom": "利勒斯特罗姆",
