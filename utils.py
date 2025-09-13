@@ -1,19 +1,18 @@
 import re
-import base64
 
-
-def deprecated_create_onedrive_directdownload(onedrive_link):
-    """
-    创建onedrive数据库url
-    """
-    data_bytes64 = base64.b64encode(bytes(onedrive_link, "utf-8"))
-    data_bytes64_String = (
-        data_bytes64.decode("utf-8").replace("/", "_").replace("+", "-").rstrip("=")
-    )
-    resultUrl = (
-        f"https://api.onedrive.com/v1.0/shares/u!{data_bytes64_String}/root/content"
-    )
-    return resultUrl
+# def deprecated_create_onedrive_directdownload(onedrive_link):
+#     import base64
+#     """
+#     创建onedrive数据库url
+#     """
+#     data_bytes64 = base64.b64encode(bytes(onedrive_link, "utf-8"))
+#     data_bytes64_String = (
+#         data_bytes64.decode("utf-8").replace("/", "_").replace("+", "-").rstrip("=")
+#     )
+#     resultUrl = (
+#         f"https://api.onedrive.com/v1.0/shares/u!{data_bytes64_String}/root/content"
+#     )
+#     return resultUrl
 
 
 def pct_to_float(pct):
@@ -77,7 +76,7 @@ def map_leagues(league):
         "比甲": "Belgian Pro League",
         "智甲": "Chile Primera Division",
         "南美预选": "FIFA World Cup qualification (CONMEBOL)",
-        "世预赛": "",
+        "世欧预": "FIFA World Cup qualification (UEFA)",
         "欧洲杯": "UEFA European Championship",
         "欧协联": "UEFA Conference League",
     }
@@ -866,7 +865,7 @@ def clean_leagues(league_name):
         "比甲",
         "智甲",
         "南美预选",
-        "世预赛",
+        "世欧预",
         "欧洲杯",
         "欧协联",
     ]

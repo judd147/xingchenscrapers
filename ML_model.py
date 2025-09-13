@@ -22,7 +22,6 @@ from sklearn.metrics import (
 from sklearn.feature_selection import SelectKBest, f_classif
 import matplotlib.pyplot as plt
 import seaborn as sns
-from scipy import stats
 from collections import Counter
 import warnings
 
@@ -94,7 +93,7 @@ class SoccerMLPredictor:
         features = pd.DataFrame()
 
         # Basic numeric features - handle both string percentages and float values
-        if df["胜"].dtype == 'object':
+        if df["胜"].dtype == "object":
             features["home_win_pct"] = (
                 pd.to_numeric(df["胜"].str.rstrip("%"), errors="coerce") / 100
             )
@@ -221,7 +220,7 @@ class SoccerMLPredictor:
 
         # Fill missing values with more robust method
         features = features.fillna(features.median())
-        
+
         # Additional safety check - replace any remaining NaN with 0
         features = features.fillna(0)
 

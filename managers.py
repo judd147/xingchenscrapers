@@ -74,24 +74,6 @@ class DatabaseManager:
             """
             )
 
-            # Legacy backtest results table (kept for compatibility)
-            conn.execute(
-                """
-                CREATE TABLE IF NOT EXISTS backtest_results (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    strategy_name TEXT,
-                    match_id TEXT,
-                    比赛 TEXT,
-                    开球时间 TEXT,
-                    prediction TEXT,
-                    confidence REAL,
-                    actual_result TEXT,
-                    profit_loss REAL,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """
-            )
-
             # Prediction results table for ML model (requested name: backtest_result)
             conn.execute(
                 """
@@ -176,8 +158,9 @@ class DatabaseManager:
                 placeholders = ",".join(["?"] * len(columns))
                 column_names = ",".join(columns)
 
-                # Use INSERT OR IGNORE to handle conflicts
-                query = f"INSERT OR IGNORE INTO handicap_data ({column_names}) VALUES ({placeholders})"
+                # Use INSERT OR REPLACE so the latest odds for a given 比赛 overwrite stale ones
+                # Note: Table currently has UNIQUE(比赛); REPLACE ensures fresh data isn't dropped
+                query = f"INSERT OR REPLACE INTO handicap_data ({column_names}) VALUES ({placeholders})"
 
                 conn.executemany(query, values)
                 conn.commit()
@@ -355,7 +338,7 @@ class DatabaseManager:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute("DELETE FROM xingchen_data")
                 conn.execute("DELETE FROM handicap_data")
-                conn.execute("DELETE FROM backtest_results")
+                conn.execute("DELETE FROM backtest_result")
                 conn.execute("DELETE FROM fetch_status")
                 conn.commit()
         except Exception as e:
@@ -430,7 +413,7 @@ class BackgroundTaskManager:
 
             # Start time is now
             now = datetime.now()
-            start_time = (now - timedelta(hours=0)).strftime("%m-%d %H:%M")
+            start_time = (now - timedelta(hours=1)).strftime("%m-%d %H:%M")
 
             # Fetch for next 12 hours
             end_time = (now + timedelta(hours=12)).strftime("%m-%d %H:%M")
@@ -529,9 +512,6 @@ class BackgroundTaskManager:
 
             if all_data:
                 combined_df = pd.concat(all_data, ignore_index=True)
-                combined_df["算法"] = pd.Categorical(
-                    combined_df["算法"], categories=algo_names, ordered=True
-                )
                 combined_df = combined_df.sort_values(
                     by=["开球时间", "联赛", "比赛", "算法"], kind="mergesort"
                 ).reset_index(drop=True)
@@ -546,7 +526,7 @@ class BackgroundTaskManager:
     def _scrape_handicap_background(self, df_matches: List[str]) -> pd.DataFrame:
         """Scrape Handicap data without UI (headless)"""
         try:
-            driver = self.handicap_scraper.init_service("next", headless=True)
+            driver = self.handicap_scraper.init_service("next", headless=False)
 
             if df_matches.empty:
                 driver.quit()
@@ -573,7 +553,6 @@ class BackgroundTaskManager:
                 final_result["客队"] = final_result["客队"].apply(map_teams)
                 final_result["比赛"] = final_result["主队"] + "-" + final_result["客队"]
 
-                # Filter only matches we need
                 return final_result
             else:
                 return pd.DataFrame()

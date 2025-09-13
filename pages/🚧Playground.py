@@ -635,37 +635,6 @@ class StreamlitApp:
                 except Exception as e:
                     st.error(f"❌ 导出失败: {e}")
 
-    def _run_backtest_placeholder(self):
-        """Placeholder for future backtest engine integration"""
-        # TODO: Integrate with BacktestEngine when available
-        #
-        # from models import BacktestEngine
-        #
-        # backtest_engine = BacktestEngine()
-        #
-        # # Get recent data for prediction
-        # recent_data = self.db_manager.get_xingchen_data()
-        # handicap_data = self.db_manager.get_handicap_data()
-        #
-        # if not recent_data.empty:
-        #     try:
-        #         predictions = backtest_engine.predict(
-        #             xingchen_data=recent_data,
-        #             handicap_data=handicap_data,
-        #             confidence_threshold=0.75
-        #         )
-        #
-        #         # Store predictions in database
-        #         if not predictions.empty:
-        #             with sqlite3.connect(self.db_manager.db_path) as conn:
-        #                 predictions.to_sql("backtest_results", conn, if_exists="append", index=False)
-        #
-        #         self.db_manager.update_fetch_status("backtest", "success", records_fetched=len(predictions))
-        #
-        #     except Exception as e:
-        #         self.db_manager.update_fetch_status("backtest", "error", str(e))
-        pass
-
 
 def main():
     """Application entry point"""
