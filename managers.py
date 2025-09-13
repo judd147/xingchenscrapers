@@ -159,7 +159,6 @@ class DatabaseManager:
                 column_names = ",".join(columns)
 
                 # Use INSERT OR REPLACE so the latest odds for a given 比赛 overwrite stale ones
-                # Note: Table currently has UNIQUE(比赛); REPLACE ensures fresh data isn't dropped
                 query = f"INSERT OR REPLACE INTO handicap_data ({column_names}) VALUES ({placeholders})"
 
                 conn.executemany(query, values)
@@ -381,14 +380,11 @@ class BackgroundTaskManager:
                     # Then fetch Handicap data for matches without it
                     handicap_records = self._fetch_handicap_data()
 
-                    if handicap_records > 0:
-                        # Update Xingchen data with handicap info
-                        updated_records = (
-                            self.db_manager.update_xingchen_with_handicap()
-                        )
-                        print(
-                            f"Updated {updated_records} xingchen records with handicap data"
-                        )
+                    # Update Xingchen data with handicap info
+                    updated_records = self.db_manager.update_xingchen_with_handicap()
+                    print(
+                        f"Updated {updated_records} xingchen records with handicap data"
+                    )
 
                     # Run ML predictions on upcoming matches using saved model
                     self._run_ml_predictions()
