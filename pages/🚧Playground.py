@@ -16,13 +16,29 @@ from datetime import datetime, timedelta
 from managers import DatabaseManager, BackgroundTaskManager
 from ML_model import SoccerMLPredictor, predict_upcoming_matches
 
+st.set_page_config(
+    page_title="⚽ 智能足球数据平台",
+    page_icon="⚽",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+
+
+@st.cache_resource
+def get_background_manager():
+    db = DatabaseManager()
+    mgr = BackgroundTaskManager(db)
+    mgr.start_background_fetch()
+    return mgr
+
 
 class StreamlitApp:
     """Main Streamlit application with optimized UI"""
 
     def __init__(self):
-        self.db_manager = DatabaseManager()
-        self.background_manager = BackgroundTaskManager(self.db_manager)
+        # Reuse a single background manager across Streamlit reruns
+        self.background_manager = get_background_manager()
+        self.db_manager = self.background_manager.db_manager
 
         # Initialize session state
         if "background_started" not in st.session_state:
@@ -33,17 +49,10 @@ class StreamlitApp:
 
     def run(self):
         """Main application entry point"""
-        st.set_page_config(
-            page_title="⚽ 智能足球数据平台",
-            page_icon="⚽",
-            layout="wide",
-            initial_sidebar_state="expanded",
-        )
-
         st.title("⚽ 智能足球数据平台")
         st.markdown("*实时数据 • 自动更新 • 智能预测*")
 
-        # Start background fetching
+        # Start background fetching (idempotent guard inside manager)
         if not st.session_state.background_started:
             self.background_manager.start_background_fetch()
             st.session_state.background_started = True

@@ -2,6 +2,7 @@ import warnings
 
 warnings.simplefilter(action="ignore", category=FutureWarning)
 import time
+import atexit
 import os
 import sqlite3
 import threading
@@ -189,7 +190,6 @@ class DatabaseManager:
                 updated_records = cursor.rowcount
                 conn.commit()
 
-                print(f"Updated {updated_records} xingchen records with handicap data")
                 return updated_records
 
         except Exception as e:
@@ -355,22 +355,38 @@ class BackgroundTaskManager:
         self.fetch_interval = 300  # 5 minutes
         self.is_running = False
         self.fetch_lock = threading.Lock()
+        self.stop_event = threading.Event()
+        self.thread = None
+
+        # Ensure background thread stops when process exits
+        atexit.register(self.stop_background_fetch)
 
     def start_background_fetch(self):
         """Start background fetching in a separate thread"""
-        if not self.is_running:
-            self.is_running = True
-            threading.Thread(target=self._background_fetch_loop, daemon=True).start()
-            print("Background fetch started")
+        # Idempotent start: avoid multiple threads after reruns
+        if self.thread and self.thread.is_alive():
+            return
+        self.stop_event.clear()
+        self.is_running = True
+        self.thread = threading.Thread(target=self._background_fetch_loop, daemon=True)
+        self.thread.start()
+        print("Background fetch started")
 
     def stop_background_fetch(self):
         """Stop background fetching"""
+        # Signal loop to stop and wait briefly
         self.is_running = False
+        self.stop_event.set()
+        if self.thread and self.thread.is_alive():
+            try:
+                self.thread.join(timeout=5)
+            except Exception:
+                pass
         print("Background fetch stopped")
 
     def _background_fetch_loop(self):
         """Main background fetch loop"""
-        while self.is_running:
+        while not self.stop_event.is_set():
             try:
                 # Acquire lock to prevent concurrent fetching
                 with self.fetch_lock:
@@ -395,7 +411,9 @@ class BackgroundTaskManager:
 
                 # Wait for next interval
                 print("Next fetch in", self.fetch_interval // 60, "minutes")
-                time.sleep(self.fetch_interval)
+                # Sleep but wake early if stop requested
+                if self.stop_event.wait(self.fetch_interval):
+                    break
 
             except Exception as e:
                 print(f"Background fetch error: {e}")
