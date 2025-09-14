@@ -392,11 +392,12 @@ class HandicapScraper:
             select = Select(select_element)
             select.select_by_visible_text(league_name)
         except:
-            if mode == "next":
-                date_input = driver.find_element(By.ID, "value_next")
-                date_input.send_keys(Keys.ARROW_UP)  # move to next day
-            else:
-                pass
+            # if mode == "next":
+            #     date_input = driver.find_element(By.ID, "value_next")
+            #     date_input.send_keys(Keys.ARROW_UP)  # move to next day
+            # else:
+            #     pass
+            pass
 
         time.sleep(2)
 
