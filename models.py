@@ -386,10 +386,17 @@ class HandicapScraper:
         """
         Filter page content by the league name
         """
-        # Select League
-        select_element = driver.find_element(By.NAME, "search_filter")
-        select = Select(select_element)
-        select.select_by_visible_text(league_name)
+        try:
+            # Select League
+            select_element = driver.find_element(By.NAME, "search_filter")
+            select = Select(select_element)
+            select.select_by_visible_text(league_name)
+        except:
+            if mode == "next":
+                date_input = driver.find_element(By.ID, "value_next")
+                date_input.send_keys(Keys.ARROW_UP)  # move to next day
+            else:
+                pass
 
         time.sleep(2)
 

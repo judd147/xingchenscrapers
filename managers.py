@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 from typing import Dict, Any, List
 from concurrent.futures import ThreadPoolExecutor
 from utils import map_leagues, map_teams
-from models import XingchenScraper, HandicapScraper  # BacktestEngine
+from models import XingchenScraper, HandicapScraper
 from ML_model import SoccerMLPredictor, predict_upcoming_matches
 
 
