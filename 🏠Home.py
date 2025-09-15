@@ -45,11 +45,12 @@ def main():
         st.checkbox("增加火线数据获取和回测功能")
         st.subheader("Dashboard")
         st.checkbox("增加模拟盈亏指标展示")
+        st.checkbox("保存并使用新模型回测结果")
         st.subheader("星辰智盈数据自动获取系统")
         st.caption("数据源由安卓模拟器改为网页，抓取速度和稳定性获得大幅提升")
         st.subheader("星辰智盈数据自动回测系统")
         st.caption("增加模拟盈亏功能，结合真实赔率数据计算盈利能力")
-        st.checkbox("使用贝叶斯模型进行回测算法升级")
+        st.caption("使用机器学习模型进行回测")
         st.subheader("比分盘口自动获取系统")
         st.caption("数据源由Sofascore改为AsianBetSoccer，抓取速度和稳定性获得大幅提升")
 

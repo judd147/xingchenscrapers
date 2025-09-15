@@ -427,7 +427,7 @@ class BackgroundTaskManager:
 
             # Start time is now
             now = datetime.now()
-            start_time = (now - timedelta(hours=1)).strftime("%m-%d %H:%M")
+            start_time = (now - timedelta(hours=0)).strftime("%m-%d %H:%M")
 
             # Fetch for next 12 hours
             end_time = (now + timedelta(hours=12)).strftime("%m-%d %H:%M")
@@ -457,8 +457,13 @@ class BackgroundTaskManager:
         try:
             self.db_manager.update_fetch_status("handicap", "fetching")
 
-            # Get matches that need handicap data
-            matches_needing_handicap = self.db_manager.get_xingchen_data()
+            # Get matches within next 12 hours
+            now = datetime.now()
+            start_time = now.strftime("%m-%d %H:%M")
+            end_time = (now + timedelta(hours=12)).strftime("%m-%d %H:%M")
+            matches_needing_handicap = self.db_manager.get_xingchen_data(
+                start_time=start_time, end_time=end_time
+            )
 
             if len(matches_needing_handicap) > 0:
                 print(
