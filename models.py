@@ -11,6 +11,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from datetime import datetime, timezone
 
 
 class XingchenScraper:
@@ -389,11 +390,11 @@ class HandicapScraper:
         # Select League
         select_element = driver.find_element(By.NAME, "search_filter")
         select = Select(select_element)
-        options = [opt.text for opt in select.options]
-        if mode == "next" and len(options) <= 1:
+        local_date = datetime.now().date()
+        utc_date = datetime.now(timezone.utc).date()
+        if mode == "next" and local_date == utc_date:
             date_input = driver.find_element(By.ID, "value_next")
             date_input.send_keys(Keys.ARROW_UP)  # move to next day
-            print(date_input.get_attribute("value"))
         select.select_by_visible_text(league_name)
 
         time.sleep(2)
