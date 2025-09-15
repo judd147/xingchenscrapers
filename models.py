@@ -20,7 +20,6 @@ class XingchenScraper:
 
     def init_service(self, headless):
         """create and return a selenium driver that opens the Xingchen webpage"""
-        driver_path = os.getenv("CHROME_DRIVER_PATH")
         # Mobile Device
         mobile_emulation = {"deviceName": "iPhone 12 Pro"}
 
@@ -30,15 +29,7 @@ class XingchenScraper:
         if headless:
             chrome_options.add_argument("--headless")
         chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
-        try:
-            driver = webdriver.Chrome(
-                service=Service(executable_path=ChromeDriverManager().install()),
-                options=chrome_options,
-            )
-        except:
-            driver = webdriver.Chrome(
-                service=Service(executable_path=driver_path), options=chrome_options
-            )
+        driver = webdriver.Chrome(options=chrome_options)
 
         # Open web page
         driver.get(os.getenv("XINGCHEN_URL"))
