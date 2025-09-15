@@ -29,10 +29,13 @@ class XingchenScraper:
         if headless:
             chrome_options.add_argument("--headless")
         chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
-        driver = webdriver.Chrome(
-            service=Service(ChromeDriverManager().install()),
-            options=chrome_options,
-        )
+        try:  # cloud version
+            driver = webdriver.Chrome(
+                service=Service(ChromeDriverManager().install()),
+                options=chrome_options,
+            )
+        except:  # local version
+            driver = webdriver.Chrome(options=chrome_options)
 
         # Open web page
         driver.get(os.getenv("XINGCHEN_URL"))

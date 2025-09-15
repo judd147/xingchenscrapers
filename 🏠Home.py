@@ -33,24 +33,25 @@ def main():
         st.header("Introduction")
         st.markdown(
             "该项目致力于实现足球赛事的**数据自动获取和自动回测分析**。"
-            "目前已经实现全自动化稳定获取星辰智盈5大算法数据；用户在excel表中输入未开赛比赛盘口，系统将按照一套固定算法回测历史数据计算上下盘概率并根据概率判断投资价值。"
-            "未来回测算法将使用贝叶斯模型进行全面升级，提升准确率；对于完场赛事，系统将自动抓取AsianBetSoccer的比分和亚盘数据。"
+            "目前已经实现全自动化稳定获取星辰智盈5大算法数据及亚洲盘口数据；目前系统已实现在后台按预设时间间隔自动抓取数据，并通过预训练的机器学习模型预测比赛结果。"
+            "预测表现通过Dashboard进行可视化展示，帮助用户更好地理解和利用数据。"
         )
 
-        st.header("Updates and Plans")
-        st.checkbox("部署至Streamlit Cloud，实现全天候自动获取数据")
+        st.header("Roadmap")
         st.subheader("架构设计")
         st.caption("数据库迁移至SQLlite")
         st.caption("增加后台获取数据功能")
+        st.caption("部署至云端，实现24/7全天候自动运行")
         st.checkbox("增加火线数据获取和回测功能")
         st.subheader("Dashboard")
+        st.checkbox("使用新模型回测结果")
         st.checkbox("增加模拟盈亏指标展示")
-        st.checkbox("保存并使用新模型回测结果")
         st.subheader("星辰智盈数据自动获取系统")
         st.caption("数据源由安卓模拟器改为网页，抓取速度和稳定性获得大幅提升")
         st.subheader("星辰智盈数据自动回测系统")
         st.caption("增加模拟盈亏功能，结合真实赔率数据计算盈利能力")
         st.caption("使用机器学习模型进行回测")
+        st.checkbox("可视化预测结果")
         st.subheader("比分盘口自动获取系统")
         st.caption("数据源由Sofascore改为AsianBetSoccer，抓取速度和稳定性获得大幅提升")
 
