@@ -58,6 +58,9 @@ def main():
     st.title("Performance Dashboard")
 
     df_history = load_history()
+    if df_history is None:
+        st.error("该功能暂未开放，请联系作者")
+        st.stop()
     worksheet_names = list(df_history.keys())
     worksheet_names.reverse()
     tabs = st.tabs(worksheet_names)
@@ -94,10 +97,13 @@ def main():
 def load_history():
     # read from local file
     url = os.getenv("LOCAL_HISTORY_PATH")
-    df = pd.read_excel(
-        url, sheet_name=None, converters={"盘口": str, "week": str}
-    )  # read all worksheets
-    return df
+    try:
+        df = pd.read_excel(
+            url, sheet_name=None, converters={"盘口": str, "week": str}
+        )  # read all worksheets
+        return df
+    except:
+        return None
 
 
 def load_dashboard(df_history):  # TODO 增加模拟盈亏指标计算及展示
