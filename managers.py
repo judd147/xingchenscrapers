@@ -545,7 +545,7 @@ class BackgroundTaskManager:
     def _scrape_handicap_background(self, df_matches: List[str]) -> pd.DataFrame:
         """Scrape Handicap data without UI (headless)"""
         try:
-            driver = self.handicap_scraper.init_service("next", headless=False)
+            driver = self.handicap_scraper.init_service("next", headless=True)
 
             if df_matches.empty:
                 driver.quit()
@@ -556,7 +556,7 @@ class BackgroundTaskManager:
 
             for league_name in league_names.unique():
                 try:
-                    self.handicap_scraper.select_league(driver, league_name, "next")
+                    self.handicap_scraper.select_league(driver, league_name)
                     df_result = self.handicap_scraper.scrape(driver)
                     df_result = self.handicap_scraper.clean_result(df_result)
                     if not df_result.empty:

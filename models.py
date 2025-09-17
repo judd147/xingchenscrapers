@@ -35,7 +35,10 @@ class XingchenScraper:
                 options=chrome_options,
             )
         except:  # local version
-            driver = webdriver.Chrome(options=chrome_options)
+            driver_path = os.getenv("CHROME_DRIVER_PATH")
+            driver = webdriver.Chrome(
+                service=Service(executable_path=driver_path), options=chrome_options
+            )
 
         # Open web page
         driver.get(os.getenv("XINGCHEN_URL"))
@@ -378,20 +381,23 @@ class HandicapScraper:
         select.select_by_visible_text("Bet365")
 
         time.sleep(2)
+
+        local_date = datetime.now().date()
+        utc_date = datetime.now(timezone.utc).date()
+        if mode == "next" and local_date == utc_date:
+            date_input = driver.find_element(By.ID, "value_next")
+            date_input.send_keys(Keys.ARROW_UP)  # move to next day
+            print("moved to next day")
+
         return driver
 
-    def select_league(self, driver, league_name, mode):
+    def select_league(self, driver, league_name):
         """
         Filter page content by the league name
         """
         # Select League
         select_element = driver.find_element(By.NAME, "search_filter")
         select = Select(select_element)
-        local_date = datetime.now().date()
-        utc_date = datetime.now(timezone.utc).date()
-        if mode == "next" and local_date == utc_date:
-            date_input = driver.find_element(By.ID, "value_next")
-            date_input.send_keys(Keys.ARROW_UP)  # move to next day
         select.select_by_visible_text(league_name)
 
         time.sleep(2)
