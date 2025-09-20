@@ -371,17 +371,16 @@ class StreamlitApp:
         # Background task management
         st.subheader("🔧 后台任务管理")
 
-        with st.form(key="background_task_form"):
-            col1, col2, col3 = st.columns(3)
+        col1, col2, col3 = st.columns(3)
 
-            with col1:
-                start_fetch = st.form_submit_button("▶️ 启动后台获取", type="primary")
+        with col1:
+            start_fetch = st.button("▶️ 启动后台获取", type="primary")
 
-            with col2:
-                pause_fetch = st.form_submit_button("⏸️ 暂停后台获取", type="secondary")
+        with col2:
+            pause_fetch = st.button("⏸️ 暂停后台获取", type="secondary")
 
-            with col3:
-                manual_fetch = st.form_submit_button("🔄 立即手动获取")
+        with col3:
+            manual_fetch = st.button("🔄 立即手动获取")
 
         if start_fetch:
             if not self.background_manager.is_running:
@@ -407,18 +406,16 @@ class StreamlitApp:
         st.subheader("⚙️ 系统配置")
 
         current_interval = self.background_manager.fetch_interval // 60
-        with st.form(key="fetch_interval_form"):
-            new_interval = st.slider(
-                "数据获取间隔 (分钟)",
-                min_value=5,
-                max_value=60,
-                value=15,
-                step=5,
-                help="设置后台自动获取数据的时间间隔",
-            )
-            update_interval = st.form_submit_button("更新间隔")
+        new_interval = st.slider(
+            "数据获取间隔 (分钟)",
+            min_value=5,
+            max_value=60,
+            value=15,
+            step=5,
+            help="设置后台自动获取数据的时间间隔",
+        )
 
-        if update_interval and new_interval != current_interval:
+        if new_interval != current_interval:
             self.background_manager.fetch_interval = new_interval * 60
             st.success(
                 f"✅ 获取间隔已更新为 {self.background_manager.fetch_interval // 60} 分钟"
@@ -427,37 +424,11 @@ class StreamlitApp:
         # Database management
         st.subheader("🗄️ 数据库管理")
 
-        with st.form(key="database_management_form"):
-            col1, col2 = st.columns(2)
-
-            with col1:
-                clear_data = st.form_submit_button("🗑️ 清空所有数据", type="secondary")
-
-            with col2:
-                export_data = st.form_submit_button("📤 导出数据", type="secondary")
+        clear_data = st.button("🗑️ 清空所有数据", type="secondary")
 
         if clear_data:
             self.db_manager.reset_database()
             st.success("🧹 数据库已清空")
-
-        if export_data:
-            try:
-                xingchen_data = self.db_manager.get_xingchen_data()
-                handicap_data = self.db_manager.get_handicap_data()
-
-                if not xingchen_data.empty:
-                    st.subheader("星辰数据")
-                    st.dataframe(xingchen_data, use_container_width=True)
-
-                if not handicap_data.empty:
-                    st.subheader("盘口数据")
-                    st.dataframe(handicap_data, use_container_width=True)
-
-                if xingchen_data.empty and handicap_data.empty:
-                    st.warning("⚠️ 暂无数据可导出")
-
-            except Exception as e:
-                st.error(f"❌ 导出失败: {e}")
 
 
 def main():
