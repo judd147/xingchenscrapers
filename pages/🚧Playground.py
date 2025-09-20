@@ -6,7 +6,6 @@ Created on 08/17/2025
 Streamlit app with background data fetching, SQLite storage, and real-time updates
 """
 
-import io
 import os
 import time
 import sqlite3
@@ -59,55 +58,60 @@ class StreamlitApp:
             st.success("🔄 后台数据获取已启动")
 
         # Main content tabs
-        tab1, tab2, tab3, tab4 = st.tabs(
-            ["📊 数据查询", "📈 实时监控", "🎯 预测结果", "⚙️ 系统状态"]
-        )
+        tab1, tab2, tab3 = st.tabs(["📊 数据查询", "🎯 预测结果", "⚙️ 系统状态"])
 
         with tab1:
             self._render_data_query()
 
         with tab2:
-            self._render_real_time_monitor()
-
-        with tab3:
             self._render_predictions()
 
-        with tab4:
+        with tab3:
             self._render_system_status()
 
     def _render_data_query(self):
         """Render data query interface"""
         st.header("📊 数据查询")
 
-        col1, col2 = st.columns(2)
         today = datetime.now().replace(minute=0, second=0, microsecond=0)
 
-        with col1:
-            start_date = st.date_input("开始日期", value=today.date())
-            start_time_input = st.time_input("开始时间", value=today.time())
-        with col2:
-            end_date = st.date_input("结束日期", value=today.date())
-            end_time_input = st.time_input(
-                "结束时间", value=(today + timedelta(hours=8)).time()
+        with st.form(key="data_query_form"):
+            col1, col2 = st.columns(2)
+            with col1:
+                start_date = st.date_input("开始日期", value=today)
+                start_time_input = st.time_input("开始时间", value=today.time())
+            with col2:
+                end_date = st.date_input("结束日期", value=today + timedelta(days=1))
+                end_time_input = st.time_input(
+                    "结束时间", value=(today + timedelta(hours=12)).time()
+                )
+
+            start_time = datetime.combine(start_date, start_time_input).strftime(
+                "%m-%d %H:%M"
+            )
+            end_time = datetime.combine(end_date, end_time_input).strftime(
+                "%m-%d %H:%M"
             )
 
-        start_time = datetime.combine(start_date, start_time_input).strftime(
-            "%m-%d %H:%M"
-        )
-        end_time = datetime.combine(end_date, end_time_input).strftime("%m-%d %H:%M")
+            # Algorithm selection
+            algorithms = st.multiselect(
+                "选择算法",
+                ["球伯乐", "指数形态", "欧核方差", "公平量价", "赛前能量", "联赛球探"],
+                default=[
+                    "球伯乐",
+                    "指数形态",
+                    "欧核方差",
+                    "公平量价",
+                    "赛前能量",
+                    "联赛球探",
+                ],
+            )
 
-        # Algorithm selection
-        algorithms = st.multiselect(
-            "选择算法",
-            ["球伯乐", "指数形态", "欧核方差", "公平量价", "赛前能量", "联赛球探"],
-            default=["球伯乐", "指数形态", "欧核方差"],
-        )
-
-        col1, col2 = st.columns([3, 1])
-        with col1:
-            query_button = st.button("🔍 查询数据", type="primary")
-        with col2:
-            auto_refresh = st.checkbox("自动刷新", value=False)
+            col1, col2 = st.columns([3, 1])
+            with col1:
+                query_button = st.form_submit_button("🔍 查询数据", type="primary")
+            with col2:
+                auto_refresh = st.checkbox("自动刷新", value=False)
 
         if query_button or auto_refresh:
             with st.spinner("正在查询数据..."):
@@ -156,46 +160,8 @@ class StreamlitApp:
                     # Data table with filters
                     st.subheader("📋 查询结果")
 
-                    # Filter options
-                    filter_col1, filter_col2, filter_col3 = st.columns(3)
-                    with filter_col1:
-                        league_filter = st.multiselect(
-                            "筛选联赛",
-                            options=sorted(df_merged["联赛"].unique()),
-                            key="league_filter",
-                        )
-                    with filter_col2:
-                        jingcai_filter = st.selectbox(
-                            "竞彩筛选",
-                            options=["全部", "是", "否"],
-                            key="jingcai_filter",
-                        )
-                    with filter_col3:
-                        confidence_filter = st.slider(
-                            "最低胜率",
-                            min_value=0.0,
-                            max_value=1.0,
-                            value=0.0,
-                            step=0.05,
-                            key="confidence_filter",
-                        )
-
-                    # Apply filters
-                    df_filtered = df_merged.copy()
-                    if league_filter:
-                        df_filtered = df_filtered[
-                            df_filtered["联赛"].isin(league_filter)
-                        ]
-                    if jingcai_filter != "全部":
-                        df_filtered = df_filtered[df_filtered["竞彩"] == jingcai_filter]
-                    if confidence_filter > 0:
-                        df_filtered = df_filtered[
-                            df_filtered["胜"] >= confidence_filter
-                        ]
-
                     st.dataframe(
-                        df_filtered,
-                        use_container_width=True,
+                        df_merged,
                         column_config={
                             "胜": st.column_config.ProgressColumn(
                                 "胜率", min_value=0, max_value=1
@@ -205,43 +171,38 @@ class StreamlitApp:
                             ),
                         },
                     )
-
-                    # Download button
-                    buffer = io.BytesIO()
-                    with pd.ExcelWriter(buffer, engine="xlsxwriter") as writer:
-                        df_filtered.to_excel(writer, index=False)
-                    buffer.seek(0)
-                    st.download_button(
-                        label="下载数据",
-                        data=buffer,
-                        file_name=f"soccer_data_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx",
-                        mime="application/vnd.ms-excel",
-                    )
                 else:
                     st.warning("未找到符合条件的数据")
 
-    def _render_real_time_monitor(self):
-        """Render real-time monitoring dashboard"""
-        st.header("📈 实时监控")
+    def _render_predictions(self):
+        """Render real-time predictions dashboard"""
+        st.header("🎯 预测结果")
 
         # Auto-refresh controls
         col1, col2 = st.columns([3, 1])
         with col1:
-            if st.button("🔄 刷新监控", key="monitor_refresh"):
-                st.rerun()
-        with col2:
-            auto_monitor = st.checkbox("自动监控", value=False, key="auto_monitor")
+            monitor_refresh = st.button("🔄 刷新")
 
-        if auto_monitor:
-            time.sleep(2)
+        if monitor_refresh:
             st.rerun()
 
-        # Get recent data (last 6 hours to next 12 hours)
-        now = datetime.now()
-        recent_start = (now - timedelta(hours=6)).strftime("%m-%d %H:%M")
-        recent_end = (now + timedelta(hours=12)).strftime("%m-%d %H:%M")
+        today = datetime.now().replace(minute=0, second=0, microsecond=0)
+        col1, col2 = st.columns(2)
+        with col1:
+            start_date = st.date_input("开始日期", value=today)
+            start_time_input = st.time_input("开始时间", value=today.time())
+        with col2:
+            end_date = st.date_input("结束日期", value=today + timedelta(days=1))
+            end_time_input = st.time_input(
+                "结束时间", value=(today + timedelta(hours=12)).time()
+            )
 
-        recent_data = self.db_manager.get_xingchen_data(recent_start, recent_end)
+        start_time = datetime.combine(start_date, start_time_input).strftime(
+            "%m-%d %H:%M"
+        )
+        end_time = datetime.combine(end_date, end_time_input).strftime("%m-%d %H:%M")
+
+        recent_data = self.db_manager.get_prediction_results(start_time, end_time)
 
         if not recent_data.empty:
             # Overview metrics
@@ -252,18 +213,9 @@ class StreamlitApp:
                 st.metric("📊 总比赛数", total_matches)
 
             with col2:
-                high_conf = recent_data[recent_data["胜"] > 0.7]
+                high_conf = recent_data[recent_data["confidence"] > 0.57]
                 high_conf_matches = len(high_conf["比赛"].unique())
                 st.metric("🎯 高置信度比赛", high_conf_matches)
-
-            with col3:
-                jingcai = recent_data[recent_data["竞彩"] == "是"]
-                jingcai_matches = len(jingcai["比赛"].unique())
-                st.metric("🏆 竞彩比赛", jingcai_matches)
-
-            with col4:
-                algorithms = recent_data["算法"].nunique()
-                st.metric("⚙️ 覆盖算法", algorithms)
 
             # Time distribution chart
             st.subheader("⏰ 比赛时间分布")
@@ -293,17 +245,24 @@ class StreamlitApp:
 
             with col2:
                 st.subheader("🔥 高置信度比赛")
-                high_conf_matches = recent_data[recent_data["胜"] > 0.75].sort_values(
-                    "胜", ascending=False
-                )
+                high_conf_matches = recent_data[
+                    recent_data["confidence"] > 0.57
+                ].sort_values("confidence", ascending=False)
                 if not high_conf_matches.empty:
-                    display_cols = ["开球时间", "联赛", "比赛", "算法", "胜", "竞彩"]
+                    display_cols = [
+                        "开球时间",
+                        "联赛",
+                        "比赛",
+                        "算法",
+                        "盘口",
+                        "prediction",
+                        "confidence",
+                    ]
                     st.dataframe(
                         high_conf_matches[display_cols].head(10),
-                        use_container_width=True,
                         column_config={
-                            "胜": st.column_config.ProgressColumn(
-                                "胜率", min_value=0, max_value=1
+                            "confidence": st.column_config.ProgressColumn(
+                                "概率", min_value=0, max_value=1
                             ),
                         },
                     )
@@ -320,23 +279,21 @@ class StreamlitApp:
                 "算法",
                 "联赛",
                 "比赛",
-                "胜",
-                "平",
-                "负",
-                "竞彩",
+                "盘口",
+                "prediction",
+                "confidence",
+                "strength",
+                "prob_upper",
+                "prob_lower",
             ]
             st.dataframe(
                 recent_updates[display_cols],
-                use_container_width=True,
                 column_config={
-                    "胜": st.column_config.ProgressColumn(
-                        "胜率", min_value=0, max_value=1
+                    "prob_upper": st.column_config.ProgressColumn(
+                        "上盘概率", min_value=0, max_value=1
                     ),
-                    "平": st.column_config.ProgressColumn(
-                        "平局率", min_value=0, max_value=1
-                    ),
-                    "负": st.column_config.ProgressColumn(
-                        "负率", min_value=0, max_value=1
+                    "prob_lower": st.column_config.ProgressColumn(
+                        "下盘概率", min_value=0, max_value=1
                     ),
                 },
             )
@@ -347,143 +304,6 @@ class StreamlitApp:
             st.markdown("- 后台数据获取尚未开始")
             st.markdown("- 数据源暂无更新")
             st.markdown("- 网络连接问题")
-
-    def _render_predictions(self):
-        """Render predictions interface with manual trigger"""
-        st.header("🎯 预测结果")
-
-        # Controls
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            hours_ahead = st.slider("预测时间范围 (小时)", 2, 24, 12, 2)
-        with col2:
-            min_handicap = st.number_input(
-                "盘口下限", value=-1.5, step=0.25, format="%.2f"
-            )
-        with col3:
-            max_handicap = st.number_input(
-                "盘口上限", value=1.5, step=0.25, format="%.2f"
-            )
-
-        run_col, save_col = st.columns([2, 1])
-        with run_col:
-            run_pred = st.button("🚀 手动运行预测", type="primary")
-        with save_col:
-            save_to_db = st.checkbox("保存到数据库", value=True)
-
-        model_path = os.getenv("ML_MODEL_PATH", "saved_model.pkl")
-
-        if run_pred:
-            if not os.path.exists(model_path):
-                st.error(f"未找到已训练模型: {model_path}")
-                return
-
-            with st.spinner("加载模型并生成预测..."):
-                try:
-                    predictor = SoccerMLPredictor.load_model(model_path)
-                except Exception as e:
-                    st.error(f"模型加载失败: {e}")
-                    return
-
-                # Override handicap range if user adjusted
-                predictor.set_handicap_range(min_handicap, max_handicap)
-
-                # Query upcoming matches within window
-                now = datetime.now()
-                start_time = (now - timedelta(hours=0)).strftime("%m-%d %H:%M")
-                end_time = (now + timedelta(hours=hours_ahead)).strftime("%m-%d %H:%M")
-
-                with sqlite3.connect(self.db_manager.db_path) as conn:
-                    sql = (
-                        "SELECT 开球时间, 联赛, 比赛, 算法, 胜, 平, 负, 让胜, 让平, 让负, 盘口, 竞彩, 主赔, 客赔, H, A "
-                        "FROM xingchen_data WHERE 开球时间 BETWEEN ? AND ? "
-                        "AND (H IS NULL OR A IS NULL) "
-                        "AND 盘口 IS NOT NULL AND 盘口 != '' "
-                        "AND 主赔 IS NOT NULL AND 客赔 IS NOT NULL"
-                    )
-                    df_upcoming = pd.read_sql_query(
-                        sql, conn, params=[start_time, end_time]
-                    )
-
-                if df_upcoming.empty:
-                    st.info("暂无符合条件的比赛用于预测")
-                    return
-
-                # Filter by handicap range
-                df_upcoming["__handicap_value__"] = df_upcoming["盘口"].apply(
-                    predictor.parse_handicap
-                )
-                df_upcoming = df_upcoming[
-                    (df_upcoming["__handicap_value__"] >= predictor.handicap_min)
-                    & (df_upcoming["__handicap_value__"] <= predictor.handicap_max)
-                ].drop(columns=["__handicap_value__"], errors="ignore")
-
-                if df_upcoming.empty:
-                    st.warning("筛选后无比赛在盘口范围内")
-                    return
-
-                preds = predict_upcoming_matches(predictor, df_upcoming)
-                if preds is None or len(preds) == 0:
-                    st.warning("未生成任何预测结果")
-                    return
-
-                preds = preds.rename(
-                    columns={
-                        "match": "比赛",
-                        "league": "联赛",
-                        "handicap": "盘口",
-                        "algorithm": "算法",
-                        "model": "model_used",
-                    }
-                )
-
-                # Merge metadata (开球时间/赔率)
-                merged = pd.merge(
-                    preds,
-                    df_upcoming[
-                        ["比赛", "开球时间", "联赛", "算法", "盘口", "主赔", "客赔"]
-                    ],
-                    on=["比赛", "联赛", "算法", "盘口"],
-                    how="left",
-                )
-
-                # Display results
-                st.success(f"生成 {len(merged)} 条预测")
-                st.dataframe(
-                    merged[
-                        [
-                            "开球时间",
-                            "联赛",
-                            "比赛",
-                            "算法",
-                            "盘口",
-                            "prediction",
-                            "confidence",
-                            "strength",
-                            "prob_upper",
-                            "prob_lower",
-                            "model_used",
-                        ]
-                    ].sort_values(["confidence"], ascending=False),
-                    use_container_width=True,
-                )
-
-                # Save to DB if requested
-                if save_to_db:
-                    inserted = self.db_manager.insert_backtest_results(merged)
-                    st.info(f"已写入/更新 {inserted} 条预测到 backtest_result 表")
-
-                # Download option
-                buffer = io.BytesIO()
-                with pd.ExcelWriter(buffer, engine="xlsxwriter") as writer:
-                    merged.to_excel(writer, index=False)
-                buffer.seek(0)
-                st.download_button(
-                    label="下载预测结果",
-                    data=buffer,
-                    file_name=f"predictions_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx",
-                    mime="application/vnd.ms-excel",
-                )
 
     def _render_system_status(self):
         """Render system status and management interface"""
@@ -551,45 +371,54 @@ class StreamlitApp:
         # Background task management
         st.subheader("🔧 后台任务管理")
 
-        col1, col2, col3 = st.columns(3)
+        with st.form(key="background_task_form"):
+            col1, col2, col3 = st.columns(3)
 
-        with col1:
-            if st.button("▶️ 启动后台获取", type="primary"):
-                if not self.background_manager.is_running:
-                    self.background_manager.start_background_fetch()
-                    st.success("✅ 后台数据获取已启动")
-                else:
-                    st.info("ℹ️ 后台获取已在运行中")
+            with col1:
+                start_fetch = st.form_submit_button("▶️ 启动后台获取", type="primary")
 
-        with col2:
-            if st.button("⏸️ 暂停后台获取", type="secondary"):
-                if self.background_manager.is_running:
-                    self.background_manager.stop_background_fetch()
-                    st.warning("⏸️ 后台数据获取已暂停")
-                else:
-                    st.info("ℹ️ 后台获取未在运行")
+            with col2:
+                pause_fetch = st.form_submit_button("⏸️ 暂停后台获取", type="secondary")
 
-        with col3:
-            if st.button("🔄 立即手动获取"):
-                if self.background_manager.manual_fetch_now():
-                    st.success("🚀 手动获取已启动...")
-                else:
-                    st.warning("⏳ 数据获取进行中，请稍候...")
+            with col3:
+                manual_fetch = st.form_submit_button("🔄 立即手动获取")
+
+        if start_fetch:
+            if not self.background_manager.is_running:
+                self.background_manager.start_background_fetch()
+                st.success("✅ 后台数据获取已启动")
+            else:
+                st.info("ℹ️ 后台获取已在运行中")
+
+        if pause_fetch:
+            if self.background_manager.is_running:
+                self.background_manager.stop_background_fetch()
+                st.warning("⏸️ 后台数据获取已暂停")
+            else:
+                st.info("ℹ️ 后台获取未在运行")
+
+        if manual_fetch:
+            if self.background_manager.manual_fetch_now():
+                st.success("🚀 手动获取已启动...")
+            else:
+                st.warning("⏳ 数据获取进行中，请稍候...")
 
         # System configuration
         st.subheader("⚙️ 系统配置")
 
         current_interval = self.background_manager.fetch_interval // 60
-        new_interval = st.slider(
-            "数据获取间隔 (分钟)",
-            min_value=5,
-            max_value=60,
-            value=15,
-            step=5,
-            help="设置后台自动获取数据的时间间隔",
-        )
+        with st.form(key="fetch_interval_form"):
+            new_interval = st.slider(
+                "数据获取间隔 (分钟)",
+                min_value=5,
+                max_value=60,
+                value=15,
+                step=5,
+                help="设置后台自动获取数据的时间间隔",
+            )
+            update_interval = st.form_submit_button("更新间隔")
 
-        if new_interval != current_interval:
+        if update_interval and new_interval != current_interval:
             self.background_manager.fetch_interval = new_interval * 60
             st.success(
                 f"✅ 获取间隔已更新为 {self.background_manager.fetch_interval // 60} 分钟"
@@ -598,51 +427,37 @@ class StreamlitApp:
         # Database management
         st.subheader("🗄️ 数据库管理")
 
-        col1, col2 = st.columns(2)
+        with st.form(key="database_management_form"):
+            col1, col2 = st.columns(2)
 
-        with col1:
-            if st.button("🗑️ 清空所有数据", type="secondary"):
-                self.db_manager.reset_database()
-                st.success("🧹 数据库已清空")
+            with col1:
+                clear_data = st.form_submit_button("🗑️ 清空所有数据", type="secondary")
 
-        with col2:
-            if st.button("📤 导出数据", type="secondary"):
-                # Export all data to CSV
-                try:
-                    xingchen_data = self.db_manager.get_xingchen_data()
-                    handicap_data = self.db_manager.get_handicap_data()
+            with col2:
+                export_data = st.form_submit_button("📤 导出数据", type="secondary")
 
-                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        if clear_data:
+            self.db_manager.reset_database()
+            st.success("🧹 数据库已清空")
 
-                    if not xingchen_data.empty:
-                        buffer = io.BytesIO()
-                        with pd.ExcelWriter(buffer, engine="xlsxwriter") as writer:
-                            xingchen_data.to_excel(writer, index=False)
-                        buffer.seek(0)
-                        st.download_button(
-                            label="下载星辰数据",
-                            data=buffer,
-                            file_name=f"xingchen_data_{timestamp}.xlsx",
-                            mime="application/vnd.ms-excel",
-                        )
+        if export_data:
+            try:
+                xingchen_data = self.db_manager.get_xingchen_data()
+                handicap_data = self.db_manager.get_handicap_data()
 
-                    if not handicap_data.empty:
-                        buffer = io.BytesIO()
-                        with pd.ExcelWriter(buffer, engine="xlsxwriter") as writer:
-                            handicap_data.to_excel(writer, index=False)
-                        buffer.seek(0)
-                        st.download_button(
-                            label="下载盘口数据",
-                            data=buffer,
-                            file_name=f"handicap_data_{timestamp}.xlsx",
-                            mime="application/vnd.ms-excel",
-                        )
+                if not xingchen_data.empty:
+                    st.subheader("星辰数据")
+                    st.dataframe(xingchen_data, use_container_width=True)
 
-                    if xingchen_data.empty and handicap_data.empty:
-                        st.warning("⚠️ 暂无数据可导出")
+                if not handicap_data.empty:
+                    st.subheader("盘口数据")
+                    st.dataframe(handicap_data, use_container_width=True)
 
-                except Exception as e:
-                    st.error(f"❌ 导出失败: {e}")
+                if xingchen_data.empty and handicap_data.empty:
+                    st.warning("⚠️ 暂无数据可导出")
+
+            except Exception as e:
+                st.error(f"❌ 导出失败: {e}")
 
 
 def main():

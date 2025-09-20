@@ -314,6 +314,7 @@ def map_teams(team):
             "Young Boys": "伯尔尼年轻人",
             "Crvena Zvezda": "贝尔格莱德红星",
             "FC Shakhtar Donetsk": "顿涅茨克矿工",
+            "FC Kairat Almaty": "阿拉木图凯拉特",
         },
         # ✔
         "欧联": {
@@ -943,6 +944,7 @@ def clean_teams(home, away, league_name):
             "萨尔茨堡": "萨尔茨堡红牛",
             "格拉斯哥流浪者": "流浪者",
             "年轻人": "伯尔尼年轻人",
+            "加拉塔萨": "加拉塔萨雷",
         },
         "欧联": {
             "谢里夫": "蒂拉斯波尔警长",

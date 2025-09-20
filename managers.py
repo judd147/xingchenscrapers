@@ -236,6 +236,23 @@ class DatabaseManager:
             print(f"Error retrieving Handicap data: {e}")
             return pd.DataFrame()
 
+    def get_prediction_results(
+        self, start_time: str = None, end_time: str = None
+    ) -> pd.DataFrame:
+        """Retrieve ML prediction results for specific matches"""
+        try:
+            if start_time and end_time:
+                query = "SELECT * FROM backtest_result WHERE 开球时间 BETWEEN ? AND ?"
+                params = [start_time, end_time]
+                with sqlite3.connect(self.db_path) as conn:
+                    return pd.read_sql_query(query, conn, params=params)
+            else:
+                with sqlite3.connect(self.db_path) as conn:
+                    return pd.read_sql_query("SELECT * FROM backtest_result", conn)
+        except Exception as e:
+            print(f"Error retrieving ML prediction results: {e}")
+            return pd.DataFrame()
+
     def update_fetch_status(
         self,
         source: str,
