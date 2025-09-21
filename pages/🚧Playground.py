@@ -271,9 +271,7 @@ class StreamlitApp:
 
             # Recent updates
             st.subheader("🕐 最近更新")
-            recent_updates = recent_data.sort_values(
-                "created_at", ascending=False
-            ).head(20)
+            recent_updates = recent_data.sort_values("created_at", ascending=False)
             display_cols = [
                 "开球时间",
                 "算法",
