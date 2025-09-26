@@ -46,8 +46,8 @@ def main():
         st.checkbox("完善已开赛数据获取")
         st.checkbox("增加火线数据获取和回测功能")
         st.subheader("Dashboard")
-        st.caption("🚧使用新模型回测结果")
-        st.checkbox("增加模拟盈亏指标展示")
+        st.caption("使用新模型回测结果")
+        st.caption("增加模拟盈亏指标展示")
         st.subheader("星辰智盈数据自动获取系统")
         st.caption("数据源由安卓模拟器改为网页，抓取速度和稳定性获得大幅提升")
         st.subheader("星辰智盈数据自动回测系统")
@@ -258,18 +258,25 @@ def load_dashboard(df_history):  # TODO 增加模拟盈亏指标计算及展示
         help="胜率最高的前两个模型盘口组合",
     )
 
-    # 图0：每周胜率折线图
+    # 图0 & 图0b：每周胜率与模拟盈亏折线图
     df_table_weekly_success = (
         df_metric.groupby("week")
         .aggregate({"success": "mean", "比赛": "count"})
         .reset_index()
         .round(decimals=2)
     )
+    df_table_weekly_profit = (
+        df_metric.groupby("week")
+        .aggregate({"模拟盈亏": "sum"})
+        .reset_index()
+        .round(decimals=1)
+    )
+
     fig0 = px.line(
         df_table_weekly_success,
         x="week",
         y="success",
-        hover_name="比赛",
+        hover_data={"比赛": True, "success": ":.2f"},
         markers=True,
         text="success",
         line_shape="spline",
@@ -284,9 +291,46 @@ def load_dashboard(df_history):  # TODO 增加模拟盈亏指标计算及展示
         annotation_font_color="green",
     )
     fig0.update_traces(textposition="top center")
-    fig0.update_layout(hovermode="x")
-    with st.expander("赛季胜率走势", expanded=True):
-        st.plotly_chart(fig0)
+    fig0.update_layout(hovermode="x", yaxis_tickformat=".0%")
+
+    fig_profit = px.line(
+        df_table_weekly_profit,
+        x="week",
+        y="模拟盈亏",
+        hover_data={"模拟盈亏": ":.1f"},
+        markers=True,
+        text="模拟盈亏",
+        line_shape="spline",
+    )
+    fig_profit.add_hline(
+        y=0,
+        line_dash="dot",
+        line_color="gray",
+        annotation_text="盈亏持平",
+        annotation_position="top left",
+        annotation_font_size=10,
+        annotation_font_color="gray",
+    )
+    fig_profit.update_traces(textposition="top center")
+    fig_profit.update_layout(hovermode="x")
+
+    latest_time = None
+    if "开球时间" in df_metric.columns:
+        try:
+            latest_time = pd.to_datetime(df_metric["开球时间"].dropna()).max()
+        except Exception:
+            latest_time = None
+
+    chart_col_success, chart_col_profit = st.columns(2)
+    with chart_col_success:
+        with st.expander("赛季胜率走势", expanded=True):
+            st.plotly_chart(fig0, use_container_width=True)
+        if latest_time is not None:
+            st.caption(f"最近更新: {latest_time:%Y-%m-%d %H:%M}")
+    with chart_col_profit:
+        with st.expander("赛季模拟盈亏走势", expanded=True):
+            st.plotly_chart(fig_profit, use_container_width=True)
+        st.caption("注: 按单场 100 单位资金计算模拟盈亏")
 
     # #组合条件筛选
     # cond_col1, cond_col2, cond_col3 = st.columns(3)
@@ -393,8 +437,14 @@ def clean_history(df_history):
     df_metric["平均概率"] = df_metric["平均概率"].apply(pct_to_float)
     df_metric["模型"] = df_metric["模型"].apply(remove_exclamation)
     df_metric["week"] = df_metric["week"].astype(float)
-    df_metric.loc[(df_metric["正误"] == "\u2714"), "success"] = 1
-    df_metric.loc[(df_metric["正误"] == "\u2716"), "success"] = 0
+    if "模拟盈亏" in df_metric.columns:
+        df_metric["模拟盈亏"] = pd.to_numeric(
+            df_metric["模拟盈亏"], errors="coerce"
+        ).fillna(0.0)
+    else:
+        df_metric["模拟盈亏"] = 0.0
+    df_metric.loc[df_metric["正误"].isin(["\u2714", "✔"]), "success"] = 1
+    df_metric.loc[df_metric["正误"].isin(["\u2716", "✘"]), "success"] = 0
     return df_metric
 
 
