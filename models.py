@@ -386,6 +386,7 @@ class HandicapScraper:
         utc_date = datetime.now(timezone.utc).date()
         if mode == "next" and local_date == utc_date:
             date_input = driver.find_element(By.ID, "value_next")
+            date_input.send_keys(Keys.ARROW_RIGHT)  # move to next day
             date_input.send_keys(Keys.ARROW_UP)  # move to next day
             print("moved to next day")
 

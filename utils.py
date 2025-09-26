@@ -337,6 +337,7 @@ def map_teams(team):
             "Midtjylland": "中日德兰",
             "FC Steaua Bucuresti": "布加勒斯特星",
             "FK Rigas Futbola skola": "里加足球学校",
+            "Basel": "巴塞尔",
         },
         # ✔
         "欧协联": {
@@ -921,6 +922,7 @@ def clean_teams(home, away, league_name):
             "天主教青年会": "天主教青年",
             "门多萨独立": "里瓦达维亚独立",
             "图库曼体育会": "图库曼竞技",
+            "贝格拉诺": "贝尔格拉诺",
         },
         "德甲": {"莱比锡红牛": "RB莱比锡"},
         "西甲": {
