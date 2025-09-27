@@ -330,7 +330,11 @@ def load_dashboard(df_history):  # TODO 增加模拟盈亏指标计算及展示
     with chart_col_profit:
         with st.expander("赛季模拟盈亏走势", expanded=True):
             st.plotly_chart(fig_profit, use_container_width=True)
-        st.caption("注: 按单场 100 单位资金计算模拟盈亏")
+        total_revenue = df_metric["模拟盈亏"].sum()
+        bet_count = df_metric["模拟盈亏"].notna().sum()
+        roi = total_revenue / (bet_count * 100) if bet_count else 0.0
+        st.caption(f"赛季累计模拟盈亏: ${total_revenue:,.2f} | ROI: {roi*100:.1f}%")
+        st.caption("注: 按单场 100 单位资金计算")
 
     # #组合条件筛选
     # cond_col1, cond_col2, cond_col3 = st.columns(3)

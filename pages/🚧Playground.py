@@ -366,14 +366,14 @@ class StreamlitApp:
 
         if not recent_data.empty:
             # Overview metrics
-            col1, col2, col3, col4 = st.columns(4)
+            col1, col2 = st.columns(2)
 
             with col1:
                 total_matches = len(recent_data["比赛"].unique())
                 st.metric("📊 总比赛数", total_matches)
 
             with col2:
-                high_conf = recent_data[recent_data["confidence"] > 0.57]
+                high_conf = recent_data[recent_data["confidence"] > 0.59]
                 high_conf_matches = len(high_conf["比赛"].unique())
                 st.metric("🎯 高置信度比赛", high_conf_matches)
 
@@ -406,7 +406,7 @@ class StreamlitApp:
             with col2:
                 st.subheader("🔥 高置信度比赛")
                 high_conf_matches = recent_data[
-                    recent_data["confidence"] > 0.57
+                    recent_data["confidence"] > 0.59
                 ].sort_values("confidence", ascending=False)
                 if not high_conf_matches.empty:
                     display_cols = [
