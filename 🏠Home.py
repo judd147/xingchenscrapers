@@ -41,15 +41,14 @@ def main():
         st.subheader("架构设计")
         st.caption("数据库迁移至SQLlite")
         st.caption("增加后台获取数据功能")
+        st.caption("完善已开赛数据获取")
         st.caption("🚧部署至云端，实现24/7全天候自动运行")
-        st.subheader("完善已开赛数据获取")
-        st.checkbox("新增邮件提醒功能")
-        st.checkbox("增加火线数据获取和回测功能")
         st.subheader("Dashboard")
         st.caption("使用新模型回测结果")
         st.caption("增加模拟盈亏指标展示")
         st.subheader("星辰智盈数据自动获取系统")
         st.caption("数据源由安卓模拟器改为网页，抓取速度和稳定性获得大幅提升")
+        st.checkbox("增加火线数据获取和回测功能")
         st.subheader("星辰智盈数据自动回测系统")
         st.caption("增加模拟盈亏功能，结合真实赔率数据计算盈利能力")
         st.caption("使用机器学习模型进行回测")
@@ -340,9 +339,7 @@ def load_dashboard(df_history):  # TODO 增加模拟盈亏指标计算及展示
             start_label = format_period_label(drawdown_start)
             end_label = format_period_label(drawdown_end)
             if start_label and end_label:
-                drawdown_text = (
-                    f"最大回撤: -${max_drawdown:,.2f} | 区间: {start_label} → {end_label}"
-                )
+                drawdown_text = f"最大回撤: -${max_drawdown:,.2f} | 区间: {start_label} → {end_label}"
             else:
                 drawdown_text = f"最大回撤: -${max_drawdown:,.2f}"
         else:
@@ -520,15 +517,15 @@ def calc_largest_drawdown(df_metric):
     if df_profit.empty:
         return 0.0, None, None
 
-    df_profit["模拟盈亏"] = pd.to_numeric(df_profit["模拟盈亏"], errors="coerce").fillna(0.0)
+    df_profit["模拟盈亏"] = pd.to_numeric(
+        df_profit["模拟盈亏"], errors="coerce"
+    ).fillna(0.0)
     if "week" in df_profit.columns:
         df_profit["week"] = pd.to_numeric(df_profit["week"], errors="coerce")
 
     time_column = None
     if "开球时间" in df_profit.columns:
-        df_profit["开球时间"] = pd.to_datetime(
-            df_profit["开球时间"], errors="coerce"
-        )
+        df_profit["开球时间"] = pd.to_datetime(df_profit["开球时间"], errors="coerce")
         if df_profit["开球时间"].notna().any():
             df_profit = df_profit[df_profit["开球时间"].notna()].sort_values("开球时间")
             time_column = "开球时间"
