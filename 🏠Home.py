@@ -314,6 +314,8 @@ def load_dashboard(df_history):  # TODO 增加模拟盈亏指标计算及展示
     fig_profit.update_traces(textposition="top center")
     fig_profit.update_layout(hovermode="x")
 
+    max_drawdown, drawdown_start, drawdown_end = calc_largest_drawdown(df_metric)
+
     latest_time = None
     if "开球时间" in df_metric.columns:
         try:
@@ -334,6 +336,18 @@ def load_dashboard(df_history):  # TODO 增加模拟盈亏指标计算及展示
         bet_count = df_metric["模拟盈亏"].notna().sum()
         roi = total_revenue / (bet_count * 100) if bet_count else 0.0
         st.caption(f"赛季累计模拟盈亏: ${total_revenue:,.2f} | ROI: {roi*100:.1f}%")
+        if max_drawdown > 0 and drawdown_start is not None and drawdown_end is not None:
+            start_label = format_period_label(drawdown_start)
+            end_label = format_period_label(drawdown_end)
+            if start_label and end_label:
+                drawdown_text = (
+                    f"最大回撤: -${max_drawdown:,.2f} | 区间: {start_label} → {end_label}"
+                )
+            else:
+                drawdown_text = f"最大回撤: -${max_drawdown:,.2f}"
+        else:
+            drawdown_text = "最大回撤: 暂无"
+        st.caption(drawdown_text)
         st.caption("注: 按单场 100 单位资金计算")
 
     # #组合条件筛选
@@ -495,6 +509,74 @@ def calc_success(df):
     """
     num_success = len(df[df["正误"] == "\u2714"])
     return float(num_success / (len(df)))
+
+
+def calc_largest_drawdown(df_metric):
+    columns = ["模拟盈亏", "week"]
+    if "开球时间" in df_metric.columns:
+        columns.append("开球时间")
+    available_columns = [col for col in columns if col in df_metric.columns]
+    df_profit = df_metric.loc[:, available_columns].copy()
+    if df_profit.empty:
+        return 0.0, None, None
+
+    df_profit["模拟盈亏"] = pd.to_numeric(df_profit["模拟盈亏"], errors="coerce").fillna(0.0)
+    if "week" in df_profit.columns:
+        df_profit["week"] = pd.to_numeric(df_profit["week"], errors="coerce")
+
+    time_column = None
+    if "开球时间" in df_profit.columns:
+        df_profit["开球时间"] = pd.to_datetime(
+            df_profit["开球时间"], errors="coerce"
+        )
+        if df_profit["开球时间"].notna().any():
+            df_profit = df_profit[df_profit["开球时间"].notna()].sort_values("开球时间")
+            time_column = "开球时间"
+
+    if time_column is None:
+        if "week" not in df_profit.columns:
+            return 0.0, None, None
+        df_profit = df_profit[df_profit["week"].notna()].sort_values("week")
+        time_column = "week"
+
+    if df_profit.empty:
+        return 0.0, None, None
+
+    df_profit["cum_profit"] = df_profit["模拟盈亏"].cumsum()
+    df_profit["running_max"] = df_profit["cum_profit"].cummax()
+    df_profit["drawdown"] = df_profit["running_max"] - df_profit["cum_profit"]
+
+    if df_profit["drawdown"].max() <= 0:
+        return 0.0, None, None
+
+    drawdown_idx = df_profit["drawdown"].idxmax()
+    drawdown_pos = df_profit.index.get_loc(drawdown_idx)
+    peak_idx = df_profit.iloc[: drawdown_pos + 1]["cum_profit"].idxmax()
+
+    max_drawdown = float(df_profit.loc[drawdown_idx, "drawdown"])
+    start_value = df_profit.loc[peak_idx, time_column]
+    end_value = df_profit.loc[drawdown_idx, time_column]
+
+    return max_drawdown, start_value, end_value
+
+
+def format_period_label(value):
+    if value is None or pd.isna(value):
+        return None
+    if isinstance(value, pd.Timestamp):
+        return value.strftime("%Y-%m-%d")
+    if hasattr(value, "strftime"):
+        try:
+            return value.strftime("%Y-%m-%d")
+        except Exception:
+            pass
+    try:
+        numeric_value = float(value)
+        if numeric_value.is_integer():
+            return f"第{int(numeric_value)}周"
+        return f"第{numeric_value:.1f}周"
+    except (TypeError, ValueError):
+        return str(value)
 
 
 if __name__ == "__main__":
