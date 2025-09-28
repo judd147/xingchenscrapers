@@ -8,11 +8,14 @@ import sqlite3
 import threading
 import pandas as pd
 from datetime import datetime, timedelta
-from typing import Dict, Any, List
+from typing import Dict, Any
 from concurrent.futures import ThreadPoolExecutor
 from utils import map_leagues, map_teams
 from models import XingchenScraper, HandicapScraper
 from ML_model import SoccerMLPredictor, predict_upcoming_matches
+
+DEFAULT_LOOKAHEAD_HOURS = 12
+DEFAULT_LOOKBACK_MINUTES = 60
 
 
 class DatabaseManager:
@@ -143,11 +146,10 @@ class DatabaseManager:
         return final_count - initial_count
 
     def insert_handicap_data(self, df: pd.DataFrame) -> int:
-        """Insert handicap data with conflict handling, returns number of new records"""
+        """Insert handicap data with conflict handling, returns number of rows processed"""
         if df.empty:
             return 0
-
-        initial_count = self.get_handicap_count()
+        processed = len(df)
 
         try:
             with sqlite3.connect(self.db_path) as conn:
@@ -169,8 +171,7 @@ class DatabaseManager:
             print(f"Error inserting Handicap data: {e}")
             return 0
 
-        final_count = self.get_handicap_count()
-        return final_count - initial_count
+        return processed
 
     def update_xingchen_with_handicap(self) -> int:
         """Update xingchen_data with handicap information by joining on 比赛 field"""
@@ -378,6 +379,16 @@ class BackgroundTaskManager:
         # Ensure background thread stops when process exits
         atexit.register(self.stop_background_fetch)
 
+    def _time_window(
+        self,
+        lookback_minutes: int = DEFAULT_LOOKBACK_MINUTES,
+        lookahead_hours: int = DEFAULT_LOOKAHEAD_HOURS,
+    ) -> tuple[str, str]:
+        now = datetime.now()
+        start_time = (now - timedelta(minutes=lookback_minutes)).strftime("%m-%d %H:%M")
+        end_time = (now + timedelta(hours=lookahead_hours)).strftime("%m-%d %H:%M")
+        return start_time, end_time
+
     def start_background_fetch(self):
         """Start background fetching in a separate thread"""
         # Idempotent start: avoid multiple threads after reruns
@@ -442,12 +453,7 @@ class BackgroundTaskManager:
         try:
             self.db_manager.update_fetch_status("xingchen", "fetching")
 
-            # Start time is now
-            now = datetime.now()
-            start_time = (now - timedelta(hours=0)).strftime("%m-%d %H:%M")
-
-            # Fetch for next 12 hours
-            end_time = (now + timedelta(hours=12)).strftime("%m-%d %H:%M")
+            start_time, end_time = self._time_window()
 
             print(f"Fetching Xingchen data from {start_time} to {end_time}")
 
@@ -474,10 +480,7 @@ class BackgroundTaskManager:
         try:
             self.db_manager.update_fetch_status("handicap", "fetching")
 
-            # Get matches within next 12 hours
-            now = datetime.now()
-            start_time = now.strftime("%m-%d %H:%M")
-            end_time = (now + timedelta(hours=12)).strftime("%m-%d %H:%M")
+            start_time, end_time = self._time_window()
             matches_needing_handicap = self.db_manager.get_xingchen_data(
                 start_time=start_time, end_time=end_time
             )
@@ -487,14 +490,43 @@ class BackgroundTaskManager:
                     f"Fetching handicap data for {len(matches_needing_handicap)} matches"
                 )
 
-                df_handicap = self._scrape_handicap_background(matches_needing_handicap)
+                collected_frames = []
 
-                if not df_handicap.empty:
-                    new_records = self.db_manager.insert_handicap_data(df_handicap)
-                    self.db_manager.update_fetch_status(
-                        "handicap", "success", records_fetched=new_records
+                df_handicap_next = self._scrape_handicap_background(
+                    matches_needing_handicap, mode="next"
+                )
+                if not df_handicap_next.empty:
+                    collected_frames.append(df_handicap_next)
+
+                remaining_matches = matches_needing_handicap.copy()
+                if collected_frames:
+                    covered_matches = set(
+                        pd.concat(collected_frames)["比赛"].dropna().unique()
                     )
-                    return new_records
+                    remaining_matches = remaining_matches[
+                        ~remaining_matches["比赛"].isin(covered_matches)
+                    ]
+
+                if not remaining_matches.empty:
+                    print(
+                        f"Fetching live handicap data for {len(remaining_matches)} matches"
+                    )
+                    df_handicap_live = self._scrape_handicap_background(
+                        remaining_matches, mode="live"
+                    )
+                    if not df_handicap_live.empty:
+                        collected_frames.append(df_handicap_live)
+
+                if collected_frames:
+                    combined = pd.concat(
+                        collected_frames, ignore_index=True
+                    ).drop_duplicates(subset=["比赛"], keep="first")
+                    processed = self.db_manager.insert_handicap_data(combined)
+                    print(f"Handicap fetch merged {processed} rows")
+                    self.db_manager.update_fetch_status(
+                        "handicap", "success", records_fetched=processed
+                    )
+                    return processed
                 else:
                     self.db_manager.update_fetch_status("handicap", "no_data")
                     return 0
@@ -559,10 +591,12 @@ class BackgroundTaskManager:
             print(f"Error in Xingchen background scraping: {e}")
             return pd.DataFrame()
 
-    def _scrape_handicap_background(self, df_matches: List[str]) -> pd.DataFrame:
+    def _scrape_handicap_background(
+        self, df_matches: pd.DataFrame, mode: str = "next"
+    ) -> pd.DataFrame:
         """Scrape Handicap data without UI (headless)"""
         try:
-            driver = self.handicap_scraper.init_service("next", headless=True)
+            driver = self.handicap_scraper.init_service(mode, headless=True)
 
             if df_matches.empty:
                 driver.quit()
@@ -579,7 +613,7 @@ class BackgroundTaskManager:
                     if not df_result.empty:
                         frames.append(df_result)
                 except:  # catch the intentional exception when league not found
-                    print(f"Skipping {league_name}")
+                    print(f"Skipping {league_name} ({mode})")
 
             driver.quit()
 
@@ -594,24 +628,38 @@ class BackgroundTaskManager:
                 return pd.DataFrame()
 
         except Exception as e:
-            print(f"Error in Handicap background scraping: {e}")
+            print(f"Error in Handicap background scraping ({mode}): {e}")
             return pd.DataFrame()
 
-    def manual_fetch_now(self):
+    def manual_fetch_now(self, scope: str = "all"):
         """Manual fetch trigger for immediate update"""
         if not self.fetch_lock.locked():
-            threading.Thread(target=self._manual_fetch, daemon=True).start()
+            threading.Thread(
+                target=self._manual_fetch, args=(scope,), daemon=True
+            ).start()
             return True
         return False
 
-    def _manual_fetch(self):
+    def _manual_fetch(self, scope: str = "all"):
         """Execute manual fetch"""
         try:
             with self.fetch_lock:
-                xingchen_records = self._fetch_xingchen_data()
-                handicap_records = self._fetch_handicap_data()
+                xingchen_records = 0
+                handicap_records = 0
+                handicap_updates = 0
+
+                if scope in ("all", "xingchen"):
+                    xingchen_records = self._fetch_xingchen_data()
+
+                if scope in ("all", "handicap"):
+                    handicap_records = self._fetch_handicap_data()
+                    handicap_updates = self.db_manager.update_xingchen_with_handicap()
+
+                self._run_ml_predictions()
+
                 print(
-                    f"Manual fetch completed. Xingchen: {xingchen_records}, Handicap: {handicap_records}"
+                    "Manual fetch completed (%s). Xingchen: %s, Handicap fetched: %s, Updated: %s"
+                    % (scope, xingchen_records, handicap_records, handicap_updates)
                 )
         except Exception as e:
             print(f"Manual fetch error: {e}")
@@ -626,10 +674,7 @@ class BackgroundTaskManager:
 
             predictor = SoccerMLPredictor.load_model(model_path)
 
-            # Time window: now to +12h (same as fetch)
-            now = datetime.now()
-            start_time = (now - timedelta(hours=0)).strftime("%m-%d %H:%M")
-            end_time = (now + timedelta(hours=12)).strftime("%m-%d %H:%M")
+            start_time, end_time = self._time_window()
 
             # Query upcoming matches with required fields present
             with sqlite3.connect(self.db_manager.db_path) as conn:

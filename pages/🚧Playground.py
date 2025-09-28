@@ -786,6 +786,16 @@ class StreamlitApp:
             pause_fetch = st.button("⏸️ 暂停后台获取", type="secondary")
 
         with col3:
+            manual_options = {
+                "全部 (星辰+盘口+预测)": "all",
+                "仅盘口 + 预测": "handicap",
+                "仅星辰数据": "xingchen",
+            }
+            manual_selection = st.selectbox(
+                "手动获取范围",
+                options=list(manual_options.keys()),
+                key="manual_fetch_scope",
+            )
             manual_fetch = st.button("🔄 立即手动获取")
 
         if start_fetch:
@@ -803,8 +813,9 @@ class StreamlitApp:
                 st.info("ℹ️ 后台获取未在运行")
 
         if manual_fetch:
-            if self.background_manager.manual_fetch_now():
-                st.success("🚀 手动获取已启动...")
+            scope = manual_options.get(manual_selection, "all")
+            if self.background_manager.manual_fetch_now(scope=scope):
+                st.success(f"🚀 手动获取已启动 ({manual_selection})...")
             else:
                 st.warning("⏳ 数据获取进行中，请稍候...")
 
@@ -815,9 +826,9 @@ class StreamlitApp:
         new_interval = st.slider(
             "数据获取间隔 (分钟)",
             min_value=5,
-            max_value=60,
-            value=15,
-            step=5,
+            max_value=30,
+            value=10,
+            step=1,
             help="设置后台自动获取数据的时间间隔",
         )
 

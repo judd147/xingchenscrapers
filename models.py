@@ -354,6 +354,8 @@ class HandicapScraper:
             driver.get(os.getenv("HANDICAP_URL_LAST"))
         elif mode == "next":
             driver.get(os.getenv("HANDICAP_URL_NEXT"))
+        elif mode == "live":
+            driver.get(os.getenv("HANDICAP_URL_LIVE"))
         time.sleep(2)
 
         # dismiss cookie modal
