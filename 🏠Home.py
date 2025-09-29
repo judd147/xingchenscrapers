@@ -20,6 +20,50 @@ def main():
     )
 
     with st.sidebar:
+        with st.expander("调试信息", expanded=False):
+            show_debug = st.checkbox(
+                "显示运行环境诊断",
+                value=False,
+                help="帮助确认云端已正确安装依赖",
+            )
+            if show_debug:
+                import sys
+                from importlib import util
+                import subprocess
+
+                st.markdown(
+                    "* Python 版本: `{}`".format(sys.version.replace("\n", " "))
+                )
+
+                required_modules = {
+                    "plotly": "plotly",
+                    "python-dotenv": "dotenv",
+                    "selenium": "selenium",
+                    "webdriver-manager": "webdriver_manager",
+                    "scikit-learn": "sklearn",
+                }
+
+                missing = []
+                for pkg_name, module_name in required_modules.items():
+                    if util.find_spec(module_name) is None:
+                        missing.append(f"{pkg_name} (import `{module_name}`)")
+
+                if missing:
+                    st.error("缺少的依赖: " + ", ".join(missing))
+                else:
+                    st.success("所有关键依赖均已成功导入。")
+
+                try:
+                    result = subprocess.run(
+                        [sys.executable, "-m", "pip", "freeze"],
+                        capture_output=True,
+                        text=True,
+                        check=True,
+                    )
+                    st.code(result.stdout, language="bash")
+                except Exception as exc:  # pragma: no cover
+                    st.warning(f"获取 pip freeze 信息失败: {exc}")
+
         st.title("关于")
         st.info(
             """
