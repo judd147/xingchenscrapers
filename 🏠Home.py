@@ -451,6 +451,7 @@ def clean_history(df_history):
     df_metric = df_history.copy()
     df_metric["平均概率"] = df_metric["平均概率"].apply(pct_to_float)
     df_metric["模型"] = df_metric["模型"].apply(remove_exclamation)
+
     df_metric["week"] = df_metric["week"].astype(float)
     if "模拟盈亏" in df_metric.columns:
         df_metric["模拟盈亏"] = pd.to_numeric(
@@ -506,7 +507,6 @@ def calc_success(df):
     """
     num_success = len(df[df["正误"] == "\u2714"])
     return float(num_success / (len(df)))
-
 
 def calc_largest_drawdown(df_metric):
     columns = ["模拟盈亏", "week"]

@@ -16,6 +16,7 @@ from datetime import datetime, timedelta, time
 
 from managers import DatabaseManager, BackgroundTaskManager
 from ML_model import SoccerMLPredictor
+from utils import season_week_from_timestamp
 
 HIGH_CONF_THRESHOLD = 0.6
 
@@ -39,7 +40,7 @@ def load_ml_predictor() -> Optional[SoccerMLPredictor]:
         return None
 
 
-@st.cache_data(show_spinner=False)
+@st.cache_data(show_spinner=True)
 def load_backtest_dataset() -> Optional[pd.DataFrame]:
     data_path = os.getenv("LOCAL_DATA_PATH")
     if not data_path or not os.path.exists(data_path):
@@ -87,7 +88,9 @@ def load_backtest_dataset() -> Optional[pd.DataFrame]:
         return None
 
     df["开球时间_fmt"] = df["match_datetime"].dt.strftime("%Y-%m-%d %H:%M")
-    df["week"] = df["match_datetime"].dt.isocalendar().week.astype(int)
+    df["week"] = df["match_datetime"].apply(season_week_from_timestamp)
+    df = df[df["week"].notna()]
+    df["week"] = df["week"].astype(int)
 
     return df
 
@@ -572,11 +575,6 @@ class StreamlitApp:
 
             home_score = row.get("H")
             away_score = row.get("A")
-            score_display = (
-                f"{int(home_score)}-{int(away_score)}"
-                if pd.notna(home_score) and pd.notna(away_score)
-                else ""
-            )
 
             profit = calculate_asian_profit(
                 handicap_value,
@@ -609,7 +607,6 @@ class StreamlitApp:
                 "预测": predicted_label,
                 "实际": actual_label,
                 "正误": "✔" if is_correct else "✘",
-                "比分": score_display,
                 "模拟盈亏": round(profit, 2),
                 "model_used": prediction.get("model_used", ""),
                 "prob_upper": prediction.get("probability_上盘"),

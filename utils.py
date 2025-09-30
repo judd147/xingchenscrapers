@@ -1,4 +1,5 @@
 import re
+import pandas as pd
 
 # def deprecated_create_onedrive_directdownload(onedrive_link):
 #     import base64
@@ -43,6 +44,28 @@ def remove_exclamation(text):
     text = text.replace("！", "").split("新发现")[1]
     text = text.replace("模型", "")
     return text
+
+
+def season_week_from_timestamp(value, max_weeks: int = 38):
+    """Return season week index for a match timestamp (season starts mid-August)."""
+    if pd.isna(value):
+        return None
+
+    ts = pd.Timestamp(value)
+    season_start_year = ts.year if ts.month >= 7 else ts.year - 1
+    season_start = pd.Timestamp(season_start_year, 8, 15)
+
+    while season_start.weekday() != 1:  # align to Tuesday
+        season_start += pd.Timedelta(days=1)
+
+    delta_days = (ts.normalize() - season_start).days
+    if delta_days < 0:
+        return 1
+
+    week_number = (delta_days // 7) + 1
+    if max_weeks is not None:
+        week_number = min(week_number, max_weeks)
+    return week_number
 
 
 def map_leagues(league):
