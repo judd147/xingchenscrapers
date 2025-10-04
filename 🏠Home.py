@@ -119,7 +119,7 @@ def load_dashboard(df_history):  # TODO 增加模拟盈亏指标计算及展示
         league_options = st.multiselect(
             "联赛筛选",
             options=df_metric["联赛"].unique(),
-            default=["英超", "西甲", "德甲", "意甲", "法甲", "欧冠", "欧联"],
+            default=["英超", "西甲", "德甲", "意甲", "法甲", "欧冠", "欧联", "欧协联"],
         )
     except:
         league_options = st.multiselect(
@@ -507,6 +507,7 @@ def calc_success(df):
     """
     num_success = len(df[df["正误"] == "\u2714"])
     return float(num_success / (len(df)))
+
 
 def calc_largest_drawdown(df_metric):
     columns = ["模拟盈亏", "week"]
